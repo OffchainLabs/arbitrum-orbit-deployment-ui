@@ -1,0 +1,70 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    min-height: 100vh;
+    background-image: url('/space.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .title {
+    margin: 0;
+    line-height: 1.15;
+    font-size: 3rem;
+    color: #3f51b5;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 2rem;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #000000;
+  }
+  
+  .button {
+    padding: 0.75rem 1rem;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .button:hover {
+    background-color: #283593;
+  }
+  
+  .statusMessage {
+    margin-top: 1rem;
+  }
+  
+  .logo {
+    animation: rotation 10s infinite linear;
+  }
+  
+  @keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
