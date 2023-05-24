@@ -38,10 +38,10 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
     chainId: 11111112,
     genesisBlockNum: 0,
     sequencerInboxMaxTimeVariation: {
-      delayBlocks: 10,
-      futureBlocks: 20,
-      delaySeconds: 30,
-      futureSeconds: 40,
+      delayBlocks: 16,
+      futureBlocks: 192,
+      delaySeconds: 86400,
+      futureSeconds: 7200,
     },
   });
   
@@ -118,10 +118,10 @@ const RollupConfigInputPage = () => {
       chainId: 11111112,
       genesisBlockNum: 0,
       sequencerInboxMaxTimeVariation: {
-        delayBlocks: 10,
-        futureBlocks: 20,
-        delaySeconds: 30,
-        futureSeconds: 40,
+        delayBlocks: 16,
+        futureBlocks: 192,
+        delaySeconds: 86400,
+        futureSeconds: 7200,
       },
     };
     router.push({
