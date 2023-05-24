@@ -33,7 +33,7 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
     baseStake: 10000000,
     owner: "",
     extraChallengeTimeBlocks: 0,
-    wasmModuleRoot: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    wasmModuleRoot: "0x29cf6f443ffbbf05140637e376d29df6ad1d2e61103c582c40d76e8cfd854042",
     loserStakeEscrow: "0x0000000000000000000000000000000000000000",
     chainId: 11111112,
     genesisBlockNum: 0,
@@ -113,7 +113,7 @@ const RollupConfigInputPage = () => {
     const updatedConfig = {
       ...config,
       extraChallengeTimeBlocks: 0,
-      wasmModuleRoot: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      wasmModuleRoot: "0x29cf6f443ffbbf05140637e376d29df6ad1d2e61103c582c40d76e8cfd854042",
       loserStakeEscrow: "0x0000000000000000000000000000000000000000",
       chainId: 11111112,
       genesisBlockNum: 0,
