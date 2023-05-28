@@ -1,20 +1,21 @@
-/* ShowRollupData.module.css */
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2em;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  min-height: 100vh;
+  background-image: url('/space.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .title {
-  margin-bottom: 1em;
-  color: #333;
-  font-size: 2em;
-  font-weight: 600;
+  margin: 0;
+  line-height: 1.15;
+  font-size: 3rem;
+  color: #3f51b5;
 }
 
 .data {
@@ -33,4 +34,32 @@
   white-space: -pre-wrap;      /* Opera 4-6 */
   white-space: -o-pre-wrap;    /* Opera 7 */
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.button {
+  padding: 0.75rem 1rem;
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;  /* To add some spacing between the button and the title */
+}
+
+.button:hover {
+  background-color: #283593;
+}
+.logo {
+  animation: rotation 10s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
