@@ -12,7 +12,7 @@ import Image from "next/image";
 declare let window: Window & { ethereum: any };
 
 
-type RollupConfigData = {
+export type RollupConfigData = {
   chain: {
     'info-json': Array<{
       'chain-id': number,
