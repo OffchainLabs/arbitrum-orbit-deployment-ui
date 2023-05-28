@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import RollupAdminLogicABIJSON from '../ethereum/RollupAdminLogic.json';
 import styles from '../styles/SetValidator.module.css'; 
-import { useRouter } from 'next/router';
 import Image from "next/image";
 
 const RollupAdminLogicABI = RollupAdminLogicABIJSON.abi;
@@ -14,11 +13,29 @@ interface AddressInput {
 }
 
 const SetValidator = () => {
-  const router = useRouter();
-  const rollupAddress = router.query.rollupAddress as string;
+  const [rollupAddress, setRollupAddress] = useState('');
   const [numAddresses, setNumAddresses] = useState(0);
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
+  const [showBatchPosterButton, setShowBatchPosterButton] = useState(false);
+
+  useEffect(() => {
+    const rollupDataString = localStorage.getItem('rollupData');
+    if (rollupDataString) {
+      const rollupData = JSON.parse(rollupDataString);
+      if (rollupData && rollupData.chain["info-json"][0].rollup) {
+        setRollupAddress(rollupData.chain["info-json"][0].rollup.rollup);
+      }
+    }
+    if (rollupDataString) {
+      const rollupData = JSON.parse(rollupDataString);
+      console.log('Rollup data:', rollupData);
+    }
+    if (rollupAddress === null) {
+      console.error('Error: Unable to find rollup address');
+    }
+  }, []);
+  
 
   const handleAddressCount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value);
@@ -57,6 +74,7 @@ const SetValidator = () => {
       const tx = await rollupAdminLogic.setValidator(validators, bools);
       await tx.wait();
       alert('Transaction successful. Validator set changed!');
+      setShowBatchPosterButton(true);
     } catch (error) {
       console.error('Error:', error);
       alert('Transaction failed');
@@ -67,7 +85,7 @@ const SetValidator = () => {
 
   return (
     <div className={styles.container}>
-                  <Image
+      <Image
           className={styles.logo} 
           src="/logo.svg"
           alt="Logo"
@@ -101,10 +119,14 @@ const SetValidator = () => {
         <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Submit'}
         </button>
+        {showBatchPosterButton && (
+          <button className={styles.button} onClick={() => window.open(`/batchPoster`, '_blank')}>
+            Set Batch Poster
+          </button>
+        )}
       </div>
     </div>
   );
 };
-
 
 export default SetValidator;

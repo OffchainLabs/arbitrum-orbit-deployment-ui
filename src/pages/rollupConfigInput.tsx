@@ -36,7 +36,7 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
     baseStake: 10000000,
     owner: "",
     extraChallengeTimeBlocks: 0,
-    wasmModuleRoot: "0x29cf6f443ffbbf05140637e376d29df6ad1d2e61103c582c40d76e8cfd854042", //Need to be changed after PR by Lee about new Wasm root
+    wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", //Need to be changed after PR by Lee about new Wasm root
     loserStakeEscrow: ethers.constants.AddressZero,
     chainId: 11111112,
     genesisBlockNum: 0,
@@ -141,7 +141,7 @@ const RollupConfigInputPage = () => {
     const updatedConfig = {
       ...config,
       extraChallengeTimeBlocks: 0,
-      wasmModuleRoot: "0x29cf6f443ffbbf05140637e376d29df6ad1d2e61103c582c40d76e8cfd854042",
+      wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", // change it after Lee's PR
       loserStakeEscrow: ethers.constants.AddressZero,
       genesisBlockNum: 0,
       sequencerInboxMaxTimeVariation: {

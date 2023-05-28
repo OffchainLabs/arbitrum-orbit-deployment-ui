@@ -21,21 +21,21 @@ type RollupConfigData = {
       'sequencer-url': string,
       'feed-url': string,
       'chain-config': object, 
-      rollup: {
-        bridge: string,
-        inbox: string,
+      'rollup': {
+        'bridge': string,
+        'inbox': string,
         'sequencer-inbox': string,
-        rollup: string,
+        'rollup': string,
         'validator-utils': string,
         'validator-wallet-creator': string,
         'deployed-at': number,
       }
     }>,
-    name: string,
+    'name': string,
   },
   'parent-chain': {
-    connection: {
-      url: string,
+    'connection': {
+      'url': string,
     }
   },
   http: {
@@ -71,14 +71,21 @@ type RollupConfigData = {
 };
 // Function to update local storage with new rollup data
 // Function to update local storage with new rollup data
+// Function to update local storage with new rollup data
+// Function to update local storage with new rollup data
 function updateLocalStorage(data: RollupConfigData) {
   const currentData = localStorage.getItem('rollupData');
-  const updatedData = currentData ? JSON.parse(currentData) : {};
+  let updatedData: any = {};
+
+  if (currentData) {
+    updatedData = JSON.parse(currentData);
+  }
 
   Object.assign(updatedData, data);
-
   localStorage.setItem('rollupData', JSON.stringify(updatedData));
 }
+
+
 // The DeployRollup component
 const DeployRollup = () => {
 
@@ -90,7 +97,6 @@ const DeployRollup = () => {
   useEffect(() => {
     if (router.query.rollupConfig) {
       const parsedConfig = JSON.parse(router.query.rollupConfig as string);
-      console.log("Parsed rollupConfig:", parsedConfig);
       setRollupConfig(parsedConfig);
     }
   }, [router.query]);
@@ -106,12 +112,9 @@ const DeployRollup = () => {
   const [blockNumber, setBlockNumber] = useState(0);
 
 
-  const handleSetBatchPoster = () => {
-    window.open(`/batchPoster?sequencerInbox=${sequencerInbox}`, '_blank');
-  };
   
   const handleSetValidators = () => {
-    window.open(`/setValidators?rollupAddress=${rollupAddress}`, '_blank');
+    window.open('/setValidators', '_blank');
   };
   
   // The main function to deploy the rollup
@@ -195,13 +198,13 @@ const DeployRollup = () => {
                 }
               },
               'rollup': {
-                'bridge': bridge,
-                'inbox': inboxAddress,
-                'sequencer-inbox': sequencerInbox,
-                'rollup': rollupAddress,
-                'validator-utils': utils,
-                'validator-wallet-creator': validatorWalletCreator,
-                'deployed-at': blockNumber
+                'bridge': rollupCreatedEvent.args.bridge,
+                'inbox': rollupCreatedEvent.args.inboxAddress,
+                'sequencer-inbox':  rollupCreatedEvent.args.sequencerInbox,
+                'rollup': rollupCreatedEvent.args.rollupAddress,
+                'validator-utils': await rollupCore.validatorUtils(),
+                'validator-wallet-creator': await rollupCore.validatorWalletCreator(),
+                'deployed-at': createRollupReceipt.blockNumber
               }
             }],
             'name': "example-l3"
@@ -242,7 +245,7 @@ const DeployRollup = () => {
             },
           }
         };
-        updateLocalStorage(rollupConfigData);
+        updateLocalStorage(await rollupConfigData);
       } else {
         console.error('RollupCreated event not found');
       }    } catch (error) {
@@ -279,9 +282,6 @@ const DeployRollup = () => {
           </button>
           {blockNumber > 0 && (
             <>
-          <button className={styles.button} onClick={handleSetBatchPoster}>
-            Set Batch Poster
-          </button>
           <button className={styles.button} onClick={handleSetValidators}>
             Set Validator(s)
           </button>
