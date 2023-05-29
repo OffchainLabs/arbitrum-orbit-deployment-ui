@@ -45,9 +45,9 @@ const SetValidator = () => {
 
   const handleAddressCount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value);
-    if (count > 0) {
-      setNumAddresses(count + 1);
-      setAddressInputs([{ address: stakerAddress }, ...Array.from({ length: count }, () => ({ address: ''}))]);
+    if (count >= 1) {
+      const additionalInputs = count > 1 ? Array.from({ length: count - 1 }, () => ({ address: '' })) : [];
+      setAddressInputs([{ address: stakerAddress }, ...additionalInputs]);
     }
   };
 
@@ -101,18 +101,18 @@ const SetValidator = () => {
           placeholder="Number of addresses"
           onChange={handleAddressCount}
         />
-        {addressInputs.map((input, index) => (
-          <div key={index}>
-            <input
-              className={styles.input}
-              type="text"
-              placeholder={`Address ${index + 1}`}
-              value={input.address}
-              onChange={(e) => index !== 0 ? handleAddressInput(e, index) : null}
-              readOnly={index === 0}
-            />
-          </div>
-        ))}
+      {addressInputs.map((input, index) => (
+        <div key={index}>
+          <input
+            className={styles.input}
+            type="text"
+            placeholder={`Address ${index + 1}`}
+            value={input.address}
+            onChange={(e) => index !== 0 ? handleAddressInput(e, index) : null}
+            readOnly={index === 0}
+          />
+        </div>
+      ))}
 
 {!showBatchPosterButton && (
   <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
