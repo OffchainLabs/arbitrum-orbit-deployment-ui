@@ -12,6 +12,9 @@ interface AddressInput {
 }
 
 const SetValidator = () => {
+  const staker = ethers.Wallet.createRandom();
+  const stakerAddress = staker.address;
+  
   const [rollupAddress, setRollupAddress] = useState('');
   const [numAddresses, setNumAddresses] = useState(0);
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]); 
@@ -39,8 +42,8 @@ const SetValidator = () => {
   const handleAddressCount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value);
     if (count > 0) {
-      setNumAddresses(count);
-      setAddressInputs(Array.from({ length: count }, () => ({ address: ''})));
+      setNumAddresses(count + 1);
+      setAddressInputs([{ address: stakerAddress }, ...Array.from({ length: count }, () => ({ address: ''}))]);
     }
   };
 
@@ -101,10 +104,12 @@ const SetValidator = () => {
               type="text"
               placeholder={`Address ${index + 1}`}
               value={input.address}
-              onChange={(e) => handleAddressInput(e, index)}
+              onChange={(e) => index !== 0 ? handleAddressInput(e, index) : null}
+              readOnly={index === 0}
             />
           </div>
         ))}
+        
 {!showBatchPosterButton && (
   <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
     {isLoading ? 'Loading...' : 'Submit'}
