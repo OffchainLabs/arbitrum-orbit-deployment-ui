@@ -29,11 +29,11 @@
   max-width: 800px;
   overflow: auto;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  white-space: pre-wrap;       /* css-3 */
-  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-  white-space: -pre-wrap;      /* Opera 4-6 */
-  white-space: -o-pre-wrap;    /* Opera 7 */
-  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  white-space: pre-wrap;       
+  white-space: -moz-pre-wrap;  
+  white-space: -pre-wrap;      
+  white-space: -o-pre-wrap;    
+  word-wrap: break-word;       
 }
 
 .button {
@@ -45,7 +45,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-top: 1rem;  /* To add some spacing between the button and the title */
+  margin-top: 1rem;  
 }
 
 .button:hover {

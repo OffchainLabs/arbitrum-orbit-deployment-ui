@@ -117,6 +117,7 @@ const DeployRollup = () => {
   
   // The main function to deploy the rollup
   async function main() {
+    
   // getting the provider and signer from wallet
   if (!window.ethereum) {
     throw new Error('Please install MetaMask');

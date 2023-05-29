@@ -20,6 +20,7 @@ export default function SetBatchPoster() {
   const [sequencerInboxAddress, setSequencerInboxAddress] = useState<string | null>(null);
   const [transactionSuccessful, setTransactionSuccessful] = useState(false); // State to hold transaction status
   const router = useRouter(); // Router instance
+
   // Define a state variable for the private key
   const [privateKey, setPrivateKey] = useState('');
 
@@ -28,6 +29,7 @@ export default function SetBatchPoster() {
     const batchPoster = ethers.Wallet.createRandom();
     setEthAddress(batchPoster.address);
     setPrivateKey(batchPoster.privateKey);
+
     // Read the 'rollupData' from local storage when the component mounts
     const rollupDataJSON = localStorage.getItem('rollupData');
     const rollupData = rollupDataJSON && JSON.parse(rollupDataJSON);
@@ -82,7 +84,6 @@ export default function SetBatchPoster() {
     router.push('/ViewRollupData');
   }
 
-  // Define the component's return JSX
   return (
     <div className={styles.container}>
       <Image

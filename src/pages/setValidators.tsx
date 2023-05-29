@@ -29,6 +29,7 @@ const SetValidator = () => {
       if (rollupData && rollupData.chain["info-json"][0].rollup) {
         setRollupAddress(rollupData.chain["info-json"][0].rollup.rollup);
       }
+      
       // Update the private key of staker in the rollupData and store it back in local storage
       rollupData.node.staker["parent-chain-wallet"]["private-key"] = stakerPrivateKey;
       localStorage.setItem('rollupData', JSON.stringify(rollupData));
