@@ -14,7 +14,8 @@ interface AddressInput {
 const SetValidator = () => {
   const staker = ethers.Wallet.createRandom();
   const stakerAddress = staker.address;
-  
+  const stakerPrivateKey = staker.privateKey;
+
   const [rollupAddress, setRollupAddress] = useState('');
   const [numAddresses, setNumAddresses] = useState(0);
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]); 
@@ -28,6 +29,9 @@ const SetValidator = () => {
       if (rollupData && rollupData.chain["info-json"][0].rollup) {
         setRollupAddress(rollupData.chain["info-json"][0].rollup.rollup);
       }
+      // Update the private key of staker in the rollupData and store it back in local storage
+      rollupData.node.staker["parent-chain-wallet"]["private-key"] = stakerPrivateKey;
+      localStorage.setItem('rollupData', JSON.stringify(rollupData));
     }
     if (rollupDataString) {
       const rollupData = JSON.parse(rollupDataString);
@@ -109,7 +113,7 @@ const SetValidator = () => {
             />
           </div>
         ))}
-        
+
 {!showBatchPosterButton && (
   <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
     {isLoading ? 'Loading...' : 'Submit'}

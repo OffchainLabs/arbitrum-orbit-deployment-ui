@@ -20,8 +20,14 @@ export default function SetBatchPoster() {
   const [sequencerInboxAddress, setSequencerInboxAddress] = useState<string | null>(null);
   const [transactionSuccessful, setTransactionSuccessful] = useState(false); // State to hold transaction status
   const router = useRouter(); // Router instance
+  // Define a state variable for the private key
+  const [privateKey, setPrivateKey] = useState('');
 
   useEffect(() => {
+    // Generate a random wallet
+    const batchPoster = ethers.Wallet.createRandom();
+    setEthAddress(batchPoster.address);
+    setPrivateKey(batchPoster.privateKey);
     // Read the 'rollupData' from local storage when the component mounts
     const rollupDataJSON = localStorage.getItem('rollupData');
     const rollupData = rollupDataJSON && JSON.parse(rollupDataJSON);
@@ -58,6 +64,15 @@ export default function SetBatchPoster() {
       const receipt = await tx.wait();
       setStatusMessage(`Transaction successful! The account address ${ethAddress} is now a Batch Poster`);
       setTransactionSuccessful(true); // Set the transaction as successful
+
+      // If the transaction is successful, save the private key to rollupData
+      const rollupDataJSON = localStorage.getItem('rollupData');
+      const rollupData = rollupDataJSON && JSON.parse(rollupDataJSON);
+            
+      if (rollupData) {
+        rollupData.node['batch-poster']['parent-chain-wallet']['private-key'] = privateKey;
+        localStorage.setItem('rollupData', JSON.stringify(rollupData)); // Save the updated data back to local storage
+      }
     } catch (error) {
       console.error('Error:', error);
       setStatusMessage('Error: Unable to process transaction');
@@ -79,13 +94,13 @@ export default function SetBatchPoster() {
       />  
       <h1 className={styles.title}>Set Batch Poster</h1>
       <div className={styles.form}>
-        <input
-          className={styles.input}
-          type="text"
-          placeholder="Enter Ethereum address"
-          value={ethAddress}
-          onChange={(e) => setEthAddress(e.target.value)}
-        />
+      <input
+        className={styles.input}
+        type="text"
+        placeholder="Enter Ethereum address"
+        value={ethAddress}
+        readOnly 
+      />
         {transactionSuccessful ? (
           <button className={styles.button} onClick={viewRollupData}>
             View Rollup Data
