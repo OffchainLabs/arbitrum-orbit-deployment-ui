@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import styles from "../styles/RollupConfigInput.module.css";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { ethers } from "ethers";
+
+declare let window: Window & { ethereum: any };
 
 export interface RollupConfig {
   confirmPeriodBlocks: number;
@@ -29,21 +32,36 @@ interface RollupConfigInputProps {
 const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
   const [config, setConfig] = useState<RollupConfig>({
     confirmPeriodBlocks: 20,
-    stakeToken: "",
+    stakeToken: ethers.constants.AddressZero,
     baseStake: 10000000,
     owner: "",
     extraChallengeTimeBlocks: 0,
-    wasmModuleRoot: "0x0000000000000000000000000000000000000000000000000000000000000000",
-    loserStakeEscrow: "0x0000000000000000000000000000000000000000",
+    wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", //Need to be changed after PR by Lee about new Wasm root
+    loserStakeEscrow: ethers.constants.AddressZero,
     chainId: 11111112,
     genesisBlockNum: 0,
     sequencerInboxMaxTimeVariation: {
-      delayBlocks: 10,
-      futureBlocks: 20,
-      delaySeconds: 30,
-      futureSeconds: 40,
+      delayBlocks: 16,
+      futureBlocks: 192,
+      delaySeconds: 86400,
+      futureSeconds: 7200,
     },
   });
+  useEffect(() => {
+    const getOwnerAddress = async () => {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        owner: address,
+      }));
+    };
+
+    getOwnerAddress();
+  }, []);
   
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +76,16 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <div className={styles.label}>
+      <label htmlFor="chainId">Chain ID:</label>
+      <input
+        className={styles.input}
+        type="number"
+        name="chainId"
+        value={config.chainId}
+        onChange={handleChange}
+        />
+      </div>
       <div className={styles.label}>
         <label htmlFor="confirmPeriodBlocks">Confirm Period Blocks:</label>
         <input
@@ -113,15 +141,14 @@ const RollupConfigInputPage = () => {
     const updatedConfig = {
       ...config,
       extraChallengeTimeBlocks: 0,
-      wasmModuleRoot: "0x0000000000000000000000000000000000000000000000000000000000000000",
-      loserStakeEscrow: "0x0000000000000000000000000000000000000000",
-      chainId: 11111112,
+      wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", // change it after Lee's PR
+      loserStakeEscrow: ethers.constants.AddressZero,
       genesisBlockNum: 0,
       sequencerInboxMaxTimeVariation: {
-        delayBlocks: 10,
-        futureBlocks: 20,
-        delaySeconds: 30,
-        futureSeconds: 40,
+        delayBlocks: 16,
+        futureBlocks: 192,
+        delaySeconds: 86400,
+        futureSeconds: 7200,
       },
     };
     router.push({
