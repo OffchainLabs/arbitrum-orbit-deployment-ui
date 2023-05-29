@@ -69,9 +69,7 @@ export type RollupConfigData = {
     },
   },
 };
-// Function to update local storage with new rollup data
-// Function to update local storage with new rollup data
-// Function to update local storage with new rollup data
+
 // Function to update local storage with new rollup data
 function updateLocalStorage(data: RollupConfigData) {
   const currentData = localStorage.getItem('rollupData');
@@ -277,9 +275,11 @@ const DeployRollup = () => {
           height={250}
           />
           <h1 className={styles.title}>Rollup Deployment Results</h1>
-          <button className={styles.button} onClick={main}>
-            Deploy Rollup
-          </button>
+          {blockNumber <= 0 && (
+      <button className={styles.button} onClick={main}>
+        Deploy Rollup
+      </button>
+    )}
           {blockNumber > 0 && (
             <>
           <button className={styles.button} onClick={handleSetValidators}>

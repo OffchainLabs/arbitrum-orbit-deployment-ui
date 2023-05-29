@@ -9,7 +9,6 @@ declare let window: Window & { ethereum: any };
 
 interface AddressInput {
   address: string;
-  isChecked: boolean;
 }
 
 const SetValidator = () => {
@@ -41,7 +40,7 @@ const SetValidator = () => {
     const count = parseInt(e.target.value);
     if (count > 0) {
       setNumAddresses(count);
-      setAddressInputs(Array.from({ length: count }, () => ({ address: '', isChecked: false })));
+      setAddressInputs(Array.from({ length: count }, () => ({ address: ''})));
     }
   };
 
@@ -51,11 +50,6 @@ const SetValidator = () => {
     setAddressInputs(newInputs);
   };
 
-  const handleCheckmark = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newInputs = [...addressInputs];
-    newInputs[index].isChecked = e.target.checked;
-    setAddressInputs(newInputs);
-  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -68,7 +62,7 @@ const SetValidator = () => {
     );
 
     const validators = addressInputs.map((input) => input.address);
-    const bools = addressInputs.map((input) => input.isChecked);
+    const bools = Array(addressInputs.length).fill(true);
 
     try {
       const tx = await rollupAdminLogic.setValidator(validators, bools);
@@ -109,16 +103,13 @@ const SetValidator = () => {
               value={input.address}
               onChange={(e) => handleAddressInput(e, index)}
             />
-            <input
-              type="checkbox"
-              checked={input.isChecked}
-              onChange={(e) => handleCheckmark(e, index)}
-            />
           </div>
         ))}
-        <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Submit'}
-        </button>
+{!showBatchPosterButton && (
+  <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
+    {isLoading ? 'Loading...' : 'Submit'}
+  </button>
+)}
         {showBatchPosterButton && (
           <button className={styles.button} onClick={() => window.open(`/batchPoster`, '_blank')}>
             Set Batch Poster
