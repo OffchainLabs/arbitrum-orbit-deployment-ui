@@ -4,7 +4,6 @@ import { RollupConfigData } from './rollup';
 import Image from "next/image";
 
 // Function to remove unwanted fields
-// Function to remove unwanted fields
 const removeFields = (obj: any, fieldsToRemove: string[]): any => {
   let newObj = JSON.parse(JSON.stringify(obj)); // Deep clone the original object
 
@@ -15,7 +14,33 @@ const removeFields = (obj: any, fieldsToRemove: string[]): any => {
   });
 
   return newObj;
-}
+};
+
+
+//for removing other parts
+const removeNestedFields = (obj: any): any => {
+  let newObj = JSON.parse(JSON.stringify(obj)); // Deep clone the original object
+  
+  if (newObj.chain && typeof newObj.chain["info-json"] === "string") {
+    newObj.chain["info-json"] = JSON.parse(newObj.chain["info-json"]); // Parse the stringified JSON
+  }
+  
+  if (newObj.chain && newObj.chain["info-json"]) {
+    newObj.chain["info-json"].forEach((item: any) => {
+      if (item.hasOwnProperty("sequencer-url")) {
+        delete item["sequencer-url"];
+      }
+      if (item.hasOwnProperty("feed-url")) {
+        delete item["feed-url"];
+      }
+    });
+  }
+
+  return newObj;
+};
+
+
+
 
 
 const ViewRollupData = () => {
@@ -24,13 +49,15 @@ const ViewRollupData = () => {
 
   const unwantedFields = ["inboxAddress", "adminProxy", "sequencerInbox", "bridge", "utils", "validatorWalletCreator", "blockNumber","rollupAddress"];
 
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const rollupData = localStorage.getItem("rollupData");
-
+  
       if (rollupData) {
         let parsedData = JSON.parse(rollupData);
         let cleanedData = removeFields(parsedData, unwantedFields);
+        cleanedData = removeNestedFields(cleanedData);
         setData(cleanedData);
       }
     }
