@@ -24,6 +24,8 @@ const SetValidator = () => {
 
   useEffect(() => {
     const rollupDataString = localStorage.getItem('rollupData');
+    const l3ConfigString = localStorage.getItem('l3Config');
+
     if (rollupDataString) {
       const rollupData = JSON.parse(rollupDataString);
       if (rollupData && rollupData.chain["info-json"][0].rollup) {
@@ -41,7 +43,15 @@ const SetValidator = () => {
     if (rollupAddress === null) {
       console.error('Error: Unable to find rollup address');
     }
-  }, []);
+    if (l3ConfigString) {
+      const l3Config = JSON.parse(l3ConfigString);
+      l3Config.staker = stakerAddress;
+      localStorage.setItem('l3Config', JSON.stringify(l3Config));
+    }
+    if (l3ConfigString === null) {
+      console.error('Error: Unable to find L3 Config Data');
+    }
+  }, [stakerAddress]);
   
 
   const handleAddressCount = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -11,7 +11,7 @@ import Image from "next/image";
 // Extend Window object to include the ethereum property for MetaMask
 declare let window: Window & { ethereum: any };
 
-
+// Chain Config file type
 export type RollupConfigData = {
   chain: {
     'info-json': Array<{
@@ -70,18 +70,38 @@ export type RollupConfigData = {
   },
 };
 
-// Function to update local storage with new rollup data
-function updateLocalStorage(data: RollupConfigData) {
+// L3 setup config type
+export interface L3Config {
+  minL2BaseFee: number;
+  networkFeeReceiver: string;
+  infrastructureFeeCollector: string;
+  batchPoster: string;
+  staker: string;
+  chainOwner: string;
+}
+
+
+// Function to update local storage with new rollup data and l3 data
+function updateLocalStorage(data: RollupConfigData, l3config: L3Config) {
   const currentData = localStorage.getItem('rollupData');
+  const currentL3Config = localStorage.getItem('l3Config');
   let updatedData: any = {};
+  let updatedL3Config: any = {};
 
   if (currentData) {
     updatedData = JSON.parse(currentData);
   }
+  if (currentL3Config) {
+    updatedL3Config = JSON.parse(currentL3Config);
+  }
 
   Object.assign(updatedData, data);
+  Object.assign(updatedL3Config, l3config);
+
   localStorage.setItem('rollupData', JSON.stringify(updatedData));
+  localStorage.setItem('l3Config', JSON.stringify(updatedL3Config));
 }
+
 
 
 // The DeployRollup component
@@ -125,18 +145,29 @@ const DeployRollup = () => {
   await window.ethereum.request({ method: 'eth_requestAccounts' });
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
+  
+  // Defining L3 config
+  const l3Config: L3Config = {
+    minL2BaseFee: 100000000,
+    networkFeeReceiver: await signer.getAddress(),
+    infrastructureFeeCollector: await signer.getAddress(),
+    batchPoster: '', 
+    staker: '', 
+    chainOwner: rollupConfig ? rollupConfig.owner : ''
+  };  
     try {
       if (!rollupConfig) {
         console.error('Please provide a rollup config before deploying');
         return;
       }
-      const rollupCreatorAddress = '0x716590405B9F6F597090fc0daEf4041bB6C23525'; //On Arb Goerli, so need to change it for other networks
+      const rollupCreatorAddress = '0xe3a501762cA29F51704d4A945EDcdf1984E1b7Df'; //On Arb Goerli, so need to change it for other networks
       const rollupCreator = new ethers.Contract(
         rollupCreatorAddress,
         RollupCreator.abi,
         signer,
       );
       console.log("Going for deployment")
+      console.log(await rollupConfig)
       const createRollupTx = await rollupCreator.createRollup(rollupConfig);
       const createRollupReceipt = await createRollupTx.wait();
       console.log(await createRollupReceipt.events)
@@ -244,7 +275,7 @@ const DeployRollup = () => {
             },
           }
         };
-        updateLocalStorage(await rollupConfigData);
+        updateLocalStorage(await rollupConfigData, l3Config);
       } else {
         console.error('RollupCreated event not found');
       }    } catch (error) {

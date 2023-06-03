@@ -25,27 +25,31 @@ export default function SetBatchPoster() {
   const [privateKey, setPrivateKey] = useState('');
 
   useEffect(() => {
-    // Generate a random wallet
     const batchPoster = ethers.Wallet.createRandom();
     setEthAddress(batchPoster.address);
     setPrivateKey(batchPoster.privateKey);
 
-    // Read the 'rollupData' from local storage when the component mounts
     const rollupDataJSON = localStorage.getItem('rollupData');
     const rollupData = rollupDataJSON && JSON.parse(rollupDataJSON);
 
-    // If the 'rollupData' is available, retrieve the 'sequencer-inbox' and set it to state
     if (rollupData && rollupData.chain["info-json"][0].rollup) {
       setSequencerInboxAddress(rollupData.chain["info-json"][0].rollup["sequencer-inbox"]);
     }
+    
+    const l3ConfigString = localStorage.getItem('l3Config');
+    if (l3ConfigString) {
+      const l3Config = JSON.parse(l3ConfigString);
+      l3Config.batchPoster = batchPoster.address;
+      localStorage.setItem('l3Config', JSON.stringify(l3Config));
+    }
   }, []);
+
 
   // Function to handle Ethereum transaction signing and sending
   async function signTransactionAndSend() {
     setStatusMessage('Processing...');
     try {
       // Connect to Ethereum network via MetaMask
-      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
 

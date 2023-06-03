@@ -1,21 +1,8 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "RollupCore",
-  "sourceName": "contracts/rollup/RollupCore.sol",
+  "sourceName": "src/rollup/RollupCore.sol",
   "abi": [
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint8",
-          "name": "version",
-          "type": "uint8"
-        }
-      ],
-      "name": "Initialized",
-      "type": "event"
-    },
     {
       "anonymous": false,
       "inputs": [
@@ -95,7 +82,7 @@
                   "type": "uint8"
                 }
               ],
-              "internalType": "struct RollupLib.ExecutionState",
+              "internalType": "struct ExecutionState",
               "name": "beforeState",
               "type": "tuple"
             },
@@ -124,7 +111,7 @@
                   "type": "uint8"
                 }
               ],
-              "internalType": "struct RollupLib.ExecutionState",
+              "internalType": "struct ExecutionState",
               "name": "afterState",
               "type": "tuple"
             },
@@ -135,7 +122,7 @@
             }
           ],
           "indexed": false,
-          "internalType": "struct RollupLib.Assertion",
+          "internalType": "struct Assertion",
           "name": "assertion",
           "type": "tuple"
         },
@@ -544,6 +531,25 @@
           "internalType": "struct Node",
           "name": "",
           "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "nodeNum",
+          "type": "uint64"
+        }
+      ],
+      "name": "getNodeCreationBlockForLogLookup",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",

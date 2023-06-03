@@ -15,6 +15,7 @@ export interface RollupConfig {
   wasmModuleRoot: string;
   loserStakeEscrow: string;
   chainId: number;
+  chainConfig: string;
   genesisBlockNum: number;
   sequencerInboxMaxTimeVariation: {
     delayBlocks: number;
@@ -38,7 +39,8 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
     extraChallengeTimeBlocks: 0,
     wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", //Need to be changed after PR by Lee about new Wasm root
     loserStakeEscrow: ethers.constants.AddressZero,
-    chainId: 11111112,
+    chainId: 1337,
+    chainConfig: ethers.constants.HashZero,
     genesisBlockNum: 0,
     sequencerInboxMaxTimeVariation: {
       delayBlocks: 16,
@@ -143,6 +145,7 @@ const RollupConfigInputPage = () => {
       extraChallengeTimeBlocks: 0,
       wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", // change it after Lee's PR
       loserStakeEscrow: ethers.constants.AddressZero,
+      chainConfig:ethers.constants.HashZero,
       genesisBlockNum: 0,
       sequencerInboxMaxTimeVariation: {
         delayBlocks: 16,
