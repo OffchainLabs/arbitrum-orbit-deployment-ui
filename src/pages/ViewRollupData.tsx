@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/ViewRollupData.module.css";
-import { RollupConfigData } from './rollup';
-import { L3Config } from './l3Config';
+import {RollupConfigData} from "../types/rollupConfigDataType";
+import {L3Config} from "../types/l3ConfigType";
 import Image from "next/image";
 
 const removeFields = (obj: any, fieldsToRemove: string[]): any => {

@@ -1,0 +1,25 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    min-height: 100vh;
+    background-image: url('/space.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .logo {
+    animation: rotation 10s infinite linear;
+  }
+  
+  @keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
