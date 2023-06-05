@@ -85,7 +85,8 @@ const DeployRollup = () => {
     infrastructureFeeCollector: await signer.getAddress(),
     batchPoster: '', 
     staker: '', 
-    chainOwner: rollupConfig ? rollupConfig.owner : ''
+    chainOwner: rollupConfig ? rollupConfig.owner : '',
+    inboxAddress: ''
   };  
     try {
       if (!rollupConfig) {
@@ -293,6 +294,7 @@ const DeployRollup = () => {
             },
           }
         };
+        l3Config.inboxAddress = rollupCreatedEvent.args.inboxAddress
         updateLocalStorage(await rollupConfigData, l3Config);
       } else {
         console.error('RollupCreated event not found');

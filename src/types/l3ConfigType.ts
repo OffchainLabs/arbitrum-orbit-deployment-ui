@@ -5,4 +5,5 @@ export interface L3Config {
     batchPoster: string;
     staker: string;
     chainOwner: string;
+    inboxAddress: string;
   }
