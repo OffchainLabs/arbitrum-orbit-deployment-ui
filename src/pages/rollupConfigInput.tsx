@@ -1,8 +1,8 @@
-import { useState,useEffect } from "react";
-import styles from "../styles/RollupConfigInput.module.css";
-import { useRouter } from "next/router";
-import Image from "next/image";
-import { ethers } from "ethers";
+import { useState, useEffect } from 'react';
+import styles from '../styles/RollupConfigInput.module.css';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
+import { ethers } from 'ethers';
 
 declare let window: Window & { ethereum: any };
 
@@ -35,9 +35,9 @@ export const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onChange }
     confirmPeriodBlocks: 20,
     stakeToken: ethers.constants.AddressZero,
     baseStake: 10000000,
-    owner: "",
+    owner: '',
     extraChallengeTimeBlocks: 0,
-    wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", //Need to be changed after PR by Lee about new Wasm root
+    wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21', //Need to be changed after PR by Lee about new Wasm root
     loserStakeEscrow: ethers.constants.AddressZero,
     chainId: 1337,
     chainConfig: ethers.constants.HashZero,
@@ -66,8 +66,8 @@ export const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onChange }
   }, []);
 
   useEffect(() => {
-    onChange(config)
-  }, [config])
+    onChange(config);
+  }, [config]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -79,15 +79,15 @@ export const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onChange }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
+    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3">
       <div className={styles.label}>
-      <label htmlFor="chainId">Chain ID:</label>
-      <input
-        className={styles.input}
-        type="number"
-        name="chainId"
-        value={config.chainId}
-        onChange={handleChange}
+        <label htmlFor="chainId">Chain ID:</label>
+        <input
+          className={styles.input}
+          type="number"
+          name="chainId"
+          value={config.chainId}
+          onChange={handleChange}
         />
       </div>
       <div className={styles.label}>
@@ -130,7 +130,6 @@ export const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onChange }
           onChange={handleChange}
         />
       </div>
-
     </form>
   );
 };
@@ -139,13 +138,13 @@ const RollupConfigInputPage = () => {
   const router = useRouter();
 
   const handleSaveRollupConfig = (config: RollupConfig) => {
-    console.log("Config saved:", config);
+    console.log('Config saved:', config);
     const updatedConfig = {
       ...config,
       extraChallengeTimeBlocks: 0,
-      wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", // change it after Lee's PR
+      wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21', // change it after Lee's PR
       loserStakeEscrow: ethers.constants.AddressZero,
-      chainConfig:ethers.constants.HashZero,
+      chainConfig: ethers.constants.HashZero,
       genesisBlockNum: 0,
       sequencerInboxMaxTimeVariation: {
         delayBlocks: 16,
@@ -155,27 +154,18 @@ const RollupConfigInputPage = () => {
       },
     };
     router.push({
-      pathname: "/rollup",
+      pathname: '/rollup',
       query: { rollupConfig: JSON.stringify(updatedConfig) },
     });
   };
 
   return (
-  <div className={styles.container}>
-    <Image
-          className={styles.logo} 
-          src="/logo.svg"
-          alt="Logo"
-          width={250}
-          height={250}
-          />
-      <h1 style={{ color: "#fff", fontSize: "2rem", fontWeight: "bold" }}>
-        Configure Rollup
-      </h1>
+    <div className={styles.container}>
+      <Image className={styles.logo} src="/logo.svg" alt="Logo" width={250} height={250} />
+      <h1 style={{ color: '#fff', fontSize: '2rem', fontWeight: 'bold' }}>Configure Rollup</h1>
       {/* <RollupConfigInput onSave={handleSaveRollupConfig} /> */}
-  </div>
+    </div>
   );
-  };
+};
 
 export default RollupConfigInputPage;
-

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import styles from "../styles/L3ConfigInput.module.css";
-import { useRouter } from "next/router";
-import Image from "next/image";
-import { ethers } from "ethers";
+import { useState, useEffect } from 'react';
+import styles from '../styles/L3ConfigInput.module.css';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
+import { ethers } from 'ethers';
 
 declare let window: Window & { ethereum: any };
 
@@ -19,8 +19,8 @@ interface L3ConfigInputProps {
 const L3ConfigInput: React.FC<L3ConfigInputProps> = ({ onSave }) => {
   const [config, setConfig] = useState<L3Config>({
     minL2BaseFee: 100000000,
-    networkFeeReceiver: "",
-    infrastructureFeeCollector: "",
+    networkFeeReceiver: '',
+    infrastructureFeeCollector: '',
   });
 
   useEffect(() => {
@@ -99,25 +99,17 @@ const RollupConfigInputPage = () => {
   const router = useRouter();
 
   const handleSaveRollupConfig = (config: L3Config) => {
-    console.log("L3 Config saved:", config);
-    localStorage.setItem('l3Config', JSON.stringify(config)); 
+    console.log('L3 Config saved:', config);
+    localStorage.setItem('l3Config', JSON.stringify(config));
     router.push({
-      pathname: "/ViewRollupData"
+      pathname: '/ViewRollupData',
     });
   };
 
   return (
     <div className={styles.container}>
-      <Image
-          className={styles.logo} 
-          src="/logo.svg"
-          alt="Logo"
-          width={250}
-          height={250}
-          />
-      <h1 style={{ color: "#fff", fontSize: "2rem", fontWeight: "bold" }}>
-        Configure Rollup
-      </h1>
+      <Image className={styles.logo} src="/logo.svg" alt="Logo" width={250} height={250} />
+      <h1 style={{ color: '#fff', fontSize: '2rem', fontWeight: 'bold' }}>Configure Rollup</h1>
       <L3ConfigInput onSave={handleSaveRollupConfig} />
     </div>
   );

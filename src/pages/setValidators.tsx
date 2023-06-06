@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import RollupAdminLogicABIJSON from '../ethereum/RollupAdminLogic.json';
-import styles from '../styles/SetValidator.module.css'; 
+import styles from '../styles/SetValidator.module.css';
 
 const RollupAdminLogicABI = RollupAdminLogicABIJSON.abi;
 declare let window: Window & { ethereum: any };
@@ -16,7 +16,7 @@ const stakerAddress = staker.address;
 
 export const SetValidator = ({ onDone }: { onDone: () => void }) => {
   const [rollupAddress, setRollupAddress] = useState('');
-  const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]); 
+  const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showBatchPosterButton, setShowBatchPosterButton] = useState(false);
 
@@ -27,12 +27,12 @@ export const SetValidator = ({ onDone }: { onDone: () => void }) => {
 
     if (rollupDataString) {
       rollupData = JSON.parse(rollupDataString);
-      if (rollupData && rollupData.chain["info-json"][0].rollup) {
-        setRollupAddress(rollupData.chain["info-json"][0].rollup.rollup);
+      if (rollupData && rollupData.chain['info-json'][0].rollup) {
+        setRollupAddress(rollupData.chain['info-json'][0].rollup.rollup);
       }
 
       // Update the private key of staker in the rollupData and store it back in local storage
-      rollupData.node.staker["parent-chain-wallet"]["private-key"] = stakerPrivateKey;
+      rollupData.node.staker['parent-chain-wallet']['private-key'] = stakerPrivateKey;
       localStorage.setItem('rollupData', JSON.stringify(rollupData));
     }
 
@@ -45,22 +45,21 @@ export const SetValidator = ({ onDone }: { onDone: () => void }) => {
     if (rollupData) {
       setAddressInputs([{ address: stakerAddress }]);
     }
-
   }, []);
 
   const handleAddressCount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value);
     if (count >= 1) {
-      const additionalInputs = count > 1 ? Array.from({ length: count - 1 }, () => ({ address: '' })) : [];
-  
+      const additionalInputs =
+        count > 1 ? Array.from({ length: count - 1 }, () => ({ address: '' })) : [];
+
       // Update the first address only if it's not already set
       const firstAddress = addressInputs[0]?.address || '';
       setAddressInputs([{ address: firstAddress }, ...additionalInputs]);
     }
   };
-  
-  
-  const handleAddressInput = (e: React.ChangeEvent<HTMLInputElement>, index: number) => { 
+
+  const handleAddressInput = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newInputs = [...addressInputs];
     newInputs[index].address = e.target.value;
     setAddressInputs(newInputs);
@@ -70,11 +69,7 @@ export const SetValidator = ({ onDone }: { onDone: () => void }) => {
     setIsLoading(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const rollupAdminLogic = new ethers.Contract(
-      rollupAddress, 
-      RollupAdminLogicABI,
-      signer
-    );
+    const rollupAdminLogic = new ethers.Contract(rollupAddress, RollupAdminLogicABI, signer);
 
     const validators = addressInputs.map((input) => input.address);
     const bools = Array(addressInputs.length).fill(true);
@@ -83,7 +78,7 @@ export const SetValidator = ({ onDone }: { onDone: () => void }) => {
       const tx = await rollupAdminLogic.setValidator(validators, bools);
       await tx.wait();
       alert('Transaction successful. Validator set changed!');
-      onDone()
+      onDone();
       // setShowBatchPosterButton(true);
     } catch (error) {
       console.error('Error:', error);
@@ -95,14 +90,14 @@ export const SetValidator = ({ onDone }: { onDone: () => void }) => {
 
   return (
     <>
-        <label htmlFor='numberOfValidators'>Number of Validators</label>
-        <input
-          className={styles.input}
-          name="numberOfValidators"
-          type="number"
-          placeholder="Number of addresses"
-          onChange={handleAddressCount}
-        />
+      <label htmlFor="numberOfValidators">Number of Validators</label>
+      <input
+        className={styles.input}
+        name="numberOfValidators"
+        type="number"
+        placeholder="Number of addresses"
+        onChange={handleAddressCount}
+      />
       {addressInputs.map((input, index) => (
         <div key={index}>
           <input
@@ -110,23 +105,22 @@ export const SetValidator = ({ onDone }: { onDone: () => void }) => {
             type="text"
             placeholder={`Address ${index + 1}`}
             value={input.address}
-            onChange={(e) => index !== 0 ? handleAddressInput(e, index) : null}
+            onChange={(e) => (index !== 0 ? handleAddressInput(e, index) : null)}
             readOnly={index === 0}
           />
         </div>
       ))}
 
-{!showBatchPosterButton && (
-  <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
-    {isLoading ? 'Loading...' : 'Submit'}
-  </button>
-)}
-        {showBatchPosterButton && (
-          <button className={styles.button} onClick={() => window.open(`/batchPoster`, '_blank')}>
-            Set Batch Poster
-          </button>
-        )}
-
+      {!showBatchPosterButton && (
+        <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? 'Loading...' : 'Submit'}
+        </button>
+      )}
+      {showBatchPosterButton && (
+        <button className={styles.button} onClick={() => window.open(`/batchPoster`, '_blank')}>
+          Set Batch Poster
+        </button>
+      )}
     </>
   );
 };
