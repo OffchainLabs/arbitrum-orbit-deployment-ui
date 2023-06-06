@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Steps } from 'primereact/steps';
 
 import { spaceGrotesk } from '@/fonts';
-import { RollupConfig, RollupConfigInput } from './rollupConfigInput';
+import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
 import { DeployRollup } from './rollup';
 import { SetValidator } from './setValidators';
 import SetBatchPoster from './batchPoster';
