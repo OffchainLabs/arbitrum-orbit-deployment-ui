@@ -113,7 +113,7 @@ export default function Configure() {
                 {step === Step.RollupDeploymentInProgress ? 'Deploying Rollup...' : 'Deploy Rollup'}
               </button>
             ) : (
-              <>
+              <div className="flex flex-col gap-4">
                 <button
                   onClick={() => setStep(Step.ValidatorConfiguration)}
                   className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
@@ -121,7 +121,7 @@ export default function Configure() {
                   Next
                 </button>
                 <RollupContractsSummary {...rollupContracts!} />
-              </>
+              </div>
             )}
           </form>
         )}
