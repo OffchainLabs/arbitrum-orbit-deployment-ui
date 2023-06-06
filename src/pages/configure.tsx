@@ -23,6 +23,15 @@ const steps = [
   },
 ];
 
+const stepsStyleProps = {
+  pt: {
+    root: {
+      style: spaceGrotesk.style,
+      className: 'text-sm',
+    },
+  },
+};
+
 enum Step {
   ConfigureRollupDeployment = 0,
   ConfigureValidators = 1,
@@ -36,65 +45,52 @@ export default function Configure() {
 
   return (
     <div className="flex w-full justify-center py-8">
-      <div className="flex w-[1024px] flex-col items-center">
-        <div className="flex w-[640px] flex-col">
-          {step === Step.ConfigureRollupDeployment && (
-            <>
-              <h3 className="text-left text-xl font-medium">Configure & Deploy Rollup</h3>
-              <div className="h-4" />
-              <RollupConfigInput
-                onChange={(_rollupConfig) => {
-                  setRollupConfig(_rollupConfig);
-                }}
-              />
-              <div className="h-8" />
-            </>
-          )}
+      <div className="flex w-[768px] flex-col">
+        <Steps model={steps} activeIndex={step} className="w-full" {...stepsStyleProps} />
 
-          {step === Step.ConfigureRollupDeployment && (
-            <DeployRollup
-              rollupConfig={rollupConfig!}
-              onNext={() => setStep(Step.ConfigureValidators)}
+        {step === Step.ConfigureRollupDeployment && (
+          <>
+            <h3 className="text-left text-xl font-medium">Configure & Deploy Rollup</h3>
+            <div className="h-4" />
+            <RollupConfigInput
+              onChange={(_rollupConfig) => {
+                setRollupConfig(_rollupConfig);
+              }}
             />
-          )}
+            <div className="h-8" />
+          </>
+        )}
 
-          {step === Step.ConfigureValidators && (
-            <>
-              <h3 className="text-left text-xl font-medium">Configure Validators</h3>
-              <div className="h-4" />
-              <SetValidator onDone={() => setStep(Step.ConfigureBatchPoster)} />
-            </>
-          )}
+        {step === Step.ConfigureRollupDeployment && (
+          <DeployRollup
+            rollupConfig={rollupConfig!}
+            onNext={() => setStep(Step.ConfigureValidators)}
+          />
+        )}
 
-          {step === Step.ConfigureBatchPoster && (
-            <>
-              <h3 className="text-left text-xl font-medium">Configure & Deploy Rollup</h3>
-              <div className="h-4" />
-              <SetBatchPoster onDone={() => setStep(Step.Review)} />
-            </>
-          )}
+        {step === Step.ConfigureValidators && (
+          <>
+            <h3 className="text-left text-xl font-medium">Configure Validators</h3>
+            <div className="h-4" />
+            <SetValidator onDone={() => setStep(Step.ConfigureBatchPoster)} />
+          </>
+        )}
 
-          {step === Step.Review && (
-            <>
-              <h3 className="text-left text-xl font-medium">Review & Download Config</h3>
-              <div className="h-4" />
-              <ViewRollupData />
-            </>
-          )}
-        </div>
+        {step === Step.ConfigureBatchPoster && (
+          <>
+            <h3 className="text-left text-xl font-medium">Configure & Deploy Rollup</h3>
+            <div className="h-4" />
+            <SetBatchPoster onDone={() => setStep(Step.Review)} />
+          </>
+        )}
 
-        <div className="h-8" />
-        <Steps
-          model={steps}
-          activeIndex={step}
-          className="w-full"
-          pt={{
-            root: {
-              style: spaceGrotesk.style,
-              className: 'text-sm',
-            },
-          }}
-        />
+        {step === Step.Review && (
+          <>
+            <h3 className="text-left text-xl font-medium">Review & Download Config</h3>
+            <div className="h-4" />
+            <ViewRollupData />
+          </>
+        )}
       </div>
     </div>
   );
