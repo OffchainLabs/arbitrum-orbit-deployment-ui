@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import RollupCreator from '../ethereum/RollupCreator.json';
 import RollupCore from '../ethereum/RollupCore.json';
 import styles from '../styles/DeployRollup.module.css';
-import { RollupConfig } from './rollupConfigInput';
+import { RollupConfig } from '@/components/RollupConfigInput';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { RollupConfigData } from '../types/rollupConfigDataType';
