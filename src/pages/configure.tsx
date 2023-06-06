@@ -81,7 +81,7 @@ export default function Configure() {
       return 0;
     }
 
-    return step;
+    return step - 2;
   }, [step]);
 
   async function handleDeployRollupFormSubmit(event: React.FormEvent<HTMLFormElement>) {
