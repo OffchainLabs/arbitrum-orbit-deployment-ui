@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
 
-import { spaceGrotesk } from '@/fonts';
-import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
-import { DeployRollup } from './rollup';
 import { SetValidator } from './setValidators';
 import SetBatchPoster from './batchPoster';
 import ViewRollupData from './ViewRollupData';
+
+import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
+import { RollupContractsSummary } from '@/components/RollupContractsSummary';
+
+import { spaceGrotesk } from '@/fonts';
+import { deployRollup } from '@/utils/deployRollup';
+import { RollupContracts } from '@/types/RollupContracts';
 
 const steps = [
   {
@@ -34,10 +38,12 @@ const stepsStyleProps = {
 };
 
 enum Step {
-  ConfigureRollupDeployment = 0,
-  ConfigureValidators = 1,
-  ConfigureBatchPoster = 2,
-  Review = 3,
+  RollupConfiguration = 0,
+  RollupDeploymentInProgress = 1,
+  RollupDeploymentDone = 2,
+  ValidatorConfiguration = 3,
+  BatchPosterConfiguration = 4,
+  Review = 5,
 }
 
 function StepTitle({ children }: { children: React.ReactNode }) {
@@ -65,42 +71,72 @@ const defaultRollupConfig: RollupConfig = {
 };
 
 export default function Configure() {
-  const [step, setStep] = useState<Step>(Step.ConfigureRollupDeployment);
+  const [step, setStep] = useState<Step>(Step.RollupConfiguration);
+
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(defaultRollupConfig);
+  const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
+
+  const activeIndex = useMemo(() => {
+    if (step < Step.ValidatorConfiguration) {
+      return 0;
+    }
+
+    return step;
+  }, [step]);
+
+  async function handleDeployRollupFormSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setStep(Step.RollupDeploymentInProgress);
+    setRollupContracts(await deployRollup(rollupConfig));
+    setStep(Step.RollupDeploymentDone);
+  }
 
   return (
     <div className="flex w-full justify-center py-8">
       <div className="flex w-[768px] flex-col">
-        <Steps model={steps} activeIndex={step} className="w-full" {...stepsStyleProps} />
+        <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
         <div className="h-16" />
 
-        {step === Step.ConfigureRollupDeployment && (
-          <>
+        {step < Step.ValidatorConfiguration && (
+          <form onSubmit={handleDeployRollupFormSubmit}>
             <StepTitle>Configure & Deploy Rollup</StepTitle>
             <div className="h-4" />
             <RollupConfigInput value={rollupConfig} onChange={(value) => setRollupConfig(value)} />
             <div className="h-8" />
-          </>
+            {step < Step.RollupDeploymentDone ? (
+              <button
+                type="submit"
+                disabled={step === Step.RollupDeploymentInProgress}
+                className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+              >
+                {step === Step.RollupDeploymentInProgress ? 'Deploying Rollup...' : 'Deploy Rollup'}
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => setStep(Step.ValidatorConfiguration)}
+                  className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+                >
+                  Next
+                </button>
+                <RollupContractsSummary {...rollupContracts!} />
+              </>
+            )}
+          </form>
         )}
 
-        {step === Step.ConfigureRollupDeployment && (
-          <DeployRollup
-            rollupConfig={rollupConfig!}
-            onNext={() => setStep(Step.ConfigureValidators)}
-          />
-        )}
-
-        {step === Step.ConfigureValidators && (
+        {step === Step.ValidatorConfiguration && (
           <>
             <StepTitle>Configure Validators</StepTitle>
             <div className="h-4" />
-            <SetValidator onDone={() => setStep(Step.ConfigureBatchPoster)} />
+            <SetValidator onDone={() => setStep(Step.BatchPosterConfiguration)} />
           </>
         )}
 
-        {step === Step.ConfigureBatchPoster && (
+        {step === Step.BatchPosterConfiguration && (
           <>
-            <StepTitle>Configure & Deploy Rollup</StepTitle>
+            <StepTitle>Configure Batch Poster</StepTitle>
             <div className="h-4" />
             <SetBatchPoster onDone={() => setStep(Step.Review)} />
           </>
