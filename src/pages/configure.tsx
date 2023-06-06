@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Steps } from 'primereact/steps';
 
+import { spaceGrotesk } from '@/fonts';
 import { RollupConfig, RollupConfigInput } from './rollupConfigInput';
 import { DeployRollup } from './rollup';
 import { SetValidator } from './setValidators';
@@ -83,7 +84,17 @@ export default function Configure() {
         </div>
 
         <div className="h-8" />
-        <Steps model={steps} activeIndex={step} className="w-full" />
+        <Steps
+          model={steps}
+          activeIndex={step}
+          className="w-full"
+          pt={{
+            root: {
+              style: spaceGrotesk.style,
+              className: 'text-sm',
+            },
+          }}
+        />
       </div>
     </div>
   );
