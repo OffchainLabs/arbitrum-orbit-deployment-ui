@@ -12,62 +12,64 @@ interface AddressInput {
 }
 
 const SetValidator = () => {
-  const staker = ethers.Wallet.createRandom();
-  const stakerAddress = staker.address;
-  const stakerPrivateKey = staker.privateKey;
-
   const [rollupAddress, setRollupAddress] = useState('');
-  const [numAddresses, setNumAddresses] = useState(0);
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
   const [showBatchPosterButton, setShowBatchPosterButton] = useState(false);
+  const [stakerAddress, setStakerAddress] = useState('');
 
   useEffect(() => {
+    const staker = ethers.Wallet.createRandom();
+    const stakerPrivateKey = staker.privateKey;
+    const stakerAddress = staker.address; // Use this synchronous value
+
+    setStakerAddress(stakerAddress); 
+
+    let rollupData = null;
     const rollupDataString = localStorage.getItem('rollupData');
     const l3ConfigString = localStorage.getItem('l3Config');
 
     if (rollupDataString) {
-      const rollupData = JSON.parse(rollupDataString);
+      rollupData = JSON.parse(rollupDataString);
       if (rollupData && rollupData.chain["info-json"][0].rollup) {
         setRollupAddress(rollupData.chain["info-json"][0].rollup.rollup);
       }
-      
+
       // Update the private key of staker in the rollupData and store it back in local storage
       rollupData.node.staker["parent-chain-wallet"]["private-key"] = stakerPrivateKey;
       localStorage.setItem('rollupData', JSON.stringify(rollupData));
+      console.log(staker.address)
     }
-    if (rollupDataString) {
-      const rollupData = JSON.parse(rollupDataString);
-      console.log('Rollup data:', rollupData);
-    }
-    if (rollupAddress === null) {
-      console.error('Error: Unable to find rollup address');
-    }
+
     if (l3ConfigString) {
       const l3Config = JSON.parse(l3ConfigString);
       l3Config.staker = stakerAddress;
       localStorage.setItem('l3Config', JSON.stringify(l3Config));
     }
-    if (l3ConfigString === null) {
-      console.error('Error: Unable to find L3 Config Data');
+
+    if (rollupData) {
+      setAddressInputs([{ address: stakerAddress }]);
     }
-  }, [stakerAddress]);
-  
+
+  }, []);
 
   const handleAddressCount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value);
     if (count >= 1) {
       const additionalInputs = count > 1 ? Array.from({ length: count - 1 }, () => ({ address: '' })) : [];
-      setAddressInputs([{ address: stakerAddress }, ...additionalInputs]);
+  
+      // Update the first address only if it's not already set
+      const firstAddress = addressInputs[0]?.address || '';
+      setAddressInputs([{ address: firstAddress }, ...additionalInputs]);
     }
   };
-
+  
+  
   const handleAddressInput = (e: React.ChangeEvent<HTMLInputElement>, index: number) => { 
     const newInputs = [...addressInputs];
     newInputs[index].address = e.target.value;
     setAddressInputs(newInputs);
   };
-
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -83,6 +85,7 @@ const SetValidator = () => {
     const bools = Array(addressInputs.length).fill(true);
 
     try {
+      console.log(validators);
       const tx = await rollupAdminLogic.setValidator(validators, bools);
       await tx.wait();
       alert('Transaction successful. Validator set changed!');

@@ -93,7 +93,7 @@ const DeployRollup = () => {
         console.error('Please provide a rollup config before deploying');
         return;
       }
-      const rollupCreatorAddress = '0xe3a501762cA29F51704d4A945EDcdf1984E1b7Df'; //On Arb Goerli, so need to change it for other networks
+      const rollupCreatorAddress = '0xa9259274263aed9090952507537DDc681619EDcA'; //On Arb Goerli, so need to change it for other networks
       const rollupCreator = new ethers.Contract(
         rollupCreatorAddress,
         RollupCreator.abi,
@@ -104,11 +104,11 @@ const DeployRollup = () => {
       let rollupConfigData: RollupConfigData = {
         'chain': {
           'info-json': [{
-            'chain-id': rollupConfig.chainId,
+            'chain-id': Number(rollupConfig.chainId),
             'parent-chain-id': 421613,
             'chain-name': "example-l3",
             'chain-config': {
-              'chainId': rollupConfig.chainId,
+              'chainId': Number(rollupConfig.chainId),
               'homesteadBlock': 0,
               'daoForkBlock': null,
               'daoForkSupport': true,
@@ -187,7 +187,9 @@ const DeployRollup = () => {
       ///////
       ///////
       const chainConfig : string = JSON.stringify(rollupConfigData.chain["info-json"][0]["chain-config"]);
+      console.log(rollupConfigData.chain["info-json"][0]["chain-config"])
       rollupConfig.chainConfig = chainConfig;
+      console.log(chainConfig)
       console.log("Going for deployment")
       console.log(rollupConfig)
       const createRollupTx = await rollupCreator.createRollup(rollupConfig);
