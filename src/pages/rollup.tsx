@@ -7,81 +7,33 @@ import styles from "../styles/DeployRollup.module.css";
 import { RollupConfig } from "./rollupConfigInput";
 import { useRouter } from "next/router"; 
 import Image from "next/image";
+import {RollupConfigData} from "../types/rollupConfigDataType";
+import {L3Config} from "../types/l3ConfigType";
 
 // Extend Window object to include the ethereum property for MetaMask
 declare let window: Window & { ethereum: any };
 
-
-export type RollupConfigData = {
-  chain: {
-    'info-json': Array<{
-      'chain-id': number,
-      'parent-chain-id': number,
-      'chain-name': string,
-      'sequencer-url': string,
-      'feed-url': string,
-      'chain-config': object, 
-      'rollup': {
-        'bridge': string,
-        'inbox': string,
-        'sequencer-inbox': string,
-        'rollup': string,
-        'validator-utils': string,
-        'validator-wallet-creator': string,
-        'deployed-at': number,
-      }
-    }>,
-    'name': string,
-  },
-  'parent-chain': {
-    'connection': {
-      'url': string,
-    }
-  },
-  http: {
-    addr: string,
-    port: number,
-  },
-  node: {
-    'forwarding-target': string,
-    sequencer: {
-      enable: boolean,
-      dangerous: {
-        'no-coordinator': boolean,
-      },
-      'max-block-speed': string,
-    },
-    'delayed-sequencer': {
-      enable: boolean,
-    },
-    'batch-poster': {
-      enable: boolean,
-      'parent-chain-wallet': {
-        'private-key': string,
-      }
-    },
-    staker: {
-      enable: boolean;
-      strategy: string;
-      'parent-chain-wallet': {
-        'private-key': string,
-      }
-    },
-  },
-};
-
-// Function to update local storage with new rollup data
-function updateLocalStorage(data: RollupConfigData) {
+// Function to update local storage with new rollup data and l3 data
+function updateLocalStorage(data: RollupConfigData, l3config: L3Config) {
   const currentData = localStorage.getItem('rollupData');
+  const currentL3Config = localStorage.getItem('l3Config');
   let updatedData: any = {};
+  let updatedL3Config: any = {};
 
   if (currentData) {
     updatedData = JSON.parse(currentData);
   }
+  if (currentL3Config) {
+    updatedL3Config = JSON.parse(currentL3Config);
+  }
 
   Object.assign(updatedData, data);
+  Object.assign(updatedL3Config, l3config);
+
   localStorage.setItem('rollupData', JSON.stringify(updatedData));
+  localStorage.setItem('l3Config', JSON.stringify(updatedL3Config));
 }
+
 
 
 // The DeployRollup component
@@ -119,22 +71,122 @@ export const DeployRollup = ({
   await window.ethereum.request({ method: 'eth_requestAccounts' });
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
+  
+  // Defining L3 config
+  const l3Config: L3Config = {
+    minL2BaseFee: 100000000,
+    networkFeeReceiver: await signer.getAddress(),
+    infrastructureFeeCollector: await signer.getAddress(),
+    batchPoster: '', 
+    staker: '', 
+    chainOwner: rollupConfig ? rollupConfig.owner : '',
+    inboxAddress: ''
+  };  
     try {
       if (!rollupConfig) {
         console.error('Please provide a rollup config before deploying');
         return;
       }
-      const rollupCreatorAddress = '0x716590405B9F6F597090fc0daEf4041bB6C23525'; //On Arb Goerli, so need to change it for other networks
+      const rollupCreatorAddress = '0x0992DCafaCe5C60693EEf55E2788D5F8C2dEB995'; //On Arb Goerli, so need to change it for other networks
       const rollupCreator = new ethers.Contract(
         rollupCreatorAddress,
         RollupCreator.abi,
         signer,
       );
+
+      //////
+      let rollupConfigData: RollupConfigData = {
+        'chain': {
+          'info-json': [{
+            'chain-id': Number(rollupConfig.chainId),
+            'parent-chain-id': 421613,
+            'chain-name': "example-l3",
+            'chain-config': {
+              'chainId': Number(rollupConfig.chainId),
+              'homesteadBlock': 0,
+              'daoForkBlock': null,
+              'daoForkSupport': true,
+              'eip150Block': 0,
+              'eip150Hash': "0x0000000000000000000000000000000000000000000000000000000000000000",
+              'eip155Block': 0,
+              'eip158Block': 0,
+              'byzantiumBlock': 0,
+              'constantinopleBlock': 0,
+              'petersburgBlock': 0,
+              'istanbulBlock': 0,
+              'muirGlacierBlock': 0,
+              'berlinBlock': 0,
+              'londonBlock': 0,
+              'clique': {
+                'period': 0,
+                'epoch': 0
+              },
+              'arbitrum': {
+                'EnableArbOS': true,
+                'AllowDebugPrecompiles': false,
+                'DataAvailabilityCommittee': false,
+                'InitialArbOSVersion': 10,
+                'InitialChainOwner': rollupConfig.owner,
+                'GenesisBlockNum': 0
+              }
+            },
+            'rollup': {
+              'bridge': '',
+              'inbox': '',
+              'sequencer-inbox':  '',
+              'rollup': '',
+              'validator-utils':'',
+              'validator-wallet-creator': '',
+              'deployed-at': 0
+            }
+          }],
+          'name': "example-l3"
+        },
+        'parent-chain': {
+          'connection': {
+            'url': "https://goerli-rollup.arbitrum.io/rpc",
+          },
+        },
+        'http': {
+          'addr': "0.0.0.0",
+          'port': 8449,
+        },
+        'node': {
+          'forwarding-target': "",
+          'sequencer': {
+            'enable': true,
+            'dangerous': {
+              'no-coordinator': true,
+            },
+            'max-block-speed': "250ms",
+          },
+          'delayed-sequencer': {
+            'enable': true,
+          },
+          'batch-poster': {
+            'enable': true,
+            'parent-chain-wallet': {
+              'private-key': "",
+            },
+          },
+          'staker': {
+            'enable': true,
+            'strategy': "MakeNodes",
+            'parent-chain-wallet': {
+              'private-key': "",
+            },
+          },
+        }
+      };
+      ///////
+      ///////
+      const chainConfig : string = JSON.stringify(rollupConfigData.chain["info-json"][0]["chain-config"]);
+      rollupConfig.chainConfig = chainConfig;
+      console.log(chainConfig)
       console.log("Going for deployment")
       setIsDeployingRollup(true)
       const createRollupTx = await rollupCreator.createRollup(rollupConfig);
       const createRollupReceipt = await createRollupTx.wait();
-      console.log(await createRollupReceipt.events)
       const rollupCreatedEvent = createRollupReceipt.events?.find(
         (event: { event: string }) => event.event === 'RollupCreated',
       );
@@ -153,15 +205,12 @@ export const DeployRollup = ({
         setBridge(rollupCreatedEvent.args?.bridge);
         setUtils(await rollupCore.validatorUtils());
         setValidatorWalletCreator(await rollupCore.validatorWalletCreator());
-
-        const rollupConfigData: RollupConfigData = {
+         rollupConfigData = {
           'chain': {
             'info-json': [{
               'chain-id': rollupConfig.chainId,
               'parent-chain-id': 421613,
               'chain-name': "example-l3",
-              'sequencer-url': "http://example.com/OPTIONAL",
-              'feed-url': "http://example.com/OPTIONAL",
               'chain-config': {
                 'chainId': rollupConfig.chainId,
                 'homesteadBlock': 0,
@@ -239,7 +288,9 @@ export const DeployRollup = ({
             },
           }
         };
-        updateLocalStorage(await rollupConfigData);
+
+        l3Config.inboxAddress = rollupCreatedEvent.args.inboxAddress
+        updateLocalStorage(await rollupConfigData, l3Config);
         setIsDeployingRollup(false)
       } else {
         console.error('RollupCreated event not found');

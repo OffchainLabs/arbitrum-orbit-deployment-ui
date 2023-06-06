@@ -1,23 +1,25 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
+import styles from '../styles/index.module.css';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
+    <div className={styles.container}>
+
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
 
       <div className="">
-        <Image
-          className=""
+      <Image
+          className={styles.logo} 
           src="/logo.svg"
-          alt="Arbitrum Logo"
-          width={180}
-          height={37}
-          priority
-        />
+          alt="Logo"
+          width={250}
+          height={250}
+          />
       </div>
 
       <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
@@ -90,5 +92,6 @@ export default function Home() {
         </a>
       </div>
     </main>
+    </div>
   )
 }
