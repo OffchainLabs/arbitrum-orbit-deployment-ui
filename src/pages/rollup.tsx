@@ -93,7 +93,7 @@ const DeployRollup = () => {
         console.error('Please provide a rollup config before deploying');
         return;
       }
-      const rollupCreatorAddress = '0xa9259274263aed9090952507537DDc681619EDcA'; //On Arb Goerli, so need to change it for other networks
+      const rollupCreatorAddress = '0x0992DCafaCe5C60693EEf55E2788D5F8C2dEB995'; //On Arb Goerli, so need to change it for other networks
       const rollupCreator = new ethers.Contract(
         rollupCreatorAddress,
         RollupCreator.abi,
