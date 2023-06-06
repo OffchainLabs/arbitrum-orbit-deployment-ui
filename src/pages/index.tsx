@@ -1,14 +1,9 @@
 import Image from 'next/image';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   return (
     <div>
-      <main
-        className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-      >
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div className="">
           <Image src="/logo.svg" alt="Logo" width={250} height={250} />
         </div>
