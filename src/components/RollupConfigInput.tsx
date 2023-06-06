@@ -22,32 +22,12 @@ export type RollupConfig = {
   };
 };
 
-const defaultRollupConfig: RollupConfig = {
-  confirmPeriodBlocks: 20,
-  stakeToken: ethers.constants.AddressZero,
-  baseStake: 10000000,
-  owner: '',
-  extraChallengeTimeBlocks: 0,
-  wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21', // Need to be changed after PR by Lee about new Wasm root
-  loserStakeEscrow: ethers.constants.AddressZero,
-  chainId: 1337,
-  chainConfig: ethers.constants.HashZero,
-  genesisBlockNum: 0,
-  sequencerInboxMaxTimeVariation: {
-    delayBlocks: 16,
-    futureBlocks: 192,
-    delaySeconds: 86400,
-    futureSeconds: 7200,
-  },
-};
-
 export type RollupConfigInputProps = {
+  value: RollupConfig;
   onChange: (config: RollupConfig) => void;
 };
 
-export function RollupConfigInput({ onChange }: RollupConfigInputProps) {
-  const [config, setConfig] = useState<RollupConfig>(defaultRollupConfig);
-
+export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
   useEffect(() => {
     async function updateOwner() {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -55,22 +35,15 @@ export function RollupConfigInput({ onChange }: RollupConfigInputProps) {
       const signer = provider.getSigner();
       const address = await signer.getAddress();
 
-      setConfig((prevConfig) => ({
-        ...prevConfig,
-        owner: address,
-      }));
+      onChange({ ...value, owner: address });
     }
 
     updateOwner();
   }, []);
 
-  useEffect(() => {
-    onChange(config);
-  }, [config]);
-
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setConfig((prevConfig) => ({ ...prevConfig, [name]: value }));
+    const { name: inputName, value: inputValue } = event.target;
+    onChange({ ...value, [inputName]: inputValue });
   }
 
   return (
@@ -84,7 +57,7 @@ export function RollupConfigInput({ onChange }: RollupConfigInputProps) {
           type="number"
           name="chainId"
           placeholder="12345678"
-          value={config.chainId}
+          value={value.chainId}
           onChange={handleChange}
         />
       </div>
@@ -96,7 +69,7 @@ export function RollupConfigInput({ onChange }: RollupConfigInputProps) {
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="number"
           name="confirmPeriodBlocks"
-          value={config.confirmPeriodBlocks}
+          value={value.confirmPeriodBlocks}
           onChange={handleChange}
         />
       </div>
@@ -108,7 +81,7 @@ export function RollupConfigInput({ onChange }: RollupConfigInputProps) {
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="text"
           name="stakeToken"
-          value={config.stakeToken}
+          value={value.stakeToken}
           onChange={handleChange}
         />
       </div>
@@ -120,7 +93,7 @@ export function RollupConfigInput({ onChange }: RollupConfigInputProps) {
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="number"
           name="baseStake"
-          value={config.baseStake}
+          value={value.baseStake}
           onChange={handleChange}
         />
       </div>
@@ -132,7 +105,7 @@ export function RollupConfigInput({ onChange }: RollupConfigInputProps) {
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="text"
           name="owner"
-          value={config.owner}
+          value={value.owner}
           onChange={handleChange}
         />
       </div>

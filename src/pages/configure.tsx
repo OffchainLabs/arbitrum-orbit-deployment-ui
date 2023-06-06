@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
 
 import { spaceGrotesk } from '@/fonts';
@@ -43,9 +44,29 @@ function StepTitle({ children }: { children: React.ReactNode }) {
   return <h1 className="text-left text-3xl">{children}</h1>;
 }
 
+const defaultRollupConfig: RollupConfig = {
+  confirmPeriodBlocks: 20,
+  stakeToken: ethers.constants.AddressZero,
+  baseStake: 10000000,
+  owner: '',
+  extraChallengeTimeBlocks: 0,
+  // Needs to be changed after PR by Lee about new Wasm root
+  wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21',
+  loserStakeEscrow: ethers.constants.AddressZero,
+  chainId: 1337,
+  chainConfig: ethers.constants.HashZero,
+  genesisBlockNum: 0,
+  sequencerInboxMaxTimeVariation: {
+    delayBlocks: 16,
+    futureBlocks: 192,
+    delaySeconds: 86400,
+    futureSeconds: 7200,
+  },
+};
+
 export default function Configure() {
   const [step, setStep] = useState<Step>(Step.ConfigureRollupDeployment);
-  const [rollupConfig, setRollupConfig] = useState<RollupConfig | undefined>(undefined);
+  const [rollupConfig, setRollupConfig] = useState<RollupConfig>(defaultRollupConfig);
 
   return (
     <div className="flex w-full justify-center py-8">
@@ -57,11 +78,7 @@ export default function Configure() {
           <>
             <StepTitle>Configure & Deploy Rollup</StepTitle>
             <div className="h-4" />
-            <RollupConfigInput
-              onChange={(_rollupConfig) => {
-                setRollupConfig(_rollupConfig);
-              }}
-            />
+            <RollupConfigInput value={rollupConfig} onChange={(value) => setRollupConfig(value)} />
             <div className="h-8" />
           </>
         )}
