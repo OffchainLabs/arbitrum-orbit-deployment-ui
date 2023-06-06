@@ -31,19 +31,15 @@ enum Step {
 
 export default function Configure() {
   const [step, setStep] = useState<Step>(Step.ConfigureRollupDeployment);
-  const [rollupConfig, setRollupConfig] = useState<RollupConfig | undefined>(
-    undefined
-  );
+  const [rollupConfig, setRollupConfig] = useState<RollupConfig | undefined>(undefined);
 
   return (
-    <div className="flex w-full py-8 justify-center">
-      <div className="w-[1024px] flex flex-col items-center">
-        <div className="w-[640px] flex flex-col">
+    <div className="flex w-full justify-center py-8">
+      <div className="flex w-[1024px] flex-col items-center">
+        <div className="flex w-[640px] flex-col">
           {step === Step.ConfigureRollupDeployment && (
             <>
-              <h3 className="font-medium text-xl text-left">
-                Configure & Deploy Rollup
-              </h3>
+              <h3 className="text-left text-xl font-medium">Configure & Deploy Rollup</h3>
               <div className="h-4" />
               <RollupConfigInput
                 onChange={(_rollupConfig) => {
@@ -63,9 +59,7 @@ export default function Configure() {
 
           {step === Step.ConfigureValidators && (
             <>
-              <h3 className="font-medium text-xl text-left">
-                Configure Validators
-              </h3>
+              <h3 className="text-left text-xl font-medium">Configure Validators</h3>
               <div className="h-4" />
               <SetValidator onDone={() => setStep(Step.ConfigureBatchPoster)} />
             </>
@@ -73,9 +67,7 @@ export default function Configure() {
 
           {step === Step.ConfigureBatchPoster && (
             <>
-              <h3 className="font-medium text-xl text-left">
-                Configure & Deploy Rollup
-              </h3>
+              <h3 className="text-left text-xl font-medium">Configure & Deploy Rollup</h3>
               <div className="h-4" />
               <SetBatchPoster onDone={() => setStep(Step.Review)} />
             </>
@@ -83,9 +75,7 @@ export default function Configure() {
 
           {step === Step.Review && (
             <>
-              <h3 className="font-medium text-xl text-left">
-                Review & Download Config
-              </h3>
+              <h3 className="text-left text-xl font-medium">Review & Download Config</h3>
               <div className="h-4" />
               <ViewRollupData />
             </>

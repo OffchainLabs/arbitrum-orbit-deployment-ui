@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import SequencerInboxJSON from '../ethereum/SequencerInbox.json';
 import styles from '../styles/SetBatchPoster.module.css';
-import Image from "next/image";
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 // Define the ABI for the SequencerInbox contract
@@ -32,10 +32,10 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
     const rollupDataJSON = localStorage.getItem('rollupData');
     const rollupData = rollupDataJSON && JSON.parse(rollupDataJSON);
 
-    if (rollupData && rollupData.chain["info-json"][0].rollup) {
-      setSequencerInboxAddress(rollupData.chain["info-json"][0].rollup["sequencer-inbox"]);
+    if (rollupData && rollupData.chain['info-json'][0].rollup) {
+      setSequencerInboxAddress(rollupData.chain['info-json'][0].rollup['sequencer-inbox']);
     }
-    
+
     const l3ConfigString = localStorage.getItem('l3Config');
     if (l3ConfigString) {
       const l3Config = JSON.parse(l3ConfigString);
@@ -43,7 +43,6 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
       localStorage.setItem('l3Config', JSON.stringify(l3Config));
     }
   }, []);
-
 
   // Function to handle Ethereum transaction signing and sending
   async function signTransactionAndSend() {
@@ -57,10 +56,14 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
       if (sequencerInboxAddress === null) {
         setStatusMessage('Error: Sequencer Inbox Address not found');
         return;
-        }
+      }
 
       // Create an instance of the contract
-      const sequencerInboxContract = new ethers.Contract(sequencerInboxAddress, SequencerInboxABI, signer);
+      const sequencerInboxContract = new ethers.Contract(
+        sequencerInboxAddress,
+        SequencerInboxABI,
+        signer,
+      );
 
       // Call the setIsBatchPoster function on the contract and sign the transaction
       const isBatchPoster = true;
@@ -68,19 +71,21 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
 
       // Send the transaction to the network and wait for the receipt
       const receipt = await tx.wait();
-      setStatusMessage(`Transaction successful! The account address ${ethAddress} is now a Batch Poster`);
+      setStatusMessage(
+        `Transaction successful! The account address ${ethAddress} is now a Batch Poster`,
+      );
       setTransactionSuccessful(true); // Set the transaction as successful
 
       // If the transaction is successful, save the private key to rollupData
       const rollupDataJSON = localStorage.getItem('rollupData');
       const rollupData = rollupDataJSON && JSON.parse(rollupDataJSON);
-            
+
       if (rollupData) {
         rollupData.node['batch-poster']['parent-chain-wallet']['private-key'] = privateKey;
         localStorage.setItem('rollupData', JSON.stringify(rollupData)); // Save the updated data back to local storage
       }
 
-      onDone()
+      onDone();
     } catch (error) {
       console.error('Error:', error);
       setStatusMessage('Error: Unable to process transaction');
@@ -92,19 +97,19 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
 
   return (
     <>
-      <label htmlFor='batchPoster'>Batch Poster Address</label>
+      <label htmlFor="batchPoster">Batch Poster Address</label>
       <input
         className={styles.input}
         name="batchPoster"
         type="text"
         placeholder="Enter address"
         value={ethAddress}
-        readOnly 
+        readOnly
       />
-          <button className={styles.button} onClick={signTransactionAndSend}>
-            Submit
-          </button>
-        <p className={styles.statusMessage}>{statusMessage}</p>
+      <button className={styles.button} onClick={signTransactionAndSend}>
+        Submit
+      </button>
+      <p className={styles.statusMessage}>{statusMessage}</p>
     </>
   );
 }
