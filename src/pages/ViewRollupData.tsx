@@ -92,23 +92,15 @@ const ViewRollupData = () => {
   }
 
   return (
-    <div className={styles.container}>
-            <Image
-          className={styles.logo} 
-          src="/logo.svg"
-          alt="Logo"
-          width={250}
-          height={250}
-          />
-      <h1 className={styles.title}>Rollup Data:</h1>
+    <>
       <button className={styles.button} onClick={downloadJSON}>Download JSON</button>
-      <button className={styles.button} onClick={toggleShowData}>Show More</button>
+      <button className={styles.button} onClick={toggleShowData}>Show JSON</button>
       {showData && 
         <pre className={styles.data}>
           {JSON.stringify(data, null, 2)}
         </pre>
       }
-    </div>
+    </>
   );
 };
 

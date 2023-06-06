@@ -14,12 +14,7 @@
 .label {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   width: 100%;
-}
-
-.label > label {
-  color: #ffffff;
 }
 
 .input {

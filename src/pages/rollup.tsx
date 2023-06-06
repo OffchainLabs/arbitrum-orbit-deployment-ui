@@ -85,20 +85,14 @@ function updateLocalStorage(data: RollupConfigData) {
 
 
 // The DeployRollup component
-const DeployRollup = () => {
-
-  // Define hooks and state variables
-  const router = useRouter();
-  const [rollupConfig, setRollupConfig] = useState<RollupConfig | null>(null);
-
-  // useEffect to parse and set rollup configuration from URL query parameters
-  useEffect(() => {
-    if (router.query.rollupConfig) {
-      const parsedConfig = JSON.parse(router.query.rollupConfig as string);
-      setRollupConfig(parsedConfig);
-    }
-  }, [router.query]);
-  
+export const DeployRollup = ({
+  rollupConfig,
+  onNext
+}: {
+  rollupConfig: RollupConfig,
+  onNext: () => void
+}) => {
+  const [isDeployingRollup, setIsDeployingRollup] = useState(false)
 
   const [rollupAddress, setRollupAddress] = useState('');
   const [inboxAddress, setInboxAddress] = useState('');
@@ -137,6 +131,7 @@ const DeployRollup = () => {
         signer,
       );
       console.log("Going for deployment")
+      setIsDeployingRollup(true)
       const createRollupTx = await rollupCreator.createRollup(rollupConfig);
       const createRollupReceipt = await createRollupTx.wait();
       console.log(await createRollupReceipt.events)
@@ -245,10 +240,11 @@ const DeployRollup = () => {
           }
         };
         updateLocalStorage(await rollupConfigData);
+        setIsDeployingRollup(false)
       } else {
         console.error('RollupCreated event not found');
       }    } catch (error) {
-     
+        setIsDeployingRollup(false)
         console.error(
             'Deployment failed:',
             error instanceof Error ? error.message : error,
@@ -258,33 +254,25 @@ const DeployRollup = () => {
     
       if (!rollupConfig) {
         return (
-          <div className={styles.container}>
-            <h1 className={styles.title}>
+          <div>
+            <p>
               No rollup configuration found. Please configure the rollup first.
-            </h1>
+            </p>
           </div>
         );
       }  
 
       return (
-        <div className={styles.container}>
-          <Image
-          className={styles.logo} 
-          src="/logo.svg"
-          alt="Logo"
-          width={250}
-          height={250}
-          />
-          <h1 className={styles.title}>Rollup Deployment Results</h1>
+        <>
           {blockNumber <= 0 && (
-      <button className={styles.button} onClick={main}>
-        Deploy Rollup
+      <button className={styles.button} disabled={isDeployingRollup} onClick={main}>
+        {isDeployingRollup ? 'Deploying Rollup...' : 'Deploy Rollup'}
       </button>
     )}
           {blockNumber > 0 && (
             <>
-          <button className={styles.button} onClick={handleSetValidators}>
-            Set Validator(s)
+          <button className={styles.button} onClick={onNext}>
+            Next
           </button>
               <p className={styles.info}>Rollup address: {rollupAddress}</p>
               <p className={styles.info}>Inbox address: {inboxAddress}</p>
@@ -298,7 +286,7 @@ const DeployRollup = () => {
               <p className={styles.info}>Block number: {blockNumber}</p>
             </>
           )}
-        </div>
+        </>
       );
     };
     

@@ -25,11 +25,11 @@ export interface RollupConfig {
 }
 
 interface RollupConfigInputProps {
-  onSave: (config: RollupConfig) => void;
+  onChange: (config: RollupConfig) => void;
 }
 
 // Annotate the component with the prop types
-const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
+export const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onChange }) => {
   const [config, setConfig] = useState<RollupConfig>({
     confirmPeriodBlocks: 20,
     stakeToken: ethers.constants.AddressZero,
@@ -62,7 +62,10 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
 
     getOwnerAddress();
   }, []);
-  
+
+  useEffect(() => {
+    onChange(config)
+  }, [config])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -71,11 +74,10 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSave(config);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
       <div className={styles.label}>
       <label htmlFor="chainId">Chain ID:</label>
       <input
@@ -126,9 +128,7 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
           onChange={handleChange}
         />
       </div>
-      <button className={styles.button} type="submit">
-        Save Configuration
-      </button>
+
     </form>
   );
 };
@@ -169,7 +169,7 @@ const RollupConfigInputPage = () => {
       <h1 style={{ color: "#fff", fontSize: "2rem", fontWeight: "bold" }}>
         Configure Rollup
       </h1>
-      <RollupConfigInput onSave={handleSaveRollupConfig} />
+      {/* <RollupConfigInput onSave={handleSaveRollupConfig} /> */}
   </div>
   );
   };

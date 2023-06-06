@@ -11,11 +11,11 @@ interface AddressInput {
   address: string;
 }
 
-const SetValidator = () => {
-  const staker = ethers.Wallet.createRandom();
-  const stakerAddress = staker.address;
-  const stakerPrivateKey = staker.privateKey;
+const staker = ethers.Wallet.createRandom();
+const stakerAddress = staker.address;
+const stakerPrivateKey = staker.privateKey;
 
+export const SetValidator = ({ onDone }: { onDone: () => void }) => {
   const [rollupAddress, setRollupAddress] = useState('');
   const [numAddresses, setNumAddresses] = useState(0);
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]); 
@@ -76,7 +76,8 @@ const SetValidator = () => {
       const tx = await rollupAdminLogic.setValidator(validators, bools);
       await tx.wait();
       alert('Transaction successful. Validator set changed!');
-      setShowBatchPosterButton(true);
+      onDone()
+      // setShowBatchPosterButton(true);
     } catch (error) {
       console.error('Error:', error);
       alert('Transaction failed');
@@ -86,18 +87,11 @@ const SetValidator = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <Image
-          className={styles.logo} 
-          src="/logo.svg"
-          alt="Logo"
-          width={250}
-          height={250}
-          />
-      <h1 className={styles.title}>Set Validator</h1>
-      <div className={styles.form}>
+    <>
+        <label htmlFor='numberOfValidators'>Number of Validators</label>
         <input
           className={styles.input}
+          name="numberOfValidators"
           type="number"
           placeholder="Number of addresses"
           onChange={handleAddressCount}
@@ -125,8 +119,8 @@ const SetValidator = () => {
             Set Batch Poster
           </button>
         )}
-      </div>
-    </div>
+
+    </>
   );
 };
 
