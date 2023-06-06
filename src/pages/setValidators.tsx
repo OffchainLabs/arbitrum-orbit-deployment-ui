@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import RollupAdminLogicABIJSON from '../ethereum/RollupAdminLogic.json';
 import styles from '../styles/SetValidator.module.css'; 
-import Image from "next/image";
 
 const RollupAdminLogicABI = RollupAdminLogicABIJSON.abi;
 declare let window: Window & { ethereum: any };
@@ -11,53 +10,61 @@ interface AddressInput {
   address: string;
 }
 
-const SetValidator = () => {
-  const staker = ethers.Wallet.createRandom();
-  const stakerAddress = staker.address;
-  const stakerPrivateKey = staker.privateKey;
+const staker = ethers.Wallet.createRandom();
+const stakerPrivateKey = staker.privateKey;
+const stakerAddress = staker.address;
 
+export const SetValidator = ({ onDone }: { onDone: () => void }) => {
   const [rollupAddress, setRollupAddress] = useState('');
-  const [numAddresses, setNumAddresses] = useState(0);
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
   const [showBatchPosterButton, setShowBatchPosterButton] = useState(false);
 
   useEffect(() => {
+    let rollupData = null;
     const rollupDataString = localStorage.getItem('rollupData');
+    const l3ConfigString = localStorage.getItem('l3Config');
+
     if (rollupDataString) {
-      const rollupData = JSON.parse(rollupDataString);
+      rollupData = JSON.parse(rollupDataString);
       if (rollupData && rollupData.chain["info-json"][0].rollup) {
         setRollupAddress(rollupData.chain["info-json"][0].rollup.rollup);
       }
-      
+
       // Update the private key of staker in the rollupData and store it back in local storage
       rollupData.node.staker["parent-chain-wallet"]["private-key"] = stakerPrivateKey;
       localStorage.setItem('rollupData', JSON.stringify(rollupData));
     }
-    if (rollupDataString) {
-      const rollupData = JSON.parse(rollupDataString);
-      console.log('Rollup data:', rollupData);
+
+    if (l3ConfigString) {
+      const l3Config = JSON.parse(l3ConfigString);
+      l3Config.staker = stakerAddress;
+      localStorage.setItem('l3Config', JSON.stringify(l3Config));
     }
-    if (rollupAddress === null) {
-      console.error('Error: Unable to find rollup address');
+
+    if (rollupData) {
+      setAddressInputs([{ address: stakerAddress }]);
     }
+
   }, []);
-  
 
   const handleAddressCount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value);
     if (count >= 1) {
       const additionalInputs = count > 1 ? Array.from({ length: count - 1 }, () => ({ address: '' })) : [];
-      setAddressInputs([{ address: stakerAddress }, ...additionalInputs]);
+  
+      // Update the first address only if it's not already set
+      const firstAddress = addressInputs[0]?.address || '';
+      setAddressInputs([{ address: firstAddress }, ...additionalInputs]);
     }
   };
-
+  
+  
   const handleAddressInput = (e: React.ChangeEvent<HTMLInputElement>, index: number) => { 
     const newInputs = [...addressInputs];
     newInputs[index].address = e.target.value;
     setAddressInputs(newInputs);
   };
-
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -76,7 +83,8 @@ const SetValidator = () => {
       const tx = await rollupAdminLogic.setValidator(validators, bools);
       await tx.wait();
       alert('Transaction successful. Validator set changed!');
-      setShowBatchPosterButton(true);
+      onDone()
+      // setShowBatchPosterButton(true);
     } catch (error) {
       console.error('Error:', error);
       alert('Transaction failed');
@@ -86,18 +94,11 @@ const SetValidator = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <Image
-          className={styles.logo} 
-          src="/logo.svg"
-          alt="Logo"
-          width={250}
-          height={250}
-          />
-      <h1 className={styles.title}>Set Validator</h1>
-      <div className={styles.form}>
+    <>
+        <label htmlFor='numberOfValidators'>Number of Validators</label>
         <input
           className={styles.input}
+          name="numberOfValidators"
           type="number"
           placeholder="Number of addresses"
           onChange={handleAddressCount}
@@ -125,8 +126,8 @@ const SetValidator = () => {
             Set Batch Poster
           </button>
         )}
-      </div>
-    </div>
+
+    </>
   );
 };
 

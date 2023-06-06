@@ -15,6 +15,7 @@ export interface RollupConfig {
   wasmModuleRoot: string;
   loserStakeEscrow: string;
   chainId: number;
+  chainConfig: string;
   genesisBlockNum: number;
   sequencerInboxMaxTimeVariation: {
     delayBlocks: number;
@@ -25,11 +26,11 @@ export interface RollupConfig {
 }
 
 interface RollupConfigInputProps {
-  onSave: (config: RollupConfig) => void;
+  onChange: (config: RollupConfig) => void;
 }
 
 // Annotate the component with the prop types
-const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
+export const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onChange }) => {
   const [config, setConfig] = useState<RollupConfig>({
     confirmPeriodBlocks: 20,
     stakeToken: ethers.constants.AddressZero,
@@ -38,7 +39,8 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
     extraChallengeTimeBlocks: 0,
     wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", //Need to be changed after PR by Lee about new Wasm root
     loserStakeEscrow: ethers.constants.AddressZero,
-    chainId: 11111112,
+    chainId: 1337,
+    chainConfig: ethers.constants.HashZero,
     genesisBlockNum: 0,
     sequencerInboxMaxTimeVariation: {
       delayBlocks: 16,
@@ -62,7 +64,10 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
 
     getOwnerAddress();
   }, []);
-  
+
+  useEffect(() => {
+    onChange(config)
+  }, [config])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -71,11 +76,10 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSave(config);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
       <div className={styles.label}>
       <label htmlFor="chainId">Chain ID:</label>
       <input
@@ -126,9 +130,7 @@ const RollupConfigInput: React.FC<RollupConfigInputProps> = ({ onSave }) => {
           onChange={handleChange}
         />
       </div>
-      <button className={styles.button} type="submit">
-        Save Configuration
-      </button>
+
     </form>
   );
 };
@@ -143,6 +145,7 @@ const RollupConfigInputPage = () => {
       extraChallengeTimeBlocks: 0,
       wasmModuleRoot: "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21", // change it after Lee's PR
       loserStakeEscrow: ethers.constants.AddressZero,
+      chainConfig:ethers.constants.HashZero,
       genesisBlockNum: 0,
       sequencerInboxMaxTimeVariation: {
         delayBlocks: 16,
@@ -169,7 +172,7 @@ const RollupConfigInputPage = () => {
       <h1 style={{ color: "#fff", fontSize: "2rem", fontWeight: "bold" }}>
         Configure Rollup
       </h1>
-      <RollupConfigInput onSave={handleSaveRollupConfig} />
+      {/* <RollupConfigInput onSave={handleSaveRollupConfig} /> */}
   </div>
   );
   };

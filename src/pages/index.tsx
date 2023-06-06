@@ -5,24 +5,24 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
+    <div>
+
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
 
       <div className="">
-        <Image
-          className=""
+      <Image
           src="/logo.svg"
-          alt="Arbitrum Logo"
-          width={180}
-          height={37}
-          priority
-        />
+          alt="Logo"
+          width={250}
+          height={250}
+          />
       </div>
 
       <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
-          href="/rollupConfigInput"
+          href="/configure"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
           target="_blank"
           rel="noopener noreferrer"
@@ -90,5 +90,6 @@ export default function Home() {
         </a>
       </div>
     </main>
+    </div>
   )
 }

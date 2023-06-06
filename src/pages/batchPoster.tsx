@@ -13,7 +13,7 @@ const SequencerInboxABI = SequencerInboxJSON.abi;
 declare let window: Window & { ethereum: any };
 
 // Define the SetBatchPoster component
-export default function SetBatchPoster() {
+export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
   // State variables for Ethereum address and status message
   const [ethAddress, setEthAddress] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
@@ -25,27 +25,31 @@ export default function SetBatchPoster() {
   const [privateKey, setPrivateKey] = useState('');
 
   useEffect(() => {
-    // Generate a random wallet
     const batchPoster = ethers.Wallet.createRandom();
     setEthAddress(batchPoster.address);
     setPrivateKey(batchPoster.privateKey);
 
-    // Read the 'rollupData' from local storage when the component mounts
     const rollupDataJSON = localStorage.getItem('rollupData');
     const rollupData = rollupDataJSON && JSON.parse(rollupDataJSON);
 
-    // If the 'rollupData' is available, retrieve the 'sequencer-inbox' and set it to state
     if (rollupData && rollupData.chain["info-json"][0].rollup) {
       setSequencerInboxAddress(rollupData.chain["info-json"][0].rollup["sequencer-inbox"]);
     }
+    
+    const l3ConfigString = localStorage.getItem('l3Config');
+    if (l3ConfigString) {
+      const l3Config = JSON.parse(l3ConfigString);
+      l3Config.batchPoster = batchPoster.address;
+      localStorage.setItem('l3Config', JSON.stringify(l3Config));
+    }
   }, []);
+
 
   // Function to handle Ethereum transaction signing and sending
   async function signTransactionAndSend() {
     setStatusMessage('Processing...');
     try {
       // Connect to Ethereum network via MetaMask
-      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
 
@@ -75,6 +79,8 @@ export default function SetBatchPoster() {
         rollupData.node['batch-poster']['parent-chain-wallet']['private-key'] = privateKey;
         localStorage.setItem('rollupData', JSON.stringify(rollupData)); // Save the updated data back to local storage
       }
+
+      onDone()
     } catch (error) {
       console.error('Error:', error);
       setStatusMessage('Error: Unable to process transaction');
@@ -85,34 +91,20 @@ export default function SetBatchPoster() {
   }
 
   return (
-    <div className={styles.container}>
-      <Image
-        className={styles.logo} 
-        src="/logo.svg"
-        alt="Logo"
-        width={250}
-        height={250}
-      />  
-      <h1 className={styles.title}>Set Batch Poster</h1>
-      <div className={styles.form}>
+    <>
+      <label htmlFor='batchPoster'>Batch Poster Address</label>
       <input
         className={styles.input}
+        name="batchPoster"
         type="text"
-        placeholder="Enter Ethereum address"
+        placeholder="Enter address"
         value={ethAddress}
         readOnly 
       />
-        {transactionSuccessful ? (
-          <button className={styles.button} onClick={viewRollupData}>
-            View Rollup Data
-          </button>
-        ) : (
           <button className={styles.button} onClick={signTransactionAndSend}>
-            Sign and Send Transaction
+            Submit
           </button>
-        )}
         <p className={styles.statusMessage}>{statusMessage}</p>
-      </div>
-    </div>
+    </>
   );
 }
