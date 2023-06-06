@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Steps } from 'primereact/steps';
 
 import { spaceGrotesk } from '@/fonts';
@@ -39,6 +39,10 @@ enum Step {
   Review = 3,
 }
 
+function StepTitle({ children }: { children: React.ReactNode }) {
+  return <h1 className="text-left text-3xl">{children}</h1>;
+}
+
 export default function Configure() {
   const [step, setStep] = useState<Step>(Step.ConfigureRollupDeployment);
   const [rollupConfig, setRollupConfig] = useState<RollupConfig | undefined>(undefined);
@@ -47,10 +51,11 @@ export default function Configure() {
     <div className="flex w-full justify-center py-8">
       <div className="flex w-[768px] flex-col">
         <Steps model={steps} activeIndex={step} className="w-full" {...stepsStyleProps} />
+        <div className="h-16" />
 
         {step === Step.ConfigureRollupDeployment && (
           <>
-            <h3 className="text-left text-xl font-medium">Configure & Deploy Rollup</h3>
+            <StepTitle>Configure & Deploy Rollup</StepTitle>
             <div className="h-4" />
             <RollupConfigInput
               onChange={(_rollupConfig) => {
@@ -70,7 +75,7 @@ export default function Configure() {
 
         {step === Step.ConfigureValidators && (
           <>
-            <h3 className="text-left text-xl font-medium">Configure Validators</h3>
+            <StepTitle>Configure Validators</StepTitle>
             <div className="h-4" />
             <SetValidator onDone={() => setStep(Step.ConfigureBatchPoster)} />
           </>
@@ -78,7 +83,7 @@ export default function Configure() {
 
         {step === Step.ConfigureBatchPoster && (
           <>
-            <h3 className="text-left text-xl font-medium">Configure & Deploy Rollup</h3>
+            <StepTitle>Configure & Deploy Rollup</StepTitle>
             <div className="h-4" />
             <SetBatchPoster onDone={() => setStep(Step.Review)} />
           </>
@@ -86,7 +91,7 @@ export default function Configure() {
 
         {step === Step.Review && (
           <>
-            <h3 className="text-left text-xl font-medium">Review & Download Config</h3>
+            <StepTitle>Review & Download Config</StepTitle>
             <div className="h-4" />
             <ViewRollupData />
           </>
