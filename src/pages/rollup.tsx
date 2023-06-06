@@ -187,14 +187,11 @@ const DeployRollup = () => {
       ///////
       ///////
       const chainConfig : string = JSON.stringify(rollupConfigData.chain["info-json"][0]["chain-config"]);
-      console.log(rollupConfigData.chain["info-json"][0]["chain-config"])
       rollupConfig.chainConfig = chainConfig;
       console.log(chainConfig)
       console.log("Going for deployment")
-      console.log(rollupConfig)
       const createRollupTx = await rollupCreator.createRollup(rollupConfig);
       const createRollupReceipt = await createRollupTx.wait();
-      console.log(await createRollupReceipt.events)
       const rollupCreatedEvent = createRollupReceipt.events?.find(
         (event: { event: string }) => event.event === 'RollupCreated',
       );

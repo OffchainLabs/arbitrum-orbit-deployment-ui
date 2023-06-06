@@ -38,7 +38,6 @@ const SetValidator = () => {
       // Update the private key of staker in the rollupData and store it back in local storage
       rollupData.node.staker["parent-chain-wallet"]["private-key"] = stakerPrivateKey;
       localStorage.setItem('rollupData', JSON.stringify(rollupData));
-      console.log(staker.address)
     }
 
     if (l3ConfigString) {
@@ -85,7 +84,6 @@ const SetValidator = () => {
     const bools = Array(addressInputs.length).fill(true);
 
     try {
-      console.log(validators);
       const tx = await rollupAdminLogic.setValidator(validators, bools);
       await tx.wait();
       alert('Transaction successful. Validator set changed!');
