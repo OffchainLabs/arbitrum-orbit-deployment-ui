@@ -17,27 +17,39 @@ const removeFields = (obj: any, fieldsToRemove: string[]): any => {
   return newObj;
 };
 
-//for removing other parts
+// Modifying the parts of 'rollupData' which is needed for configuration
 const removeNestedFields = (obj: any): any => {
   let newObj = JSON.parse(JSON.stringify(obj)); // Deep clone the original object
 
-  if (newObj.chain && typeof newObj.chain['info-json'] === 'string') {
-    newObj.chain['info-json'] = JSON.parse(newObj.chain['info-json']); // Parse the stringified JSON
+  if (newObj.chain && newObj.chain['info-json']) {
+    if (typeof newObj.chain['info-json'] === 'string') {
+      newObj.chain['info-json'] = JSON.parse(newObj.chain['info-json']); // Parse the stringified JSON
+    }
+
+    // Stringify the entire 'info-json' object
+    newObj.chain['info-json'] = JSON.stringify(newObj.chain['info-json']);
   }
 
-  if (newObj.chain && newObj.chain['info-json']) {
-    newObj.chain['info-json'].forEach((item: any) => {
-      if (item.hasOwnProperty('sequencer-url')) {
-        delete item['sequencer-url'];
-      }
-      if (item.hasOwnProperty('feed-url')) {
-        delete item['feed-url'];
-      }
-    });
+  // Check and update 'private-key' in 'staker'
+  if (newObj.node && newObj.node.staker && newObj.node.staker['parent-chain-wallet']) {
+    let privateKey = newObj.node.staker['parent-chain-wallet']['private-key'];
+    if (privateKey.startsWith('0x')) {
+      newObj.node.staker['parent-chain-wallet']['private-key'] = privateKey.slice(2);
+    }
+  }
+
+  // Check and update 'private-key' in 'batch-poster'
+  if (newObj.node && newObj.node['batch-poster'] && newObj.node['batch-poster']['parent-chain-wallet']) {
+    let privateKey = newObj.node['batch-poster']['parent-chain-wallet']['private-key'];
+    if (privateKey.startsWith('0x')) {
+      newObj.node['batch-poster']['parent-chain-wallet']['private-key'] = privateKey.slice(2);
+    }
   }
 
   return newObj;
 };
+
+
 
 export function Review() {
   const [data, setData] = useState<RollupConfigData | null>(null);
@@ -82,7 +94,7 @@ export function Review() {
     element.download = fileName;
     document.body.appendChild(element);
     element.click();
-  };
+};
 
   const toggleShowData = () => {
     setShowData(!showData);
@@ -109,7 +121,7 @@ export function Review() {
       </a>
       <div className="flex flex-col gap-2">
         <button
-          onClick={() => downloadJSON(data, 'rollupData.json')}
+          onClick={() => downloadJSON(data, 'config.json')}
           className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
         >
           Download Rollup JSON
