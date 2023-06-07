@@ -106,6 +106,14 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
         <label htmlFor="numberOfValidators" className="font-bold">
           Number of Validators
         </label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+          className="font-light text-[#6D6D6D] underline"
+        >
+          Read about Validators in the docs
+        </a>
         <input
           name="numberOfValidators"
           type="number"

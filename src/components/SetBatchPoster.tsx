@@ -105,6 +105,14 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
         <label htmlFor="batchPoster" className="font-bold">
           Batch Poster Address
         </label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+          className="font-light text-[#6D6D6D] underline"
+        >
+          Read about Batch Poster in the docs
+        </a>
         <input
           name="batchPoster"
           type="text"
