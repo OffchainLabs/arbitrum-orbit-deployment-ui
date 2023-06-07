@@ -131,7 +131,7 @@ export default function Configure() {
           <>
             <StepTitle>Configure Validators</StepTitle>
             <div className="h-4" />
-            <SetValidator onDone={() => setStep(Step.BatchPosterConfiguration)} />
+            <SetValidators onNext={() => setStep(Step.BatchPosterConfiguration)} />
           </>
         )}
 

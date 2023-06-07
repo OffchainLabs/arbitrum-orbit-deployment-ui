@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import RollupAdminLogicABIJSON from '../ethereum/RollupAdminLogic.json';
-import styles from '../styles/SetValidator.module.css';
+
+import RollupAdminLogicABIJSON from '@/ethereum/RollupAdminLogic.json';
 
 const RollupAdminLogicABI = RollupAdminLogicABIJSON.abi;
 declare let window: Window & { ethereum: any };
@@ -14,11 +14,10 @@ const staker = ethers.Wallet.createRandom();
 const stakerPrivateKey = staker.privateKey;
 const stakerAddress = staker.address;
 
-export const SetValidator = ({ onDone }: { onDone: () => void }) => {
+export function SetValidators({ onNext }: { onNext: () => void }) {
   const [rollupAddress, setRollupAddress] = useState('');
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showBatchPosterButton, setShowBatchPosterButton] = useState(false);
+  const [state, setState] = useState<'idle' | 'loading' | 'done'>('idle');
 
   useEffect(() => {
     let rollupData = null;
@@ -65,8 +64,11 @@ export const SetValidator = ({ onDone }: { onDone: () => void }) => {
     setAddressInputs(newInputs);
   };
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setState('loading');
+
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const rollupAdminLogic = new ethers.Contract(rollupAddress, RollupAdminLogicABI, signer);
@@ -74,55 +76,56 @@ export const SetValidator = ({ onDone }: { onDone: () => void }) => {
     const validators = addressInputs.map((input) => input.address);
     const bools = Array(addressInputs.length).fill(true);
 
-    try {
-      const tx = await rollupAdminLogic.setValidator(validators, bools);
-      await tx.wait();
-      alert('Transaction successful. Validator set changed!');
-      onDone();
-      // setShowBatchPosterButton(true);
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Transaction failed');
-    }
+    const tx = await rollupAdminLogic.setValidator(validators, bools);
+    await tx.wait();
 
-    setIsLoading(false);
-  };
+    setState('done');
+  }
 
   return (
-    <>
+    <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
       <label htmlFor="numberOfValidators">Number of Validators</label>
       <input
-        className={styles.input}
         name="numberOfValidators"
         type="number"
         placeholder="Number of addresses"
+        defaultValue={1}
         onChange={handleAddressCount}
+        className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2"
       />
       {addressInputs.map((input, index) => (
         <div key={index}>
           <input
-            className={styles.input}
             type="text"
             placeholder={`Address ${index + 1}`}
             value={input.address}
             onChange={(e) => (index !== 0 ? handleAddressInput(e, index) : null)}
             readOnly={index === 0}
+            className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2"
           />
         </div>
       ))}
 
-      {!showBatchPosterButton && (
-        <button className={styles.button} onClick={handleSubmit} disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Submit'}
+      {state === 'done' ? (
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={onNext}
+            className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+          >
+            Next
+          </button>
+          <p className="text-lg font-bold text-[#31572A]">Validator set changed!</p>
+        </div>
+      ) : (
+        <button
+          type="submit"
+          disabled={state === 'loading'}
+          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+        >
+          {state === 'loading' ? 'Loading...' : 'Submit'}
         </button>
       )}
-      {showBatchPosterButton && (
-        <button className={styles.button} onClick={() => window.open(`/batchPoster`, '_blank')}>
-          Set Batch Poster
-        </button>
-      )}
-    </>
+    </form>
   );
-};
-
-export default SetValidator;
+}
