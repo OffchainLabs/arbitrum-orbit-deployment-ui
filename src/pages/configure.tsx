@@ -6,7 +6,7 @@ import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput'
 import { RollupContractsSummary } from '@/components/RollupContractsSummary';
 import { SetValidators } from '@/components/SetValidators';
 import { SetBatchPoster } from '@/components/SetBatchPoster';
-import ViewRollupData from '@/components/ViewRollupData';
+import ViewRollupData from '@/components/Review';
 
 import { spaceGrotesk } from '@/fonts';
 import { deployRollup } from '@/utils/deployRollup';
