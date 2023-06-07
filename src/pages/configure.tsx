@@ -38,7 +38,7 @@ const stepsStyleProps = {
 };
 
 enum Step {
-  RollupConfiguration = 0,
+  RollupDeploymentConfiguration = 0,
   RollupDeploymentInProgress = 1,
   RollupDeploymentDone = 2,
   ValidatorConfiguration = 3,
@@ -59,7 +59,8 @@ const defaultRollupConfig: RollupConfig = {
   // Needs to be changed after PR by Lee about new Wasm root
   wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21',
   loserStakeEscrow: ethers.constants.AddressZero,
-  chainId: 1337,
+  chainId: Math.floor(Math.random() * 100000000000) + 1,
+  chainName: 'My Arbitrum L3 Chain',
   chainConfig: ethers.constants.HashZero,
   genesisBlockNum: 0,
   sequencerInboxMaxTimeVariation: {
@@ -71,7 +72,7 @@ const defaultRollupConfig: RollupConfig = {
 };
 
 export default function Configure() {
-  const [step, setStep] = useState<Step>(Step.RollupConfiguration);
+  const [step, setStep] = useState<Step>(Step.RollupDeploymentConfiguration);
 
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(defaultRollupConfig);
   const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
