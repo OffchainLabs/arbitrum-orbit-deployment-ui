@@ -10,6 +10,7 @@ import { Review } from '@/components/Review';
 
 import { spaceGrotesk } from '@/fonts';
 import { deployRollup } from '@/utils/deployRollup';
+import { isUserRejectedError } from '@/utils/isUserRejectedError';
 import { RollupContracts } from '@/types/RollupContracts';
 
 const steps = [
@@ -88,9 +89,18 @@ export default function Configure() {
   async function handleDeployRollupFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setStep(Step.RollupDeploymentInProgress);
-    setRollupContracts(await deployRollup(rollupConfig));
-    setStep(Step.RollupDeploymentDone);
+    try {
+      setStep(Step.RollupDeploymentInProgress);
+      setRollupContracts(await deployRollup(rollupConfig));
+      setStep(Step.RollupDeploymentDone);
+    } catch (error) {
+      setStep(Step.RollupDeploymentConfiguration);
+
+      if (!isUserRejectedError(error)) {
+        console.error(error);
+        alert(error);
+      }
+    }
   }
 
   useEffect(() => {
