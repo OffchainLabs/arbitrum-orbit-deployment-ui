@@ -39,7 +39,7 @@ const removeNestedFields = (obj: any): any => {
   return newObj;
 };
 
-const ViewRollupData = () => {
+export function Review() {
   const [data, setData] = useState<RollupConfigData | null>(null);
   const [l3Config, setL3Config] = useState<L3Config | null>(null);
   const [showData, setShowData] = useState(false);
@@ -115,6 +115,4 @@ const ViewRollupData = () => {
       {showL3Config && <pre className={styles.data}>{JSON.stringify(l3Config, null, 2)}</pre>}
     </>
   );
-};
-
-export default ViewRollupData;
+}
