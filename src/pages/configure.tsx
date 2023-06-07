@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
 
@@ -72,6 +72,7 @@ const defaultRollupConfig: RollupConfig = {
 };
 
 export default function Configure() {
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
   const [step, setStep] = useState<Step>(Step.RollupDeploymentConfiguration);
 
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(defaultRollupConfig);
@@ -92,6 +93,12 @@ export default function Configure() {
     setRollupContracts(await deployRollup(rollupConfig));
     setStep(Step.RollupDeploymentDone);
   }
+
+  useEffect(() => {
+    if (step === Step.RollupDeploymentDone) {
+      nextButtonRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [step]);
 
   return (
     <div className="flex w-full justify-center py-8">
@@ -116,6 +123,7 @@ export default function Configure() {
             ) : (
               <div className="flex flex-col gap-4">
                 <button
+                  ref={nextButtonRef}
                   onClick={() => setStep(Step.ValidatorConfiguration)}
                   className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
                 >

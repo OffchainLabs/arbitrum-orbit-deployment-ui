@@ -84,7 +84,9 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
 
   return (
     <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-      <label htmlFor="numberOfValidators">Number of Validators</label>
+      <label htmlFor="numberOfValidators" className="font-bold">
+        Number of Validators
+      </label>
       <input
         name="numberOfValidators"
         type="number"
