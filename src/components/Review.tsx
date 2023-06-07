@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import styles from '../styles/ViewRollupData.module.css';
-import { RollupConfigData } from '../types/rollupConfigDataType';
-import { L3Config } from '../types/l3ConfigType';
 import Image from 'next/image';
+
+import { RollupConfigData } from '@/types/rollupConfigDataType';
+import { L3Config } from '@/types/l3ConfigType';
 
 // Function to remove unwanted fields
 const removeFields = (obj: any, fieldsToRemove: string[]): any => {
@@ -39,7 +39,7 @@ const removeNestedFields = (obj: any): any => {
   return newObj;
 };
 
-const ViewRollupData = () => {
+export function Review() {
   const [data, setData] = useState<RollupConfigData | null>(null);
   const [l3Config, setL3Config] = useState<L3Config | null>(null);
   const [showData, setShowData] = useState(false);
@@ -90,31 +90,49 @@ const ViewRollupData = () => {
 
   if (!data) {
     return (
-      <div className={styles.container}>
-        <Image className={styles.logo} src="/logo.svg" alt="Logo" width={250} height={250} />
-        <h1 className={styles.title}>No rollup data found.</h1>
+      <div>
+        <Image src="/logo.svg" alt="Logo" width={250} height={250} />
+        <h1>No rollup data found.</h1>
       </div>
     );
   }
 
   return (
-    <>
-      <button className={styles.button} onClick={() => downloadJSON(data, 'rollupData.json')}>
+    <div className="flex flex-col gap-2">
+      <button
+        onClick={() => downloadJSON(data, 'rollupData.json')}
+        className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+      >
         Download Rollup JSON
       </button>
-      <button className={styles.button} onClick={() => downloadJSON(l3Config, 'l3Config.json')}>
+      <button
+        onClick={toggleShowData}
+        className="w-full rounded-lg border border-[#243145] px-3 py-2 text-2xl text-[#243145]"
+      >
+        Show/Hide Rollup JSON
+      </button>
+      {showData && (
+        <pre className="overflow-auto rounded-lg border border-[#243145] px-3 py-2">
+          {JSON.stringify(data, null, 2)}
+        </pre>
+      )}
+      <button
+        onClick={() => downloadJSON(l3Config, 'l3Config.json')}
+        className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+      >
         Download L3Config JSON
       </button>
-      <button className={styles.button} onClick={toggleShowData}>
-        Show/Hide Rollup Data
+      <button
+        onClick={() => setShowL3Config(!showL3Config)}
+        className="w-full rounded-lg border border-[#243145] px-3 py-2 text-2xl text-[#243145]"
+      >
+        Show/Hide L3Config JSON
       </button>
-      <button className={styles.button} onClick={() => setShowL3Config(!showL3Config)}>
-        Show/Hide L3Config Data
-      </button>
-      {showData && <pre className={styles.data}>{JSON.stringify(data, null, 2)}</pre>}
-      {showL3Config && <pre className={styles.data}>{JSON.stringify(l3Config, null, 2)}</pre>}
-    </>
+      {showL3Config && (
+        <pre className="overflow-auto rounded-lg border border-[#243145] px-3 py-2">
+          {JSON.stringify(l3Config, null, 2)}
+        </pre>
+      )}
+    </div>
   );
-};
-
-export default ViewRollupData;
+}
