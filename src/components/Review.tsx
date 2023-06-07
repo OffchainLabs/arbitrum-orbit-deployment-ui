@@ -98,41 +98,51 @@ export function Review() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <button
-        onClick={() => downloadJSON(data, 'rollupData.json')}
-        className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+    <div className="flex flex-col gap-4">
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+        className="text-lg font-bold uppercase text-[#1366C1] underline"
       >
-        Download Rollup JSON
-      </button>
-      <button
-        onClick={toggleShowData}
-        className="w-full rounded-lg border border-[#243145] px-3 py-2 text-2xl text-[#243145]"
-      >
-        Show/Hide Rollup JSON
-      </button>
-      {showData && (
-        <pre className="overflow-auto rounded-lg border border-[#243145] px-3 py-2">
-          {JSON.stringify(data, null, 2)}
-        </pre>
-      )}
-      <button
-        onClick={() => downloadJSON(l3Config, 'l3Config.json')}
-        className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-      >
-        Download L3Config JSON
-      </button>
-      <button
-        onClick={() => setShowL3Config(!showL3Config)}
-        className="w-full rounded-lg border border-[#243145] px-3 py-2 text-2xl text-[#243145]"
-      >
-        Show/Hide L3Config JSON
-      </button>
-      {showL3Config && (
-        <pre className="overflow-auto rounded-lg border border-[#243145] px-3 py-2">
-          {JSON.stringify(l3Config, null, 2)}
-        </pre>
-      )}
+        Open supporting documentation for this flow
+      </a>
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={() => downloadJSON(data, 'rollupData.json')}
+          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+        >
+          Download Rollup JSON
+        </button>
+        <button
+          onClick={toggleShowData}
+          className="w-full rounded-lg border border-[#243145] px-3 py-2 text-2xl text-[#243145]"
+        >
+          Show/Hide Rollup JSON
+        </button>
+        {showData && (
+          <pre className="overflow-auto rounded-lg border border-[#243145] px-3 py-2">
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        )}
+        <button
+          onClick={() => downloadJSON(l3Config, 'l3Config.json')}
+          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+        >
+          Download L3Config JSON
+        </button>
+        <button
+          onClick={() => setShowL3Config(!showL3Config)}
+          className="w-full rounded-lg border border-[#243145] px-3 py-2 text-2xl text-[#243145]"
+        >
+          Show/Hide L3Config JSON
+        </button>
+        {showL3Config && (
+          <pre className="overflow-auto rounded-lg border border-[#243145] px-3 py-2">
+            {JSON.stringify(l3Config, null, 2)}
+          </pre>
+        )}
+      </div>
     </div>
   );
 }
