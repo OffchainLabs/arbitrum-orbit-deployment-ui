@@ -72,7 +72,7 @@ const defaultRollupConfig: RollupConfig = {
 
 export default function Configure() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
-  const [step, setStep] = useState<Step>(Step.Review);
+  const [step, setStep] = useState<Step>(Step.RollupDeploymentConfiguration);
 
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(defaultRollupConfig);
   const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
