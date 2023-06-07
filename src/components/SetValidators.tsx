@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
 import RollupAdminLogicABIJSON from '@/ethereum/RollupAdminLogic.json';
+import { isUserRejectedError } from '@/utils/isUserRejectedError';
 
 const RollupAdminLogicABI = RollupAdminLogicABIJSON.abi;
 declare let window: Window & { ethereum: any };
@@ -69,17 +70,26 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
 
     setStatus('loading');
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const rollupAdminLogic = new ethers.Contract(rollupAddress, RollupAdminLogicABI, signer);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const rollupAdminLogic = new ethers.Contract(rollupAddress, RollupAdminLogicABI, signer);
 
-    const validators = addressInputs.map((input) => input.address);
-    const bools = Array(addressInputs.length).fill(true);
+      const validators = addressInputs.map((input) => input.address);
+      const bools = Array(addressInputs.length).fill(true);
 
-    const tx = await rollupAdminLogic.setValidator(validators, bools);
-    await tx.wait();
+      const tx = await rollupAdminLogic.setValidator(validators, bools);
+      await tx.wait();
 
-    setStatus('done');
+      setStatus('done');
+    } catch (error) {
+      setStatus('idle');
+
+      if (!isUserRejectedError(error)) {
+        console.error(error);
+        alert(error);
+      }
+    }
   }
 
   return (

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
 import SequencerInboxJSON from '@/ethereum/SequencerInbox.json';
+import { isUserRejectedError } from '@/utils/isUserRejectedError';
 
 // Define the ABI for the SequencerInbox contract
 const SequencerInboxABI = SequencerInboxJSON.abi;
@@ -81,9 +82,12 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
         localStorage.setItem('rollupData', JSON.stringify(rollupData)); // Save the updated data back to local storage
       }
     } catch (error) {
-      console.error(error);
-      alert('Error: Unable to process transaction');
       setStatus('idle');
+
+      if (!isUserRejectedError(error)) {
+        console.error(error);
+        alert(error);
+      }
     }
   }
 
