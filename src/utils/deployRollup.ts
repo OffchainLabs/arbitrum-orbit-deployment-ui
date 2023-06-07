@@ -63,7 +63,7 @@ export async function deployRollup(rollupConfig: RollupConfig): Promise<RollupCo
         {
           'chain-id': Number(rollupConfig.chainId),
           'parent-chain-id': 421613,
-          'chain-name': 'example-l3',
+          'chain-name': rollupConfig.chainName,
           'chain-config': {
             chainId: Number(rollupConfig.chainId),
             homesteadBlock: 0,
@@ -104,7 +104,7 @@ export async function deployRollup(rollupConfig: RollupConfig): Promise<RollupCo
           },
         },
       ],
-      'name': 'example-l3',
+      'name': rollupConfig.chainName,
     },
     'parent-chain': {
       connection: {

@@ -12,6 +12,7 @@ export type RollupConfig = {
   wasmModuleRoot: string;
   loserStakeEscrow: string;
   chainId: number;
+  chainName: string;
   chainConfig: string;
   genesisBlockNum: number;
   sequencerInboxMaxTimeVariation: {
@@ -58,6 +59,18 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           name="chainId"
           placeholder="12345678"
           value={value.chainId}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="chainName" className="font-bold">
+          Chain Name
+        </label>
+        <input
+          className="rounded-lg border border-[#6D6D6D] px-3 py-2"
+          type="text"
+          name="chainName"
+          value={value.chainName}
           onChange={handleChange}
         />
       </div>
