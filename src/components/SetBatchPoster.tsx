@@ -1,10 +1,8 @@
 // Import necessary libraries and JSON files
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import SequencerInboxJSON from '../ethereum/SequencerInbox.json';
-import styles from '../styles/SetBatchPoster.module.css';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
+
+import SequencerInboxJSON from '@/ethereum/SequencerInbox.json';
 
 // Define the ABI for the SequencerInbox contract
 const SequencerInboxABI = SequencerInboxJSON.abi;
@@ -13,13 +11,11 @@ const SequencerInboxABI = SequencerInboxJSON.abi;
 declare let window: Window & { ethereum: any };
 
 // Define the SetBatchPoster component
-export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
+export function SetBatchPoster({ onNext }: { onNext: () => void }) {
   // State variables for Ethereum address and status message
   const [ethAddress, setEthAddress] = useState('');
-  const [statusMessage, setStatusMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
   const [sequencerInboxAddress, setSequencerInboxAddress] = useState<string | null>(null);
-  const [transactionSuccessful, setTransactionSuccessful] = useState(false); // State to hold transaction status
-  const router = useRouter(); // Router instance
 
   // Define a state variable for the private key
   const [privateKey, setPrivateKey] = useState('');
@@ -45,8 +41,11 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
   }, []);
 
   // Function to handle Ethereum transaction signing and sending
-  async function signTransactionAndSend() {
-    setStatusMessage('Processing...');
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setStatus('loading');
+
     try {
       // Connect to Ethereum network via MetaMask
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -54,7 +53,7 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
 
       // Make sure the sequencerInboxAddress is not null
       if (sequencerInboxAddress === null) {
-        setStatusMessage('Error: Sequencer Inbox Address not found');
+        alert('Error: Sequencer Inbox Address not found');
         return;
       }
 
@@ -68,13 +67,10 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
       // Call the setIsBatchPoster function on the contract and sign the transaction
       const isBatchPoster = true;
       const tx = await sequencerInboxContract.setIsBatchPoster(ethAddress, isBatchPoster);
-
       // Send the transaction to the network and wait for the receipt
-      const receipt = await tx.wait();
-      setStatusMessage(
-        `Transaction successful! The account address ${ethAddress} is now a Batch Poster`,
-      );
-      setTransactionSuccessful(true); // Set the transaction as successful
+      await tx.wait();
+
+      setStatus('done'); // Set the transaction as successful
 
       // If the transaction is successful, save the private key to rollupData
       const rollupDataJSON = localStorage.getItem('rollupData');
@@ -84,32 +80,47 @@ export default function SetBatchPoster({ onDone }: { onDone: () => void }) {
         rollupData.node['batch-poster']['parent-chain-wallet']['private-key'] = privateKey;
         localStorage.setItem('rollupData', JSON.stringify(rollupData)); // Save the updated data back to local storage
       }
-
-      onDone();
     } catch (error) {
-      console.error('Error:', error);
-      setStatusMessage('Error: Unable to process transaction');
+      console.error(error);
+      alert('Error: Unable to process transaction');
+      setStatus('idle');
     }
-  }
-  function viewRollupData() {
-    router.push('/ViewRollupData');
   }
 
   return (
-    <>
-      <label htmlFor="batchPoster">Batch Poster Address</label>
+    <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+      <label htmlFor="batchPoster" className="font-bold">
+        Batch Poster Address
+      </label>
       <input
-        className={styles.input}
         name="batchPoster"
         type="text"
         placeholder="Enter address"
         value={ethAddress}
         readOnly
+        className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2"
       />
-      <button className={styles.button} onClick={signTransactionAndSend}>
-        Submit
-      </button>
-      <p className={styles.statusMessage}>{statusMessage}</p>
-    </>
+
+      {status === 'done' ? (
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={onNext}
+            className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+          >
+            Next
+          </button>
+          <p className="text-lg font-bold text-[#31572A]">Batch poster changed!</p>
+        </div>
+      ) : (
+        <button
+          type="submit"
+          disabled={status === 'loading'}
+          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+        >
+          {status === 'loading' ? 'Loading...' : 'Submit'}
+        </button>
+      )}
+    </form>
   );
 }
