@@ -72,7 +72,7 @@ const defaultRollupConfig: RollupConfig = {
 };
 
 export default function Configure() {
-  const [step, setStep] = useState<Step>(Step.RollupConfiguration);
+  const [step, setStep] = useState<Step>(Step.RollupDeploymentConfiguration);
 
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(defaultRollupConfig);
   const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
