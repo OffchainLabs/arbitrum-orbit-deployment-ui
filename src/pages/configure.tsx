@@ -2,12 +2,12 @@ import React, { useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
 
-import { SetValidator } from './setValidators';
 import SetBatchPoster from './batchPoster';
 import ViewRollupData from './ViewRollupData';
 
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
 import { RollupContractsSummary } from '@/components/RollupContractsSummary';
+import { SetValidator } from '@/components/setValidators';
 
 import { spaceGrotesk } from '@/fonts';
 import { deployRollup } from '@/utils/deployRollup';
