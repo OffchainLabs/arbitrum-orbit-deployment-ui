@@ -119,7 +119,7 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
           placeholder="Enter address"
           value={ethAddress}
           readOnly
-          className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2"
+          className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
         />
 
         {status === 'done' ? (

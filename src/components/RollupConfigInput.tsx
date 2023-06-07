@@ -70,7 +70,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           Read about Chain ID in the docs
         </a>
         <input
-          className="rounded-lg border border-[#6D6D6D] px-3 py-2"
+          className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="number"
           name="chainId"
           placeholder="12345678"
@@ -83,7 +83,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           Chain Name
         </label>
         <input
-          className="rounded-lg border border-[#6D6D6D] px-3 py-2"
+          className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="text"
           name="chainName"
           value={value.chainName}
@@ -103,7 +103,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           Read about Challenge Period Blocks in the docs
         </a>
         <input
-          className="rounded-lg border border-[#6D6D6D] px-3 py-2"
+          className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="number"
           name="confirmPeriodBlocks"
           value={value.confirmPeriodBlocks}
@@ -123,7 +123,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           Read about Stake Token in the docs
         </a>
         <input
-          className="rounded-lg border border-[#6D6D6D] px-3 py-2"
+          className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="text"
           name="stakeToken"
           value={value.stakeToken}
@@ -143,7 +143,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           Read about Base Stake in the docs
         </a>
         <input
-          className="rounded-lg border border-[#6D6D6D] px-3 py-2"
+          className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="number"
           name="baseStake"
           value={value.baseStake}
@@ -163,7 +163,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           Read about Owner in the docs
         </a>
         <input
-          className="rounded-lg border border-[#6D6D6D] px-3 py-2"
+          className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="text"
           name="owner"
           value={value.owner}
