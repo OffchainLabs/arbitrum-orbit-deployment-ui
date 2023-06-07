@@ -7,7 +7,7 @@ import ViewRollupData from './ViewRollupData';
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
 import { RollupContractsSummary } from '@/components/RollupContractsSummary';
 import { SetValidators } from '@/components/SetValidators';
-import SetBatchPoster from '@/components/SetBatchPoster';
+import { SetBatchPoster } from '@/components/SetBatchPoster';
 
 import { spaceGrotesk } from '@/fonts';
 import { deployRollup } from '@/utils/deployRollup';
@@ -147,7 +147,7 @@ export default function Configure() {
           <>
             <StepTitle>Configure Batch Poster</StepTitle>
             <div className="h-4" />
-            <SetBatchPoster onDone={() => setStep(Step.Review)} />
+            <SetBatchPoster onNext={() => setStep(Step.Review)} />
           </>
         )}
 
