@@ -17,7 +17,7 @@ const stakerAddress = staker.address;
 export function SetValidators({ onNext }: { onNext: () => void }) {
   const [rollupAddress, setRollupAddress] = useState('');
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]);
-  const [state, setState] = useState<'idle' | 'loading' | 'done'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
 
   useEffect(() => {
     let rollupData = null;
@@ -67,7 +67,7 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setState('loading');
+    setStatus('loading');
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -79,7 +79,7 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
     const tx = await rollupAdminLogic.setValidator(validators, bools);
     await tx.wait();
 
-    setState('done');
+    setStatus('done');
   }
 
   return (
@@ -108,7 +108,7 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
         </div>
       ))}
 
-      {state === 'done' ? (
+      {status === 'done' ? (
         <div className="flex flex-col gap-2">
           <button
             type="button"
@@ -122,10 +122,10 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
       ) : (
         <button
           type="submit"
-          disabled={state === 'loading'}
+          disabled={status === 'loading'}
           className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
         >
-          {state === 'loading' ? 'Loading...' : 'Submit'}
+          {status === 'loading' ? 'Loading...' : 'Submit'}
         </button>
       )}
     </form>
