@@ -48,11 +48,27 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+        className="text-lg font-bold uppercase text-[#1366C1] underline"
+      >
+        Open supporting documentation for this flow
+      </a>
       <div className="flex flex-col gap-2">
         <label htmlFor="chainId" className="font-bold">
           Chain ID
         </label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#chain-id`}
+          className="font-light text-[#6D6D6D] underline"
+        >
+          Read about Chain ID in the docs
+        </a>
         <input
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="number"
@@ -74,10 +90,18 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           onChange={handleChange}
         />
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <label htmlFor="confirmPeriodBlocks" className="font-bold">
-          Confirm Period Blocks
+          Challenge Period Blocks
         </label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#challenge-period-blocks`}
+          className="font-light text-[#6D6D6D] underline"
+        >
+          Read about Challenge Period Blocks in the docs
+        </a>
         <input
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="number"
@@ -86,10 +110,18 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           onChange={handleChange}
         />
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <label htmlFor="stakeToken" className="font-bold">
           Stake Token
         </label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#stake-token`}
+          className="font-light text-[#6D6D6D] underline"
+        >
+          Read about Stake Token in the docs
+        </a>
         <input
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="text"
@@ -98,10 +130,18 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           onChange={handleChange}
         />
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <label htmlFor="baseStake" className="font-bold">
           Base Stake
         </label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#base-stake`}
+          className="font-light text-[#6D6D6D] underline"
+        >
+          Read about Base Stake in the docs
+        </a>
         <input
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="number"
@@ -110,10 +150,18 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           onChange={handleChange}
         />
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <label htmlFor="owner" className="font-bold">
           Owner
         </label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#owner`}
+          className="font-light text-[#6D6D6D] underline"
+        >
+          Read about Owner in the docs
+        </a>
         <input
           className="rounded-lg border border-[#6D6D6D] px-3 py-2"
           type="text"

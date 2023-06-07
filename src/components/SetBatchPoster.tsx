@@ -92,39 +92,49 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
   }
 
   return (
-    <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-      <label htmlFor="batchPoster" className="font-bold">
-        Batch Poster Address
-      </label>
-      <input
-        name="batchPoster"
-        type="text"
-        placeholder="Enter address"
-        value={ethAddress}
-        readOnly
-        className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2"
-      />
+    <div className="flex flex-col gap-4">
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+        className="text-lg font-bold uppercase text-[#1366C1] underline"
+      >
+        Open supporting documentation for this flow
+      </a>
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+        <label htmlFor="batchPoster" className="font-bold">
+          Batch Poster Address
+        </label>
+        <input
+          name="batchPoster"
+          type="text"
+          placeholder="Enter address"
+          value={ethAddress}
+          readOnly
+          className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2"
+        />
 
-      {status === 'done' ? (
-        <div className="flex flex-col gap-2">
+        {status === 'done' ? (
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={onNext}
+              className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+            >
+              Next
+            </button>
+            <p className="text-lg font-bold text-[#31572A]">Batch poster changed!</p>
+          </div>
+        ) : (
           <button
-            type="button"
-            onClick={onNext}
+            type="submit"
+            disabled={status === 'loading'}
             className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
           >
-            Next
+            {status === 'loading' ? 'Loading...' : 'Submit'}
           </button>
-          <p className="text-lg font-bold text-[#31572A]">Batch poster changed!</p>
-        </div>
-      ) : (
-        <button
-          type="submit"
-          disabled={status === 'loading'}
-          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-        >
-          {status === 'loading' ? 'Loading...' : 'Submit'}
-        </button>
-      )}
-    </form>
+        )}
+      </form>
+    </div>
   );
 }
