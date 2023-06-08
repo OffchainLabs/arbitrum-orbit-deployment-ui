@@ -70,7 +70,7 @@ export function Review() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const rollupData = localStorage.getItem('rollupData');
+      const rollupData = localStorage.getItem('nodeConfig');
 
       if (rollupData) {
         let parsedData = JSON.parse(rollupData);
@@ -79,7 +79,7 @@ export function Review() {
         setData(cleanedData);
       }
 
-      const l3ConfigData = localStorage.getItem('l3Config');
+      const l3ConfigData = localStorage.getItem('orbitSetupScriptConfig');
 
       if (l3ConfigData) {
         setL3Config(JSON.parse(l3ConfigData));
