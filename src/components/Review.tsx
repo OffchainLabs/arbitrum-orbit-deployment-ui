@@ -70,7 +70,7 @@ export function Review() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const rollupData = localStorage.getItem('nodeConfig');
+      const rollupData = localStorage.getItem('rollupData');
 
       if (rollupData) {
         let parsedData = JSON.parse(rollupData);
@@ -79,7 +79,7 @@ export function Review() {
         setData(cleanedData);
       }
 
-      const l3ConfigData = localStorage.getItem('orbitSetupScriptConfig');
+      const l3ConfigData = localStorage.getItem('l3Config');
 
       if (l3ConfigData) {
         setL3Config(JSON.parse(l3ConfigData));
@@ -121,7 +121,7 @@ export function Review() {
       </a>
       <div className="flex flex-col gap-2">
         <button
-          onClick={() => downloadJSON(data, 'config.json')}
+          onClick={() => downloadJSON(data, 'nodeConfig.json')}
           className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
         >
           Download Rollup JSON
@@ -138,7 +138,7 @@ export function Review() {
           </pre>
         )}
         <button
-          onClick={() => downloadJSON(l3Config, 'l3Config.json')}
+          onClick={() => downloadJSON(l3Config, 'orbitSetupScriptConfig.json')}
           className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
         >
           Download L3Config JSON
