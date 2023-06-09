@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
+import { NumberParam, useQueryParams, withDefault } from 'use-query-params';
 
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
 import { RollupContractsSummary } from '@/components/RollupContractsSummary';
@@ -38,12 +39,12 @@ const stepsStyleProps = {
 };
 
 enum Step {
-  RollupDeploymentConfiguration = 0,
-  RollupDeploymentInProgress = 1,
-  RollupDeploymentDone = 2,
-  ValidatorConfiguration = 3,
-  BatchPosterConfiguration = 4,
-  Review = 5,
+  RollupDeploymentConfiguration = 1,
+  RollupDeploymentInProgress = 2,
+  RollupDeploymentDone = 3,
+  ValidatorConfiguration = 4,
+  BatchPosterConfiguration = 5,
+  Review = 6,
 }
 
 function StepTitle({ children }: { children: React.ReactNode }) {
@@ -71,9 +72,20 @@ const defaultRollupConfig: RollupConfig = {
   },
 };
 
+export function getServerSideProps() {
+  return {
+    props: {
+      //
+    },
+  };
+}
+
 export default function Configure() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
-  const [step, setStep] = useState<Step>(Step.RollupDeploymentConfiguration);
+
+  const [{ step }, setQueryParams] = useQueryParams({
+    step: withDefault(NumberParam, Step.RollupDeploymentConfiguration),
+  });
 
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(defaultRollupConfig);
   const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
@@ -83,8 +95,15 @@ export default function Configure() {
       return 0;
     }
 
-    return step - 2;
+    return step - 3;
   }, [step]);
+
+  const setStep = useCallback(
+    (_step: number) => {
+      setQueryParams({ step: _step });
+    },
+    [setQueryParams],
+  );
 
   async function handleDeployRollupFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -132,6 +151,7 @@ export default function Configure() {
             ) : (
               <div className="flex flex-col gap-4">
                 <button
+                  type="button"
                   ref={nextButtonRef}
                   onClick={() => setStep(Step.ValidatorConfiguration)}
                   className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
