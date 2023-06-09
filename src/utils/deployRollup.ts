@@ -112,8 +112,11 @@ export async function deployRollup(rollupConfig: RollupConfig): Promise<RollupCo
       },
     },
     'http': {
-      addr: '0.0.0.0',
-      port: 8449,
+      "addr": '0.0.0.0',
+      "port": 8449,
+      "vhosts": "*",
+      "corsdomain": "*",
+      "api": ["eth","net","web3","arb","debug"]
     },
     'node': {
       'forwarding-target': '',
@@ -140,6 +143,9 @@ export async function deployRollup(rollupConfig: RollupConfig): Promise<RollupCo
           'private-key': '',
         },
       },
+      "caching": {
+        "archive": true
+      }
     },
   };
 

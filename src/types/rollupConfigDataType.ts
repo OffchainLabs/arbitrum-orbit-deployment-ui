@@ -25,6 +25,9 @@ export type RollupConfigData = {
   'http': {
     addr: string;
     port: number;
+    vhosts: string;
+    corsdomain: string;
+    api: string[];
   };
   'node': {
     'forwarding-target': string;
@@ -51,5 +54,8 @@ export type RollupConfigData = {
         'private-key': string;
       };
     };
+      "caching": {
+        "archive": boolean;
+      };
   };
 };
