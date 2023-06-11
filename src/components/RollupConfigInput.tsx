@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 
 declare let window: Window & { ethereum: any };
 
 export type RollupConfig = {
   confirmPeriodBlocks: number;
   stakeToken: string;
-  baseStake: number;
+  baseStake: BigNumber;
   owner: string;
   extraChallengeTimeBlocks: number;
   wasmModuleRoot: string;
@@ -146,7 +146,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="number"
           name="baseStake"
-          value={value.baseStake}
+          value={value.baseStake.toString()}
           onChange={handleChange}
         />
       </div>

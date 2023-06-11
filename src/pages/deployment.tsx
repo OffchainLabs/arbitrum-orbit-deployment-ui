@@ -54,7 +54,7 @@ function StepTitle({ children }: { children: React.ReactNode }) {
 const defaultRollupConfig: RollupConfig = {
   confirmPeriodBlocks: 150,
   stakeToken: ethers.constants.AddressZero,
-  baseStake: 10000000,
+  baseStake: ethers.utils.parseEther('1'),
   owner: '',
   extraChallengeTimeBlocks: 0,
   // Needs to be changed after PR by Lee about new Wasm root
