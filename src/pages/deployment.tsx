@@ -52,7 +52,7 @@ function StepTitle({ children }: { children: React.ReactNode }) {
 }
 
 const defaultRollupConfig: RollupConfig = {
-  confirmPeriodBlocks: 20,
+  confirmPeriodBlocks: 150,
   stakeToken: ethers.constants.AddressZero,
   baseStake: 10000000,
   owner: '',
