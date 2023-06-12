@@ -6,7 +6,6 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useNetwork, useSigner } from 'wagmi';
 
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
-import { RollupContractsSummary } from '@/components/RollupContractsSummary';
 import { SetValidators } from '@/components/SetValidators';
 import { SetBatchPoster } from '@/components/SetBatchPoster';
 import { Review } from '@/components/Review';
@@ -14,7 +13,9 @@ import { Review } from '@/components/Review';
 import { spaceGrotesk } from '@/fonts';
 import { deployRollup } from '@/utils/deployRollup';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
-import { RollupContracts } from '@/types/RollupContracts';
+
+import { DeploymentPageContextProvider, useDeploymentPageContext } from './DeploymentPageContext';
+import { DeploymentSummary } from './DeploymentSummary';
 
 const steps = [
   {
@@ -50,7 +51,7 @@ enum Step {
 }
 
 function StepTitle({ children }: { children: React.ReactNode }) {
-  return <h1 className="text-left text-3xl">{children}</h1>;
+  return <h3 className="text-left text-3xl">{children}</h3>;
 }
 
 const defaultRollupConfig: RollupConfig = {
@@ -78,15 +79,7 @@ function getDefaultRollupConfig(owner: string = '') {
   return { ...defaultRollupConfig, owner };
 }
 
-export function getServerSideProps() {
-  return {
-    props: {
-      //
-    },
-  };
-}
-
-export default function Configure() {
+function DeploymentPage() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
@@ -96,8 +89,8 @@ export default function Configure() {
     step: withDefault(NumberParam, Step.RollupDeploymentConfiguration),
   });
 
+  const [, dispatch] = useDeploymentPageContext();
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(getDefaultRollupConfig(address));
-  const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
 
   // Set currently connected account as the owner
   useEffect(() => {
@@ -136,7 +129,10 @@ export default function Configure() {
 
     try {
       setStep(Step.RollupDeploymentInProgress);
-      setRollupContracts(await deployRollup({ rollupConfig, signer }));
+      dispatch({
+        type: 'set_rollup_contracts',
+        payload: await deployRollup({ rollupConfig, signer }),
+      });
       setStep(Step.RollupDeploymentDone);
     } catch (error) {
       setStep(Step.RollupDeploymentConfiguration);
@@ -171,75 +167,102 @@ export default function Configure() {
   return (
     <div className="items flex w-full flex-col" style={spaceGrotesk.style}>
       <header className="flex w-full justify-center">
-        <div className="flex w-[1440px] justify-end py-2">
+        <div className="flex w-[1024px] justify-end py-4">
           <ConnectButton />
         </div>
       </header>
       <main className="flex w-full justify-center">
-        <div className="flex w-[768px] flex-col items-center">
+        <div className="flex w-[1024px] flex-col items-center">
           <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
           <div className="h-16" />
 
-          {step < Step.ValidatorConfiguration && (
-            <form onSubmit={handleDeployRollupFormSubmit}>
-              <StepTitle>Configure & Deploy Rollup</StepTitle>
-              <div className="h-4" />
-              <RollupConfigInput
-                value={rollupConfig}
-                onChange={(value) => setRollupConfig(value)}
-              />
-              <div className="h-8" />
-              {step < Step.RollupDeploymentDone ? (
-                <button
-                  type="submit"
-                  disabled={step === Step.RollupDeploymentInProgress}
-                  className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-                >
-                  {step === Step.RollupDeploymentInProgress
-                    ? 'Deploying Rollup...'
-                    : 'Deploy Rollup'}
-                </button>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  <button
-                    type="button"
-                    ref={nextButtonRef}
-                    onClick={() => setStep(Step.ValidatorConfiguration)}
-                    className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-                  >
-                    Next
-                  </button>
-                  <RollupContractsSummary {...rollupContracts!} />
-                </div>
+          <div className="grid w-full grid-cols-2 gap-4">
+            <div>
+              {step < Step.ValidatorConfiguration && (
+                <form onSubmit={handleDeployRollupFormSubmit}>
+                  <StepTitle>Configure & Deploy Rollup</StepTitle>
+                  <div className="h-4" />
+                  <RollupConfigInput
+                    value={rollupConfig}
+                    onChange={(value) => setRollupConfig(value)}
+                  />
+                  <div className="h-8" />
+                  {step < Step.RollupDeploymentDone ? (
+                    <button
+                      type="submit"
+                      disabled={step === Step.RollupDeploymentInProgress}
+                      className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+                    >
+                      {step === Step.RollupDeploymentInProgress
+                        ? 'Deploying Rollup...'
+                        : 'Deploy Rollup'}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      ref={nextButtonRef}
+                      onClick={() => setStep(Step.ValidatorConfiguration)}
+                      className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+                    >
+                      Next
+                    </button>
+                  )}
+                </form>
               )}
-            </form>
-          )}
 
-          {step === Step.ValidatorConfiguration && (
-            <>
-              <StepTitle>Configure Validators</StepTitle>
-              <div className="h-4" />
-              <SetValidators onNext={() => setStep(Step.BatchPosterConfiguration)} />
-            </>
-          )}
+              {step === Step.ValidatorConfiguration && (
+                <>
+                  <StepTitle>Configure Validators</StepTitle>
+                  <div className="h-4" />
+                  <SetValidators onNext={() => setStep(Step.BatchPosterConfiguration)} />
+                </>
+              )}
 
-          {step === Step.BatchPosterConfiguration && (
-            <>
-              <StepTitle>Configure Batch Poster</StepTitle>
-              <div className="h-4" />
-              <SetBatchPoster onNext={() => setStep(Step.Review)} />
-            </>
-          )}
+              {step === Step.BatchPosterConfiguration && (
+                <>
+                  <StepTitle>Configure Batch Poster</StepTitle>
+                  <div className="h-4" />
+                  <SetBatchPoster onNext={() => setStep(Step.Review)} />
+                </>
+              )}
 
-          {step === Step.Review && (
-            <>
-              <StepTitle>Review & Download Config</StepTitle>
+              {step === Step.Review && (
+                <>
+                  <StepTitle>Review & Download Config</StepTitle>
+                  <div className="h-4" />
+                  <Review />
+                </>
+              )}
+            </div>
+            <div>
+              <StepTitle>Deployment Summary</StepTitle>
               <div className="h-4" />
-              <Review />
-            </>
-          )}
+
+              {step < Step.RollupDeploymentDone ? (
+                <div>Deployment summary will appear after the rollup is deployed.</div>
+              ) : (
+                <DeploymentSummary />
+              )}
+            </div>
+          </div>
         </div>
       </main>
     </div>
+  );
+}
+
+export function getServerSideProps() {
+  return {
+    props: {
+      //
+    },
+  };
+}
+
+export default function DeploymentPageWithContext() {
+  return (
+    <DeploymentPageContextProvider>
+      <DeploymentPage />
+    </DeploymentPageContextProvider>
   );
 }
