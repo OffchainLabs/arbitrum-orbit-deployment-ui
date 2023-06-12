@@ -4,7 +4,7 @@ import { NextAdapter } from 'next-query-params';
 import queryString from 'query-string';
 import { WagmiConfig } from 'wagmi';
 import { arbitrumGoerli } from 'wagmi/chains';
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 
 import '@rainbow-me/rainbowkit/styles.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css'; // theme
@@ -14,6 +14,7 @@ import 'primeflex/primeflex.css';
 
 import '@/styles/globals.css';
 import { wagmiClient, chains, appInfo } from '@/setupWagmi';
+import { spaceGrotesk } from '@/fonts';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -26,7 +27,19 @@ export default function App({ Component, pageProps }: AppProps) {
       }}
     >
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains} appInfo={appInfo} initialChain={arbitrumGoerli}>
+        <RainbowKitProvider
+          chains={chains}
+          appInfo={appInfo}
+          initialChain={arbitrumGoerli}
+          theme={{
+            ...darkTheme({
+              accentColor: '#243145',
+            }),
+            fonts: {
+              body: spaceGrotesk.style.fontFamily,
+            },
+          }}
+        >
           <Component {...pageProps} />
         </RainbowKitProvider>
       </WagmiConfig>
