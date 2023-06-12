@@ -40,7 +40,9 @@ export default function App({ Component, pageProps }: AppProps) {
             },
           }}
         >
-          <Component {...pageProps} />
+          <div style={spaceGrotesk.style}>
+            <Component {...pageProps} />
+          </div>
         </RainbowKitProvider>
       </WagmiConfig>
     </QueryParamProvider>

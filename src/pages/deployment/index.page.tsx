@@ -165,7 +165,7 @@ function DeploymentPage() {
   }
 
   return (
-    <div className="items flex w-full flex-col" style={spaceGrotesk.style}>
+    <div className="items flex w-full flex-col">
       <header className="flex w-full justify-center">
         <div className="flex w-[1024px] justify-end py-4">
           <ConnectButton />
@@ -247,6 +247,8 @@ function DeploymentPage() {
           </div>
         </div>
       </main>
+
+      <div className="h-16" />
     </div>
   );
 }
