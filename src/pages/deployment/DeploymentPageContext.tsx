@@ -8,18 +8,27 @@ type DeploymentPageContextState = {
   batchPoster?: string;
 };
 
+const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
+  rollupContracts: undefined,
+  validators: undefined,
+  batchPoster: undefined,
+};
+
 function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState {
-  if (typeof window === 'undefined') {
-    return {};
+  const stateInLocalStorage = localStorage.getItem('arbitrum:orbit:state');
+
+  if (typeof window === 'undefined' || stateInLocalStorage === null) {
+    return deploymentPageContextStateDefaultValue;
   }
 
-  return JSON.parse(localStorage.getItem('arbitrum:orbit:state') ?? '{}');
+  return JSON.parse(stateInLocalStorage);
 }
 
 type DeploymentPageContextAction =
   | { type: 'set_rollup_contracts'; payload: RollupContracts }
   | { type: 'set_validators'; payload: string[] }
-  | { type: 'set_batch_poster'; payload: string };
+  | { type: 'set_batch_poster'; payload: string }
+  | { type: 'reset' };
 
 type DeploymentPageContextValue = [
   DeploymentPageContextState,
@@ -44,6 +53,9 @@ function reducer(
 
     case 'set_batch_poster':
       return { ...state, batchPoster: action.payload };
+
+    case 'reset':
+      return deploymentPageContextStateDefaultValue;
 
     default:
       return state;
