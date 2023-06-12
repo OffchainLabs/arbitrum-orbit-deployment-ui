@@ -74,6 +74,10 @@ const defaultRollupConfig: RollupConfig = {
   },
 };
 
+function getDefaultRollupConfig(owner: string = '') {
+  return { ...defaultRollupConfig, owner };
+}
+
 export function getServerSideProps() {
   return {
     props: {
@@ -84,7 +88,7 @@ export function getServerSideProps() {
 
 export default function Configure() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const { data: signer } = useSigner();
 
@@ -92,7 +96,7 @@ export default function Configure() {
     step: withDefault(NumberParam, Step.RollupDeploymentConfiguration),
   });
 
-  const [rollupConfig, setRollupConfig] = useState<RollupConfig>(defaultRollupConfig);
+  const [rollupConfig, setRollupConfig] = useState<RollupConfig>(getDefaultRollupConfig(address));
   const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
 
   const activeIndex = useMemo(() => {
