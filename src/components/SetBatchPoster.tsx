@@ -5,6 +5,7 @@ import { useNetwork, useSigner } from 'wagmi';
 
 import SequencerInboxJSON from '@/ethereum/SequencerInbox.json';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
+import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 
 // Define the ABI for the SequencerInbox contract
 const SequencerInboxABI = SequencerInboxJSON.abi;
@@ -13,6 +14,7 @@ const SequencerInboxABI = SequencerInboxJSON.abi;
 export function SetBatchPoster({ onNext }: { onNext: () => void }) {
   const { chain } = useNetwork();
   const { data: signer } = useSigner();
+  const [, dispatch] = useDeploymentPageContext();
 
   // State variables for Ethereum address and status message
   const [ethAddress, setEthAddress] = useState('');
@@ -78,6 +80,7 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
       // Send the transaction to the network and wait for the receipt
       await tx.wait();
 
+      dispatch({ type: 'set_batch_poster', payload: ethAddress });
       setStatus('done'); // Set the transaction as successful
 
       // If the transaction is successful, save the private key to rollupData

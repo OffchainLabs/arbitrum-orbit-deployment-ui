@@ -4,6 +4,7 @@ import { useNetwork, useSigner } from 'wagmi';
 
 import RollupAdminLogicABIJSON from '@/ethereum/RollupAdminLogic.json';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
+import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 
 const RollupAdminLogicABI = RollupAdminLogicABIJSON.abi;
 
@@ -18,6 +19,7 @@ const stakerAddress = staker.address;
 export function SetValidators({ onNext }: { onNext: () => void }) {
   const { chain } = useNetwork();
   const { data: signer } = useSigner();
+  const [, dispatch] = useDeploymentPageContext();
 
   const [rollupAddress, setRollupAddress] = useState('');
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]);
@@ -92,6 +94,7 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
       const tx = await rollupAdminLogic.setValidator(validators, bools);
       await tx.wait();
 
+      dispatch({ type: 'set_validators', payload: validators });
       setStatus('done');
     } catch (error) {
       setStatus('idle');
