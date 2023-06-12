@@ -14,7 +14,8 @@ import { Review } from '@/components/Review';
 import { spaceGrotesk } from '@/fonts';
 import { deployRollup } from '@/utils/deployRollup';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
-import { RollupContracts } from '@/types/RollupContracts';
+
+import { DeploymentPageContextProvider, useDeploymentPageContext } from './DeploymentPageContext';
 
 const steps = [
   {
@@ -78,15 +79,7 @@ function getDefaultRollupConfig(owner: string = '') {
   return { ...defaultRollupConfig, owner };
 }
 
-export function getServerSideProps() {
-  return {
-    props: {
-      //
-    },
-  };
-}
-
-export default function Configure() {
+function DeploymentPage() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
@@ -96,8 +89,8 @@ export default function Configure() {
     step: withDefault(NumberParam, Step.RollupDeploymentConfiguration),
   });
 
+  const [{ rollupContracts }, dispatch] = useDeploymentPageContext();
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(getDefaultRollupConfig(address));
-  const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
 
   // Set currently connected account as the owner
   useEffect(() => {
@@ -136,7 +129,10 @@ export default function Configure() {
 
     try {
       setStep(Step.RollupDeploymentInProgress);
-      setRollupContracts(await deployRollup({ rollupConfig, signer }));
+      dispatch({
+        type: 'set_rollup_contracts',
+        payload: await deployRollup({ rollupConfig, signer }),
+      });
       setStep(Step.RollupDeploymentDone);
     } catch (error) {
       setStep(Step.RollupDeploymentConfiguration);
@@ -241,5 +237,21 @@ export default function Configure() {
         </div>
       </main>
     </div>
+  );
+}
+
+export function getServerSideProps() {
+  return {
+    props: {
+      //
+    },
+  };
+}
+
+export default function DeploymentPageWithContext() {
+  return (
+    <DeploymentPageContextProvider>
+      <DeploymentPage />
+    </DeploymentPageContextProvider>
   );
 }
