@@ -99,6 +99,13 @@ export default function Configure() {
   const [rollupConfig, setRollupConfig] = useState<RollupConfig>(getDefaultRollupConfig(address));
   const [rollupContracts, setRollupContracts] = useState<RollupContracts | undefined>(undefined);
 
+  // Set currently connected account as the owner
+  useEffect(() => {
+    if (typeof address !== 'undefined') {
+      setRollupConfig({ ...rollupConfig, owner: address });
+    }
+  }, [address]);
+
   const activeIndex = useMemo(() => {
     if (step < Step.ValidatorConfiguration) {
       return 0;

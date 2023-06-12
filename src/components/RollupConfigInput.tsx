@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { useAccount } from 'wagmi';
 
 export type RollupConfig = {
   confirmPeriodBlocks: number;
@@ -30,18 +29,7 @@ export type RollupConfigInputProps = {
 };
 
 export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
-  const { address } = useAccount();
   const [stakeTokenType, setStakeTokenType] = useState<StakeTokenType>('ETH');
-
-  useEffect(() => {
-    async function updateOwner() {
-      if (typeof address !== 'undefined') {
-        onChange({ ...value, owner: address });
-      }
-    }
-
-    updateOwner();
-  }, [address]);
 
   useEffect(() => {
     // If change backed to ETH, reset to 0x0
