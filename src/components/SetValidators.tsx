@@ -126,7 +126,7 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#step-3-configure-your-appchains-validators`}
           className="font-light text-[#6D6D6D] underline"
         >
           Read about Validators in the docs
