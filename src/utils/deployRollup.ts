@@ -174,6 +174,7 @@ export async function deployRollup({
   const rollupContracts: RollupContracts = {
     rollup: rollupCreatedEvent.args.rollupAddress,
     inbox: rollupCreatedEvent.args.inboxAddress,
+    outbox: await rollupCore.outbox(),
     adminProxy: rollupCreatedEvent.args.adminProxy,
     sequencerInbox: rollupCreatedEvent.args.sequencerInbox,
     bridge: rollupCreatedEvent.args.bridge,

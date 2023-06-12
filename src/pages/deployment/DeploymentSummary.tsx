@@ -59,6 +59,14 @@ export function DeploymentSummary() {
               </BlockExplorerLink>
             </li>
             <li className="flex flex-col">
+              <span className="font-bold">Outbox address:</span>
+              <BlockExplorerLink
+                href={`https://goerli.arbiscan.io/address/${rollupContracts.outbox}`}
+              >
+                {rollupContracts.outbox}
+              </BlockExplorerLink>
+            </li>
+            <li className="flex flex-col">
               <span className="font-bold">Admin Proxy address: </span>
               <BlockExplorerLink
                 href={`https://goerli.arbiscan.io/address/${rollupContracts.adminProxy}`}
