@@ -4,7 +4,7 @@ import { NextAdapter } from 'next-query-params';
 import queryString from 'query-string';
 import { WagmiConfig } from 'wagmi';
 import { arbitrumGoerli } from 'wagmi/chains';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 
 import '@rainbow-me/rainbowkit/styles.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css'; // theme
@@ -32,7 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
           appInfo={appInfo}
           initialChain={arbitrumGoerli}
           theme={{
-            ...darkTheme({
+            ...lightTheme({
               accentColor: '#243145',
             }),
             fonts: {
