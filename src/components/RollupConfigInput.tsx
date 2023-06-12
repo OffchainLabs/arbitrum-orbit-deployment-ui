@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ethers, BigNumber } from 'ethers';
+import { ethers, BigNumber, utils } from 'ethers';
 
 export type RollupConfig = {
   confirmPeriodBlocks: number;
@@ -28,6 +28,14 @@ export type RollupConfigInputProps = {
   onChange: (config: RollupConfig) => void;
 };
 
+function tryParseEther(ether: string): BigNumber {
+  try {
+    return utils.parseEther(ether);
+  } catch (error) {
+    return ethers.constants.Zero;
+  }
+}
+
 export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
   const [stakeTokenType, setStakeTokenType] = useState<StakeTokenType>('ETH');
 
@@ -40,7 +48,12 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name: inputName, value: inputValue } = event.target;
-    onChange({ ...value, [inputName]: inputValue });
+
+    if (inputName === 'baseStake') {
+      onChange({ ...value, [inputName]: tryParseEther(inputValue) });
+    } else {
+      onChange({ ...value, [inputName]: inputValue });
+    }
   }
 
   return (
@@ -147,7 +160,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
       </div>
       <div className="flex flex-col gap-2">
         <label htmlFor="baseStake" className="font-bold">
-          Base Stake
+          Base Stake (in Ether)
         </label>
         <a
           target="_blank"
@@ -161,7 +174,8 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="number"
           name="baseStake"
-          value={value.baseStake.toString()}
+          step={0.1}
+          value={utils.formatEther(value.baseStake)}
           onChange={handleChange}
         />
       </div>

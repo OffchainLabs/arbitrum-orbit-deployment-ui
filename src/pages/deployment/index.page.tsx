@@ -168,7 +168,7 @@ function DeploymentPage() {
         <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
         <div className="h-16" />
 
-        <div className="grid w-full grid-cols-2 gap-4">
+        <div className="grid w-full grid-cols-2 gap-4 pb-8">
           <div>
             {step < Step.ValidatorConfiguration && (
               <form onSubmit={handleDeployRollupFormSubmit}>
