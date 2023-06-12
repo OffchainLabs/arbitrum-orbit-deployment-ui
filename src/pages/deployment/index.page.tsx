@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
 import { NumberParam, useQueryParams, withDefault } from 'use-query-params';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useNetwork, useSigner } from 'wagmi';
 
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
@@ -152,114 +151,94 @@ function DeploymentPage() {
 
   if (!isConnected) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
+      <div className="flex h-[calc(100vh-120px)] w-full items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-col items-center gap-2">
-            <h1 className="text-4xl font-bold">Welcome to Arbitrum Orbit!</h1>
-            <p className="text-xl">Please connect your wallet to continue.</p>
+            <p className="text-xl font-medium">Please connect your wallet to continue.</p>
           </div>
-          <ConnectButton />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="items flex w-full flex-col">
-      <header className="flex w-full justify-center">
-        <div className="flex w-[1024px] flex-col gap-2 py-4">
-          <div className="flex w-full items-center justify-between">
-            <h1 className="text-2xl font-bold">Arbitrum Orbit</h1>
-            <ConnectButton />
+    <main className="flex w-full justify-center">
+      <div className="flex w-[1024px] flex-col items-center">
+        <div className="h-8" />
+        <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
+        <div className="h-16" />
+
+        <div className="grid w-full grid-cols-2 gap-4">
+          <div>
+            {step < Step.ValidatorConfiguration && (
+              <form onSubmit={handleDeployRollupFormSubmit}>
+                <StepTitle>Configure & Deploy Rollup</StepTitle>
+                <div className="h-4" />
+                <RollupConfigInput
+                  value={rollupConfig}
+                  onChange={(value) => setRollupConfig(value)}
+                />
+                <div className="h-8" />
+                {step < Step.RollupDeploymentDone ? (
+                  <button
+                    type="submit"
+                    disabled={step === Step.RollupDeploymentInProgress}
+                    className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+                  >
+                    {step === Step.RollupDeploymentInProgress
+                      ? 'Deploying Rollup...'
+                      : 'Deploy Rollup'}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    ref={nextButtonRef}
+                    onClick={() => setStep(Step.ValidatorConfiguration)}
+                    className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+                  >
+                    Next
+                  </button>
+                )}
+              </form>
+            )}
+
+            {step === Step.ValidatorConfiguration && (
+              <>
+                <StepTitle>Configure Validators</StepTitle>
+                <div className="h-4" />
+                <SetValidators onNext={() => setStep(Step.BatchPosterConfiguration)} />
+              </>
+            )}
+
+            {step === Step.BatchPosterConfiguration && (
+              <>
+                <StepTitle>Configure Batch Poster</StepTitle>
+                <div className="h-4" />
+                <SetBatchPoster onNext={() => setStep(Step.Review)} />
+              </>
+            )}
+
+            {step === Step.Review && (
+              <>
+                <StepTitle>Review & Download Config</StepTitle>
+                <div className="h-4" />
+                <Review />
+              </>
+            )}
           </div>
           <div>
-            <span className="rounded-lg bg-[#FFEED3] px-3 py-2 text-sm text-[#60461F]">
-              This tool is in alpha, and for local devnet deployment only.
-            </span>
+            <StepTitle>Deployment Summary</StepTitle>
+            <div className="h-4" />
+
+            {step < Step.RollupDeploymentDone ? (
+              <div>Deployment summary will appear after the rollup is deployed.</div>
+            ) : (
+              <DeploymentSummary />
+            )}
           </div>
         </div>
-      </header>
-
-      <main className="flex w-full justify-center">
-        <div className="flex w-[1024px] flex-col items-center">
-          <div className="h-8" />
-          <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
-          <div className="h-16" />
-
-          <div className="grid w-full grid-cols-2 gap-4">
-            <div>
-              {step < Step.ValidatorConfiguration && (
-                <form onSubmit={handleDeployRollupFormSubmit}>
-                  <StepTitle>Configure & Deploy Rollup</StepTitle>
-                  <div className="h-4" />
-                  <RollupConfigInput
-                    value={rollupConfig}
-                    onChange={(value) => setRollupConfig(value)}
-                  />
-                  <div className="h-8" />
-                  {step < Step.RollupDeploymentDone ? (
-                    <button
-                      type="submit"
-                      disabled={step === Step.RollupDeploymentInProgress}
-                      className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-                    >
-                      {step === Step.RollupDeploymentInProgress
-                        ? 'Deploying Rollup...'
-                        : 'Deploy Rollup'}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      ref={nextButtonRef}
-                      onClick={() => setStep(Step.ValidatorConfiguration)}
-                      className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-                    >
-                      Next
-                    </button>
-                  )}
-                </form>
-              )}
-
-              {step === Step.ValidatorConfiguration && (
-                <>
-                  <StepTitle>Configure Validators</StepTitle>
-                  <div className="h-4" />
-                  <SetValidators onNext={() => setStep(Step.BatchPosterConfiguration)} />
-                </>
-              )}
-
-              {step === Step.BatchPosterConfiguration && (
-                <>
-                  <StepTitle>Configure Batch Poster</StepTitle>
-                  <div className="h-4" />
-                  <SetBatchPoster onNext={() => setStep(Step.Review)} />
-                </>
-              )}
-
-              {step === Step.Review && (
-                <>
-                  <StepTitle>Review & Download Config</StepTitle>
-                  <div className="h-4" />
-                  <Review />
-                </>
-              )}
-            </div>
-            <div>
-              <StepTitle>Deployment Summary</StepTitle>
-              <div className="h-4" />
-
-              {step < Step.RollupDeploymentDone ? (
-                <div>Deployment summary will appear after the rollup is deployed.</div>
-              ) : (
-                <DeploymentSummary />
-              )}
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <div className="h-16" />
-    </div>
+      </div>
+    </main>
   );
 }
 

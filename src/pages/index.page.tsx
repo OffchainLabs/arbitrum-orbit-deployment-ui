@@ -2,10 +2,10 @@ import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex h-[calc(100vh-120px)] w-full justify-center">
+      <div className="flex h-[calc(100vh-120px)] w-[1440px] flex-col items-center justify-center gap-32">
         <div className="">
-          <Image src="/logo.svg" alt="Logo" width={250} height={250} />
+          <Image src="/logo.svg" alt="Logo" width={192} height={192} />
         </div>
 
         <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
@@ -73,7 +73,7 @@ export default function Home() {
             <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>Coming Soon! Stay tuned!</p>
           </a>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

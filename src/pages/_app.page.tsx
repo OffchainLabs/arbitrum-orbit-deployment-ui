@@ -4,7 +4,7 @@ import { NextAdapter } from 'next-query-params';
 import queryString from 'query-string';
 import { WagmiConfig } from 'wagmi';
 import { arbitrumGoerli } from 'wagmi/chains';
-import { RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, ConnectButton, lightTheme } from '@rainbow-me/rainbowkit';
 
 import '@rainbow-me/rainbowkit/styles.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css'; // theme
@@ -40,7 +40,21 @@ export default function App({ Component, pageProps }: AppProps) {
             },
           }}
         >
-          <div style={spaceGrotesk.style}>
+          <div className="items flex w-full flex-col" style={spaceGrotesk.style}>
+            <header className="flex w-full justify-center">
+              <div className="flex w-[1024px] flex-col gap-2 py-4">
+                <div className="flex w-full items-center justify-between">
+                  <h1 className="text-2xl font-bold">Arbitrum Orbit</h1>
+                  <ConnectButton />
+                </div>
+                <div>
+                  <span className="rounded-lg bg-[#FFEED3] px-3 py-2 text-sm text-[#60461F]">
+                    This tool is in alpha, and for local devnet deployment only.
+                  </span>
+                </div>
+              </div>
+            </header>
+
             <Component {...pageProps} />
           </div>
         </RainbowKitProvider>
