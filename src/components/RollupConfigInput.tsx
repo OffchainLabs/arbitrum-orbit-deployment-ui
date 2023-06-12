@@ -78,6 +78,14 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
         <label htmlFor="chainName" className="font-bold">
           Chain Name
         </label>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#chain-name`}
+          className="font-light text-[#6D6D6D] underline"
+        >
+          Read about Chain Name in the docs
+        </a>
         <input
           className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
           type="text"
