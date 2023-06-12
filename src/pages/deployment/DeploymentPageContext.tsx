@@ -15,9 +15,13 @@ const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
 };
 
 function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState {
+  if (typeof window === 'undefined') {
+    return deploymentPageContextStateDefaultValue;
+  }
+
   const stateInLocalStorage = localStorage.getItem('arbitrum:orbit:state');
 
-  if (typeof window === 'undefined' || stateInLocalStorage === null) {
+  if (stateInLocalStorage === null) {
     return deploymentPageContextStateDefaultValue;
   }
 
