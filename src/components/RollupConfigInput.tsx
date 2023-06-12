@@ -119,9 +119,10 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           Read about Stake Token in the docs
         </a>
         <select
+          disabled
           value={stakeTokenType}
           onChange={(event) => setStakeTokenType(event.target.value as StakeTokenType)}
-          className="rounded-lg border border-[#6D6D6D] bg-white px-3 py-2 shadow-input"
+          className="cursor-not-allowed rounded-lg border border-[#6D6D6D] bg-white px-3 py-2 shadow-input"
         >
           <option>ETH</option>
           <option>Custom</option>
