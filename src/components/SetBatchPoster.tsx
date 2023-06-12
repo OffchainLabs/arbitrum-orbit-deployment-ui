@@ -149,7 +149,7 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
             disabled={status === 'loading'}
             className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
           >
-            {status === 'loading' ? 'Loading...' : 'Submit'}
+            {status === 'loading' ? 'Waiting...' : 'Submit'}
           </button>
         )}
       </form>
