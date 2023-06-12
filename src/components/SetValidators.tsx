@@ -143,7 +143,7 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
               placeholder={`Address ${index + 1}`}
               value={input.address}
               onChange={(e) => (index !== 0 ? handleAddressInput(e, index) : null)}
-              readOnly={index === 0}
+              disabled={index === 0}
               className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
             />
           </div>
