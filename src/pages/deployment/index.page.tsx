@@ -167,12 +167,22 @@ function DeploymentPage() {
   return (
     <div className="items flex w-full flex-col">
       <header className="flex w-full justify-center">
-        <div className="flex w-[1024px] justify-end py-4">
-          <ConnectButton />
+        <div className="flex w-[1024px] flex-col gap-2 py-4">
+          <div className="flex w-full items-center justify-between">
+            <h1 className="text-2xl font-bold">Arbitrum Orbit</h1>
+            <ConnectButton />
+          </div>
+          <div>
+            <span className="rounded-lg bg-[#FFEED3] px-3 py-2 text-sm text-[#60461F]">
+              This tool is in alpha, and for local devnet deployment only.
+            </span>
+          </div>
         </div>
       </header>
+
       <main className="flex w-full justify-center">
         <div className="flex w-[1024px] flex-col items-center">
+          <div className="h-8" />
           <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
           <div className="h-16" />
 
