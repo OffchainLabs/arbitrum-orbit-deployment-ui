@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { BigNumber } from 'ethers';
+import { useEffect, useState } from 'react';
+import { ethers, BigNumber } from 'ethers';
 import { useAccount } from 'wagmi';
 
 export type RollupConfig = {
@@ -22,6 +22,8 @@ export type RollupConfig = {
   };
 };
 
+type StakeTokenType = 'ETH' | 'Custom';
+
 export type RollupConfigInputProps = {
   value: RollupConfig;
   onChange: (config: RollupConfig) => void;
@@ -29,6 +31,7 @@ export type RollupConfigInputProps = {
 
 export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
   const { address } = useAccount();
+  const [stakeTokenType, setStakeTokenType] = useState<StakeTokenType>('ETH');
 
   useEffect(() => {
     async function updateOwner() {
@@ -39,6 +42,13 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
 
     updateOwner();
   }, [address]);
+
+  useEffect(() => {
+    // If change backed to ETH, reset to 0x0
+    if (stakeTokenType === 'ETH') {
+      onChange({ ...value, stakeToken: ethers.constants.AddressZero });
+    }
+  }, [stakeTokenType]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name: inputName, value: inputValue } = event.target;
@@ -120,13 +130,22 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
         >
           Read about Stake Token in the docs
         </a>
-        <input
-          className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
-          type="text"
-          name="stakeToken"
-          value={value.stakeToken}
-          onChange={handleChange}
-        />
+        <select
+          value={stakeTokenType}
+          onChange={(event) => setStakeTokenType(event.target.value as StakeTokenType)}
+        >
+          <option>ETH</option>
+          <option>Custom</option>
+        </select>
+        {stakeTokenType === 'Custom' && (
+          <input
+            className="rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
+            type="text"
+            name="stakeToken"
+            value={value.stakeToken}
+            onChange={handleChange}
+          />
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <label htmlFor="baseStake" className="font-bold">
