@@ -54,9 +54,12 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
 
   const handleAddressCount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value);
-    if (count >= 1) {
+    // Limit to 16 max
+    const safeCount = count > 16 ? 16 : count;
+
+    if (safeCount >= 1) {
       const additionalInputs =
-        count > 1 ? Array.from({ length: count - 1 }, () => ({ address: '' })) : [];
+        safeCount > 1 ? Array.from({ length: safeCount - 1 }, () => ({ address: '' })) : [];
 
       // Update the first address only if it's not already set
       const firstAddress = addressInputs[0]?.address || '';
@@ -132,6 +135,8 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
           name="numberOfValidators"
           type="number"
           placeholder="Number of addresses"
+          min={1}
+          max={16}
           defaultValue={1}
           onChange={handleAddressCount}
           className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
