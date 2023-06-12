@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
+    "@rainbow-me/rainbowkit": "^0.12.3",
     "ethers": "^5.7.0",
     "next": "13.3.4",
     "next-query-params": "^4.2.1",
@@ -21,6 +22,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "use-query-params": "^2.2.1",
+    "wagmi": "^0.12.3",
     "web3modal": "^1.9.12"
   },
   "devDependencies": {

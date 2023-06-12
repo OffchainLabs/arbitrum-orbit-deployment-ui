@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
-import { BigNumber, ethers } from 'ethers';
-
-declare let window: Window & { ethereum: any };
+import { useEffect } from 'react';
+import { BigNumber } from 'ethers';
+import { useAccount } from 'wagmi';
 
 export type RollupConfig = {
   confirmPeriodBlocks: number;
@@ -29,18 +28,17 @@ export type RollupConfigInputProps = {
 };
 
 export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
+  const { address } = useAccount();
+
   useEffect(() => {
     async function updateOwner() {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const address = await signer.getAddress();
-
-      onChange({ ...value, owner: address });
+      if (typeof address !== 'undefined') {
+        onChange({ ...value, owner: address });
+      }
     }
 
     updateOwner();
-  }, []);
+  }, [address]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name: inputName, value: inputValue } = event.target;

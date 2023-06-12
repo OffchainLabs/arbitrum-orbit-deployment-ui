@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { Signer } from '@ethersproject/abstract-signer';
 
 import { RollupConfig } from '@/components/RollupConfigInput';
 import { L3Config } from '@/types/l3ConfigType';
@@ -7,9 +8,6 @@ import { RollupConfigData } from '@/types/rollupConfigDataType';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
 import { RollupContracts } from '@/types/RollupContracts';
-
-// Extend Window object to include the ethereum property for MetaMask
-declare let window: Window & { ethereum: any };
 
 // Function to update local storage with new rollup data and l3 data
 function updateLocalStorage(data: RollupConfigData, l3config: L3Config) {
@@ -32,16 +30,15 @@ function updateLocalStorage(data: RollupConfigData, l3config: L3Config) {
   localStorage.setItem('l3Config', JSON.stringify(updatedL3Config));
 }
 
-export async function deployRollup(rollupConfig: RollupConfig): Promise<RollupContracts> {
-  // getting the provider and signer from wallet
-  if (!window.ethereum) {
-    throw new Error('Please install MetaMask');
-  }
+type DeployRollupProps = {
+  rollupConfig: RollupConfig;
+  signer: Signer;
+};
 
-  await window.ethereum.request({ method: 'eth_requestAccounts' });
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-
+export async function deployRollup({
+  rollupConfig,
+  signer,
+}: DeployRollupProps): Promise<RollupContracts> {
   // Defining L3 config
   const l3Config: L3Config = {
     minL2BaseFee: 100000000,
@@ -112,11 +109,11 @@ export async function deployRollup(rollupConfig: RollupConfig): Promise<RollupCo
       },
     },
     'http': {
-      "addr": '0.0.0.0',
-      "port": 8449,
-      "vhosts": "*",
-      "corsdomain": "*",
-      "api": ["eth","net","web3","arb","debug"]
+      addr: '0.0.0.0',
+      port: 8449,
+      vhosts: '*',
+      corsdomain: '*',
+      api: ['eth', 'net', 'web3', 'arb', 'debug'],
     },
     'node': {
       'forwarding-target': '',
@@ -143,9 +140,9 @@ export async function deployRollup(rollupConfig: RollupConfig): Promise<RollupCo
           'private-key': '',
         },
       },
-      "caching": {
-        "archive": true
-      }
+      'caching': {
+        archive: true,
+      },
     },
   };
 

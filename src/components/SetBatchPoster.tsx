@@ -1,6 +1,7 @@
 // Import necessary libraries and JSON files
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { useNetwork, useSigner } from 'wagmi';
 
 import SequencerInboxJSON from '@/ethereum/SequencerInbox.json';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
@@ -8,11 +9,11 @@ import { isUserRejectedError } from '@/utils/isUserRejectedError';
 // Define the ABI for the SequencerInbox contract
 const SequencerInboxABI = SequencerInboxJSON.abi;
 
-// Extend Window object to include the ethereum property for MetaMask
-declare let window: Window & { ethereum: any };
-
 // Define the SetBatchPoster component
 export function SetBatchPoster({ onNext }: { onNext: () => void }) {
+  const { chain } = useNetwork();
+  const { data: signer } = useSigner();
+
   // State variables for Ethereum address and status message
   const [ethAddress, setEthAddress] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
@@ -45,13 +46,19 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (chain?.unsupported) {
+      return alert(
+        'You are connected to the wrong network.\nPlease make sure you are connected to Arbitrum Goerli.',
+      );
+    }
+
+    if (!signer) {
+      return alert("Error! Couldn't find a signer.");
+    }
+
     setStatus('loading');
 
     try {
-      // Connect to Ethereum network via MetaMask
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-
       // Make sure the sequencerInboxAddress is not null
       if (sequencerInboxAddress === null) {
         alert('Error: Sequencer Inbox Address not found');

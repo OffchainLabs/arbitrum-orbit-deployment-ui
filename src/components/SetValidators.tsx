@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { useNetwork, useSigner } from 'wagmi';
 
 import RollupAdminLogicABIJSON from '@/ethereum/RollupAdminLogic.json';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
 
 const RollupAdminLogicABI = RollupAdminLogicABIJSON.abi;
-declare let window: Window & { ethereum: any };
 
 interface AddressInput {
   address: string;
@@ -16,6 +16,9 @@ const stakerPrivateKey = staker.privateKey;
 const stakerAddress = staker.address;
 
 export function SetValidators({ onNext }: { onNext: () => void }) {
+  const { chain } = useNetwork();
+  const { data: signer } = useSigner();
+
   const [rollupAddress, setRollupAddress] = useState('');
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]);
   const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
@@ -68,11 +71,19 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (chain?.unsupported) {
+      return alert(
+        'You are connected to the wrong network.\nPlease make sure you are connected to Arbitrum Goerli.',
+      );
+    }
+
+    if (!signer) {
+      return alert("Error! Couldn't find a signer.");
+    }
+
     setStatus('loading');
 
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
       const rollupAdminLogic = new ethers.Contract(rollupAddress, RollupAdminLogicABI, signer);
 
       const validators = addressInputs.map((input) => input.address);
