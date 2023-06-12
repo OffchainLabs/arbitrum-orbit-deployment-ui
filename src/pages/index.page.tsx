@@ -16,14 +16,12 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={`mb-3 text-2xl font-semibold`}>
-              Parameters{' '}
+              Deploy Rollup{' '}
               <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
                 -&gt;
               </span>
             </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Configure your L3 chain with desired parameters here
-            </p>
+            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>Configure your L3 chain here</p>
           </a>
 
           <a
@@ -33,12 +31,14 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={`mb-3 text-2xl font-semibold`}>
-              Learn{' '}
+              Learn about Orbit{' '}
               <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
                 -&gt;
               </span>
             </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>Learn about Orbit chains!</p>
+            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
+              Dig into the details of how this works
+            </p>
           </a>
 
           <a
@@ -48,29 +48,32 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={`mb-3 text-2xl font-semibold`}>
-              Get in touch{' '}
+              Get in Touch{' '}
               <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
                 -&gt;
               </span>
             </h2>
             <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              If you are thinking about your L3 chain, fill this form
+              Connect with us to learn if L3 makes sense for you
             </p>
           </a>
 
           <a
-            href=""
+            href="https://discord.gg/KsewXePB"
             className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
             target="_blank"
             rel="noopener noreferrer"
           >
             <h2 className={`mb-3 text-2xl font-semibold`}>
-              How to configure your chain?{' '}
+              Get Support{' '}
               <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
                 -&gt;
               </span>
             </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>Coming Soon! Stay tuned!</p>
+            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
+              Join the <span className="font-bold">#orbit-support</span> channel in Discord if you
+              run into any issues
+            </p>
           </a>
         </div>
       </div>
