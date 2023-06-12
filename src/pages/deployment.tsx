@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
 import { NumberParam, useQueryParams, withDefault } from 'use-query-params';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount, useNetwork, useSigner } from 'wagmi';
 
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
 import { RollupContractsSummary } from '@/components/RollupContractsSummary';
@@ -86,6 +86,7 @@ export default function Configure() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
   const { isConnected } = useAccount();
   const { chain } = useNetwork();
+  const { data: signer } = useSigner();
 
   const [{ step }, setQueryParams] = useQueryParams({
     step: withDefault(NumberParam, Step.RollupDeploymentConfiguration),
@@ -118,9 +119,13 @@ export default function Configure() {
       );
     }
 
+    if (!signer) {
+      return alert("Error! Couldn't find a signer.");
+    }
+
     try {
       setStep(Step.RollupDeploymentInProgress);
-      setRollupContracts(await deployRollup(rollupConfig));
+      setRollupContracts(await deployRollup({ rollupConfig, signer }));
       setStep(Step.RollupDeploymentDone);
     } catch (error) {
       setStep(Step.RollupDeploymentConfiguration);
