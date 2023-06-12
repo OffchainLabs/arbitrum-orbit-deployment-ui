@@ -51,7 +51,7 @@ enum Step {
 }
 
 function StepTitle({ children }: { children: React.ReactNode }) {
-  return <h1 className="text-left text-3xl">{children}</h1>;
+  return <h3 className="text-left text-3xl">{children}</h3>;
 }
 
 const defaultRollupConfig: RollupConfig = {
