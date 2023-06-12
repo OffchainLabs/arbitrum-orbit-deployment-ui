@@ -1,6 +1,7 @@
 // Import necessary libraries and JSON files
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { useNetwork } from 'wagmi';
 
 import SequencerInboxJSON from '@/ethereum/SequencerInbox.json';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
@@ -13,6 +14,8 @@ declare let window: Window & { ethereum: any };
 
 // Define the SetBatchPoster component
 export function SetBatchPoster({ onNext }: { onNext: () => void }) {
+  const { chain } = useNetwork();
+
   // State variables for Ethereum address and status message
   const [ethAddress, setEthAddress] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
@@ -44,6 +47,12 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
   // Function to handle Ethereum transaction signing and sending
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (chain?.unsupported) {
+      return alert(
+        'You are connected to the wrong network.\nPlease make sure you are connected to Arbitrum Goerli.',
+      );
+    }
 
     setStatus('loading');
 

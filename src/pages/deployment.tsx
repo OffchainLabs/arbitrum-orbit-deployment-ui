@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
 import { NumberParam, useQueryParams, withDefault } from 'use-query-params';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
+import { useAccount, useNetwork } from 'wagmi';
 
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
 import { RollupContractsSummary } from '@/components/RollupContractsSummary';
@@ -85,6 +85,7 @@ export function getServerSideProps() {
 export default function Configure() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
   const { isConnected } = useAccount();
+  const { chain } = useNetwork();
 
   const [{ step }, setQueryParams] = useQueryParams({
     step: withDefault(NumberParam, Step.RollupDeploymentConfiguration),
@@ -110,6 +111,12 @@ export default function Configure() {
 
   async function handleDeployRollupFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (chain?.unsupported) {
+      return alert(
+        'You are connected to the wrong network.\nPlease make sure you are connected to Arbitrum Goerli.',
+      );
+    }
 
     try {
       setStep(Step.RollupDeploymentInProgress);

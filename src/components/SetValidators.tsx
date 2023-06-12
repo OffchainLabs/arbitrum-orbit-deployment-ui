@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { useNetwork } from 'wagmi';
 
 import RollupAdminLogicABIJSON from '@/ethereum/RollupAdminLogic.json';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
@@ -16,6 +17,8 @@ const stakerPrivateKey = staker.privateKey;
 const stakerAddress = staker.address;
 
 export function SetValidators({ onNext }: { onNext: () => void }) {
+  const { chain } = useNetwork();
+
   const [rollupAddress, setRollupAddress] = useState('');
   const [addressInputs, setAddressInputs] = useState<AddressInput[]>([]);
   const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
@@ -67,6 +70,12 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (chain?.unsupported) {
+      return alert(
+        'You are connected to the wrong network.\nPlease make sure you are connected to Arbitrum Goerli.',
+      );
+    }
 
     setStatus('loading');
 
