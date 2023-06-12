@@ -164,6 +164,12 @@ function DeploymentPage() {
   return (
     <main className="flex w-full justify-center">
       <div className="flex w-[1024px] flex-col items-center">
+        <span className="w-full rounded-lg bg-[#FFEED3] px-3 py-2 text-left text-sm text-[#60461F]">
+          All parameters shown are defaults (including some randomly generated addresses), which we
+          recommend using for testing purposes.
+          <br />
+          More information around parameter customization and guidance is coming soon.
+        </span>
         <div className="h-8" />
         <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
         <div className="h-16" />

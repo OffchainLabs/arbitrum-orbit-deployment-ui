@@ -70,7 +70,7 @@ export default function App({ Component, pageProps }: AppProps) {
                   </div>
                   <div>
                     <span className="rounded-lg bg-[#FFEED3] px-3 py-2 text-sm text-[#60461F]">
-                      This tool is in alpha, and for local devnet deployment only.
+                      This interface is currently intended for local devnet deployment.
                     </span>
                   </div>
                 </div>
