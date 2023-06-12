@@ -6,7 +6,6 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useNetwork, useSigner } from 'wagmi';
 
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
-import { RollupContractsSummary } from '@/components/RollupContractsSummary';
 import { SetValidators } from '@/components/SetValidators';
 import { SetBatchPoster } from '@/components/SetBatchPoster';
 import { Review } from '@/components/Review';
@@ -16,6 +15,7 @@ import { deployRollup } from '@/utils/deployRollup';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
 
 import { DeploymentPageContextProvider, useDeploymentPageContext } from './DeploymentPageContext';
+import { DeploymentSummary } from './DeploymentSummary';
 
 const steps = [
   {
@@ -237,10 +237,11 @@ function DeploymentPage() {
             <div>
               <StepTitle>Deployment Summary</StepTitle>
               <div className="h-4" />
+
               {step < Step.RollupDeploymentDone ? (
                 <div>Deployment summary will appear after the rollup is deployed.</div>
               ) : (
-                <RollupContractsSummary />
+                <DeploymentSummary />
               )}
             </div>
           </div>

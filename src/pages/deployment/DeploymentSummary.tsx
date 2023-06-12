@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 
 function BlockExplorerLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -15,7 +15,7 @@ function BlockExplorerLink({ href, children }: { href: string; children: React.R
   );
 }
 
-export function RollupContractsSummary() {
+export function DeploymentSummary() {
   const router = useRouter();
   const [{ rollupContracts, validators = [], batchPoster }, dispatch] = useDeploymentPageContext();
 
