@@ -16,12 +16,12 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={`mb-3 text-2xl font-semibold`}>
-              Deploy Rollup{' '}
+              Deploy Orbit Chain{' '}
               <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
                 -&gt;
               </span>
             </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>Configure your L3 chain here</p>
+            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>Configure your appchain here</p>
           </a>
 
           <a
@@ -54,7 +54,7 @@ export default function Home() {
               </span>
             </h2>
             <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Connect with us to learn if L3 makes sense for you
+              Connect with us to learn if an appchain makes sense for you
             </p>
           </a>
 
