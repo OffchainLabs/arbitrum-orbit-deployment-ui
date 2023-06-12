@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ethers } from 'ethers';
 import { Steps } from 'primereact/steps';
 import { NumberParam, useQueryParams, withDefault } from 'use-query-params';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount } from 'wagmi';
 
 import { RollupConfig, RollupConfigInput } from '@/components/RollupConfigInput';
 import { RollupContractsSummary } from '@/components/RollupContractsSummary';
@@ -82,6 +84,7 @@ export function getServerSideProps() {
 
 export default function Configure() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
+  const { isConnected } = useAccount();
 
   const [{ step }, setQueryParams] = useQueryParams({
     step: withDefault(NumberParam, Step.RollupDeploymentConfiguration),
@@ -128,66 +131,92 @@ export default function Configure() {
     }
   }, [step]);
 
-  return (
-    <div className="flex w-full justify-center py-8">
-      <div className="flex w-[768px] flex-col">
-        <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
-        <div className="h-16" />
+  if (!isConnected) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-4xl font-bold">Welcome to Arbitrum Orbit!</h1>
+            <p className="text-xl">Please connect your wallet to continue.</p>
+          </div>
+          <ConnectButton />
+        </div>
+      </div>
+    );
+  }
 
-        {step < Step.ValidatorConfiguration && (
-          <form onSubmit={handleDeployRollupFormSubmit}>
-            <StepTitle>Configure & Deploy Rollup</StepTitle>
-            <div className="h-4" />
-            <RollupConfigInput value={rollupConfig} onChange={(value) => setRollupConfig(value)} />
-            <div className="h-8" />
-            {step < Step.RollupDeploymentDone ? (
-              <button
-                type="submit"
-                disabled={step === Step.RollupDeploymentInProgress}
-                className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-              >
-                {step === Step.RollupDeploymentInProgress ? 'Deploying Rollup...' : 'Deploy Rollup'}
-              </button>
-            ) : (
-              <div className="flex flex-col gap-4">
+  return (
+    <div className="items flex w-full flex-col" style={spaceGrotesk.style}>
+      <header className="flex w-full justify-center">
+        <div className="flex w-[1440px] justify-end py-2">
+          <ConnectButton />
+        </div>
+      </header>
+      <main className="flex w-full justify-center">
+        <div className="flex w-[768px] flex-col items-center">
+          <Steps model={steps} activeIndex={activeIndex} className="w-full" {...stepsStyleProps} />
+          <div className="h-16" />
+
+          {step < Step.ValidatorConfiguration && (
+            <form onSubmit={handleDeployRollupFormSubmit}>
+              <StepTitle>Configure & Deploy Rollup</StepTitle>
+              <div className="h-4" />
+              <RollupConfigInput
+                value={rollupConfig}
+                onChange={(value) => setRollupConfig(value)}
+              />
+              <div className="h-8" />
+              {step < Step.RollupDeploymentDone ? (
                 <button
-                  type="button"
-                  ref={nextButtonRef}
-                  onClick={() => setStep(Step.ValidatorConfiguration)}
+                  type="submit"
+                  disabled={step === Step.RollupDeploymentInProgress}
                   className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
                 >
-                  Next
+                  {step === Step.RollupDeploymentInProgress
+                    ? 'Deploying Rollup...'
+                    : 'Deploy Rollup'}
                 </button>
-                <RollupContractsSummary {...rollupContracts!} />
-              </div>
-            )}
-          </form>
-        )}
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <button
+                    type="button"
+                    ref={nextButtonRef}
+                    onClick={() => setStep(Step.ValidatorConfiguration)}
+                    className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
+                  >
+                    Next
+                  </button>
+                  <RollupContractsSummary {...rollupContracts!} />
+                </div>
+              )}
+            </form>
+          )}
 
-        {step === Step.ValidatorConfiguration && (
-          <>
-            <StepTitle>Configure Validators</StepTitle>
-            <div className="h-4" />
-            <SetValidators onNext={() => setStep(Step.BatchPosterConfiguration)} />
-          </>
-        )}
+          {step === Step.ValidatorConfiguration && (
+            <>
+              <StepTitle>Configure Validators</StepTitle>
+              <div className="h-4" />
+              <SetValidators onNext={() => setStep(Step.BatchPosterConfiguration)} />
+            </>
+          )}
 
-        {step === Step.BatchPosterConfiguration && (
-          <>
-            <StepTitle>Configure Batch Poster</StepTitle>
-            <div className="h-4" />
-            <SetBatchPoster onNext={() => setStep(Step.Review)} />
-          </>
-        )}
+          {step === Step.BatchPosterConfiguration && (
+            <>
+              <StepTitle>Configure Batch Poster</StepTitle>
+              <div className="h-4" />
+              <SetBatchPoster onNext={() => setStep(Step.Review)} />
+            </>
+          )}
 
-        {step === Step.Review && (
-          <>
-            <StepTitle>Review & Download Config</StepTitle>
-            <div className="h-4" />
-            <Review />
-          </>
-        )}
-      </div>
+          {step === Step.Review && (
+            <>
+              <StepTitle>Review & Download Config</StepTitle>
+              <div className="h-4" />
+              <Review />
+            </>
+          )}
+        </div>
+      </main>
     </div>
   );
 }
