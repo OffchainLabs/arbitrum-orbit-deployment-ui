@@ -67,10 +67,10 @@ const defaultRollupConfig: RollupConfig = {
   chainConfig: ethers.constants.HashZero,
   genesisBlockNum: 0,
   sequencerInboxMaxTimeVariation: {
-    delayBlocks: 16,
-    futureBlocks: 192,
+    delayBlocks: 5760,
+    futureBlocks: 12,
     delaySeconds: 86400,
-    futureSeconds: 7200,
+    futureSeconds: 3600,
   },
 };
 
