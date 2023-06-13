@@ -41,13 +41,23 @@ export async function deployRollup({
 }: DeployRollupProps): Promise<RollupContracts> {
   // Defining L3 config
   const l3Config: L3Config = {
+    chainOwner: '',
+    rollup: '',
+    inbox: '',
+    outbox: '',
+    adminProxy: '',
+    sequencerInbox: '',
+    bridge: '',
+    utils: '',
+    validatorWalletCreator: '',
+    deployedAtBlockNumber: 0,
     minL2BaseFee: 100000000,
     networkFeeReceiver: await signer.getAddress(),
     infrastructureFeeCollector: await signer.getAddress(),
     batchPoster: '',
     staker: '',
-    chainOwner: rollupConfig ? rollupConfig.owner : '',
-    inboxAddress: '',
+    chainName:'',
+    chainId: 0
   };
 
   // On Arbitrum Goerli, so need to change it for other networks
@@ -193,7 +203,19 @@ export async function deployRollup({
     'deployed-at': rollupContracts.deployedAtBlockNumber,
   };
 
-  l3Config.inboxAddress = rollupCreatedEvent.args.inboxAddress;
+  l3Config.rollup= rollupCreatedEvent.args.rollupAddress;
+  l3Config.inbox = rollupCreatedEvent.args.inboxAddress;
+  l3Config.outbox =  await rollupCore.outbox();
+  l3Config.adminProxy = rollupCreatedEvent.args.adminProxy;
+  l3Config.sequencerInbox = rollupCreatedEvent.args.sequencerInbox;
+  l3Config.bridge = rollupCreatedEvent.args.bridge;
+  l3Config.utils = await rollupCore.validatorUtils();
+  l3Config.validatorWalletCreator = await rollupCore.validatorWalletCreator();
+  l3Config.deployedAtBlockNumber = createRollupTxReceipt.blockNumber;
+  l3Config.chainOwner = rollupConfig.owner;
+  l3Config.chainId = Number(rollupConfig.chainId);
+  l3Config.chainName = rollupConfig.chainName;
+
   updateLocalStorage(rollupConfigData, l3Config);
 
   return rollupContracts;
