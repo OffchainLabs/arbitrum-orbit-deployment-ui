@@ -168,7 +168,17 @@ function DeploymentPage() {
           All parameters shown are defaults (including some randomly generated addresses), which we
           recommend using for testing purposes.
           <br />
-          More information around parameter customization and guidance can be found in the [documentation](https://developer.arbitrum.io/launch-orbit-chain/orbit-quickstart).
+          More information around parameter customization and guidance can be found in the{' '}
+          <a
+            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            documentation
+          </a>
+          .
+          <br />
           <br />
           Please ensure you have at least 1.5 Goerli ETH before getting started.
         </span>
