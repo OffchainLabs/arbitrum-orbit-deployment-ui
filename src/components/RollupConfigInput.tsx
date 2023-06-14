@@ -198,6 +198,10 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
           value={value.owner}
           onChange={handleChange}
         />
+        <p className="text-sm text-[#60461F]">
+          Please set the owner address to one which you are comfortable exposing private keys for
+          (on your local device).
+        </p>
       </div>
     </div>
   );
