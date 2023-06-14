@@ -68,7 +68,7 @@ const defaultRollupConfig: RollupConfig = {
   genesisBlockNum: 0,
   sequencerInboxMaxTimeVariation: {
     delayBlocks: 5760,
-    futureBlocks: 12,
+    futureBlocks: 48,
     delaySeconds: 86400,
     futureSeconds: 3600,
   },
