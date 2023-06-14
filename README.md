@@ -1,5 +1,5 @@
 # orbit-deployment-ui
- Introducing the L3 Orbit Chain Deployment Interface, a user-friendly tool to effortlessly deploy your own Layer 3 Orbit Chain. This repository streamlines the setup process, allowing developers to focus on their decentralized applications.
+ Introducing the Orbit Chain Deployment Interface, a user-friendly tool to effortlessly deploy your own Orbit chain. This repository streamlines the setup process, allowing developers to focus on their decentralized applications.
 
 ## Getting Started
 This tool utilized Next.JS framework. To run this tool, first start the development server:
