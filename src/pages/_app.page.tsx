@@ -29,9 +29,7 @@ if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY 
     },
     // store data in temporary memory that expires with each session
     persistence: 'memory',
-    // by default posthog autocaptures (sends) events such as onClick, etc
-    // we set up our own events instead
-    autocapture: false,
+    autocapture: true,
     disable_session_recording: true,
   });
 }
