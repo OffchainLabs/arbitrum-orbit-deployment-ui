@@ -61,7 +61,7 @@ export async function deployRollup({
   };
 
   // On Arbitrum Goerli, so need to change it for other networks
-  const rollupCreatorAddress = '0x0992DCafaCe5C60693EEf55E2788D5F8C2dEB995';
+  const rollupCreatorAddress = '0xDAC039C77c8E84DEC3b3fD6B8dF258582EF0AEBf';
   const rollupCreator = new ethers.Contract(rollupCreatorAddress, RollupCreator.abi, signer);
 
   let rollupConfigData: RollupConfigData = {
