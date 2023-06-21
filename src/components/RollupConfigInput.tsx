@@ -61,7 +61,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
         className="text-lg font-bold uppercase text-[#1366C1] underline"
       >
         Open supporting documentation for this flow
@@ -73,7 +73,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#chain-id`}
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#chain-id`}
           className="font-light text-[#6D6D6D] underline"
         >
           Read about Chain ID in the docs
@@ -94,7 +94,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#chain-name`}
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#chain-name`}
           className="font-light text-[#6D6D6D] underline"
         >
           Read about Chain Name in the docs
@@ -114,7 +114,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#challenge-period-blocks`}
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#challenge-period-blocks`}
           className="font-light text-[#6D6D6D] underline"
         >
           Read about Challenge Period Blocks in the docs
@@ -134,7 +134,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#stake-token`}
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#stake-token`}
           className="font-light text-[#6D6D6D] underline"
         >
           Read about Stake Token in the docs
@@ -165,7 +165,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#base-stake`}
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#base-stake`}
           className="font-light text-[#6D6D6D] underline"
         >
           Read about Base Stake in the docs
@@ -186,7 +186,7 @@ export function RollupConfigInput({ value, onChange }: RollupConfigInputProps) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#owner`}
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#owner`}
           className="font-light text-[#6D6D6D] underline"
         >
           Read about Owner in the docs

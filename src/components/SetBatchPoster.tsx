@@ -106,7 +106,7 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
         className="text-lg font-bold uppercase text-[#1366C1] underline"
       >
         Open supporting documentation for this flow
@@ -118,7 +118,7 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart#step-4-configure-your-appchains-batch-poster`}
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-5-configure-your-chains-batch-poster`}
           className="font-light text-[#6D6D6D] underline"
         >
           Read about Batch Poster in the docs

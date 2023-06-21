@@ -113,7 +113,7 @@ export function Review() {
   return (
     <div className="flex flex-col gap-4">
       <ExternalLink
-        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-l3-chain/orbit-quickstart`}
+        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
         className="text-lg font-bold uppercase text-[#1366C1] underline"
       >
         Open supporting documentation for this flow
