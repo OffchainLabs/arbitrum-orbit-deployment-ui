@@ -5,14 +5,14 @@ import { connectorsForWallets, getDefaultWallets } from '@rainbow-me/rainbowkit'
 
 const { chains, provider } = configureChains([arbitrumGoerli], [publicProvider()]);
 
+const projectId = 'a88549a6f47b1f67f9261ffb345df8ee';
+
 const appInfo = {
   appName: 'Arbitrum Orbit',
+  projectId,
 };
 
-const { wallets } = getDefaultWallets({
-  appName: 'Arbitrum Orbit',
-  chains,
-});
+const { wallets } = getDefaultWallets({ ...appInfo, chains });
 
 const connectors = connectorsForWallets(wallets);
 
