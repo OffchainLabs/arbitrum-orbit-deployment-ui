@@ -5,6 +5,7 @@ import { useNetwork, useSigner } from 'wagmi';
 import RollupAdminLogicABIJSON from '@/ethereum/RollupAdminLogic.json';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
+import { ChainId } from '@/types/ChainId';
 
 const RollupAdminLogicABI = RollupAdminLogicABIJSON.abi;
 
@@ -76,7 +77,7 @@ export function SetValidators({ onNext }: { onNext: () => void }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (chain?.unsupported) {
+    if (chain?.id !== ChainId.ArbitrumGoerli) {
       return alert(
         'You are connected to the wrong network.\nPlease make sure you are connected to Arbitrum Goerli.',
       );
