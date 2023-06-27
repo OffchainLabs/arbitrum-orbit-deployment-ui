@@ -1,9 +1,16 @@
 import { createClient, configureChains } from 'wagmi';
-import { arbitrumGoerli } from '@wagmi/core/chains';
+import { goerli, arbitrumGoerli } from '@wagmi/core/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { connectorsForWallets, getDefaultWallets } from '@rainbow-me/rainbowkit';
 
-const { chains, provider } = configureChains([arbitrumGoerli], [publicProvider()]);
+const { chains, provider } = configureChains(
+  [
+    // Ideally, we wouldn't need to regiter Goerli, but there's currently an issue with WalletConnect v2: https://github.com/wagmi-dev/references/issues/225
+    goerli,
+    arbitrumGoerli,
+  ],
+  [publicProvider()],
+);
 
 const projectId = 'a88549a6f47b1f67f9261ffb345df8ee';
 
