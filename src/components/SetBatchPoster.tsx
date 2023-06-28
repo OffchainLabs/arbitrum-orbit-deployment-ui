@@ -6,6 +6,7 @@ import { useNetwork, useSigner } from 'wagmi';
 import SequencerInboxJSON from '@/ethereum/SequencerInbox.json';
 import { isUserRejectedError } from '@/utils/isUserRejectedError';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
+import { ChainId } from '@/types/ChainId';
 
 // Define the ABI for the SequencerInbox contract
 const SequencerInboxABI = SequencerInboxJSON.abi;
@@ -48,7 +49,7 @@ export function SetBatchPoster({ onNext }: { onNext: () => void }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (chain?.unsupported) {
+    if (chain?.id !== ChainId.ArbitrumGoerli) {
       return alert(
         'You are connected to the wrong network.\nPlease make sure you are connected to Arbitrum Goerli.',
       );
