@@ -5,14 +5,14 @@ import { connectorsForWallets, getDefaultWallets } from '@rainbow-me/rainbowkit'
 
 const { chains, provider } = configureChains(
   [
+    arbitrumGoerli,
     // Ideally, we wouldn't need to regiter Goerli, but there's currently an issue with WalletConnect v2: https://github.com/wagmi-dev/references/issues/225
     goerli,
-    arbitrumGoerli,
   ],
   [publicProvider()],
 );
 
-const projectId = 'a88549a6f47b1f67f9261ffb345df8ee';
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!;
 
 const appInfo = {
   appName: 'Arbitrum Orbit',
