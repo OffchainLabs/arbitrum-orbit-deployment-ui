@@ -128,6 +128,7 @@ export async function deployRollup({
     'node': {
       'forwarding-target': '',
       'sequencer': {
+        'max-tx-data-size': 85000,
         'enable': true,
         'dangerous': {
           'no-coordinator': true,
@@ -138,6 +139,7 @@ export async function deployRollup({
         enable: true,
       },
       'batch-poster': {
+        'max-size': 90000,
         'enable': true,
         'parent-chain-wallet': {
           'private-key': '',

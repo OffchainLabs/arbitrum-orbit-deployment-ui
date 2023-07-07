@@ -32,6 +32,7 @@ export type RollupConfigData = {
   'node': {
     'forwarding-target': string;
     'sequencer': {
+      "max-tx-data-size": number;
       'enable': boolean;
       'dangerous': {
         'no-coordinator': boolean;
@@ -42,6 +43,7 @@ export type RollupConfigData = {
       enable: boolean;
     };
     'batch-poster': {
+      "max-size": number;
       'enable': boolean;
       'parent-chain-wallet': {
         'private-key': string;
