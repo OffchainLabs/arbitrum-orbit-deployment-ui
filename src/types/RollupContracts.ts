@@ -9,3 +9,13 @@ export type RollupContracts = {
   validatorWalletCreator: string;
   deployedAtBlockNumber: number;
 };
+
+export type Validator = {
+  address: string;
+  privateKey?: string;
+};
+
+export type BatchPoster = {
+  address: string;
+  privateKey?: string;
+};

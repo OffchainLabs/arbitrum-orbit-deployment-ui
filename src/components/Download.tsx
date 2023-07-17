@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { ExternalLink } from '@/components/ExternalLink';
 import { RollupConfigData } from '@/types/rollupConfigDataType';
 import { L3Config } from '@/types/l3ConfigType';
+import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 
 // Function to remove unwanted fields
 const removeFields = (obj: any, fieldsToRemove: string[]): any => {
@@ -40,7 +41,11 @@ const removeNestedFields = (obj: any): any => {
   }
 
   // Check and update 'private-key' in 'batch-poster'
-  if (newObj.node && newObj.node['batch-poster'] && newObj.node['batch-poster']['parent-chain-wallet']) {
+  if (
+    newObj.node &&
+    newObj.node['batch-poster'] &&
+    newObj.node['batch-poster']['parent-chain-wallet']
+  ) {
     let privateKey = newObj.node['batch-poster']['parent-chain-wallet']['private-key'];
     if (privateKey.startsWith('0x')) {
       newObj.node['batch-poster']['parent-chain-wallet']['private-key'] = privateKey.slice(2);
@@ -50,9 +55,7 @@ const removeNestedFields = (obj: any): any => {
   return newObj;
 };
 
-
-
-export function Review() {
+export function Download() {
   const [data, setData] = useState<RollupConfigData | null>(null);
   const [l3Config, setL3Config] = useState<L3Config | null>(null);
   const [showData, setShowData] = useState(false);
@@ -72,7 +75,6 @@ export function Review() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const rollupData = localStorage.getItem('rollupData');
-
       if (rollupData) {
         let parsedData = JSON.parse(rollupData);
         let cleanedData = removeFields(parsedData, unwantedFields);
@@ -95,7 +97,7 @@ export function Review() {
     element.download = fileName;
     document.body.appendChild(element);
     element.click();
-};
+  };
 
   const toggleShowData = () => {
     setShowData(!showData);
