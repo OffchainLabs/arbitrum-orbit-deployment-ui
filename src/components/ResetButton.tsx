@@ -1,15 +1,17 @@
 import { useRouter } from 'next/router';
 import { useDeploymentPageContext } from '../pages/deployment/DeploymentPageContext';
+import { useAccount } from 'wagmi';
 
 export const ResetButton = () => {
   const router = useRouter();
+  const { address } = useAccount();
   const [, dispatch] = useDeploymentPageContext();
 
   function reset() {
     localStorage.removeItem('rollupData');
     localStorage.removeItem('l3Config');
 
-    dispatch({ type: 'reset' });
+    dispatch({ type: 'reset', payload: address ? address : '' });
 
     router.push('/deployment?step=1');
   }

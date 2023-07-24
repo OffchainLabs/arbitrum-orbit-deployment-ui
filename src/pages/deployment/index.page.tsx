@@ -65,8 +65,8 @@ function DeploymentPage() {
   const reviewAndDeployFormRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFirstStep = currentStep?.previous === undefined;
-  const isLastStep = currentStep?.next === undefined;
+  const isFirstStep = currentStep?.previous === null;
+  const isLastStep = currentStep?.next === null;
 
   const handleNext = () => {
     switch (currentStep) {

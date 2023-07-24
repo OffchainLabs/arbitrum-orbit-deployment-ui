@@ -28,8 +28,9 @@ export const useStep = () => {
   const pushToStepId = (id?: StepId | null) => {
     if (!id) {
       router.push(`/deployment?step=${FIRST_STEP_ID}`);
+    } else {
+      router.push(`/deployment?step=${id}`);
     }
-    router.push(`/deployment?step=${id}`);
   };
 
   const [{ step: currentStepId }] = useQueryParams({

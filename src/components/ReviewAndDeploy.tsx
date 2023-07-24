@@ -21,6 +21,14 @@ export const ReviewAndDeploy = forwardRef(
     if (!validators) return <div>No validators found</div>;
     if (!batchPoster) return <div>No batch poster found</div>;
     if (!signer) return <div>No signer found</div>;
+    if (chain?.id !== ChainId.ArbitrumGoerli) {
+      return (
+        <div>
+          <p>You are connected to the wrong network.</p>
+          <p>Please make sure you are connected to Arbitrum Goerli.</p>
+        </div>
+      );
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
