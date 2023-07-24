@@ -232,6 +232,8 @@ export async function deployRollup({
     validators[0].privateKey || '';
 
   l3Config.rollup = rollupCreatedEvent.args.rollupAddress;
+  l3Config.staker = validators[0].address;
+  l3Config.batchPoster = batchPoster.address;
   l3Config.inbox = rollupCreatedEvent.args.inboxAddress;
   l3Config.outbox = await rollupCore.outbox();
   l3Config.adminProxy = rollupCreatedEvent.args.adminProxy;
