@@ -1,3 +1,4 @@
+import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 import { BatchPoster } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
@@ -5,6 +6,7 @@ import { forwardRef, ForwardedRef, useState, useEffect } from 'react';
 
 export const SetBatchPoster = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
   const [{ batchPoster: currentBatchPoster }, dispatch] = useDeploymentPageContext();
+  const { nextStep } = useStep();
   const [batchPoster, setBatchPoster] = useState<BatchPoster>(
     currentBatchPoster || getRandomWallet(),
   );
@@ -21,7 +23,7 @@ export const SetBatchPoster = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>
       payload: batchPoster,
     });
 
-    dispatch({ type: 'next_step' });
+    nextStep();
   };
 
   return (

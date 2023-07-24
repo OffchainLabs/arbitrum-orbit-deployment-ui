@@ -1,3 +1,4 @@
+import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 import { Validator } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
@@ -5,6 +6,7 @@ import { ForwardedRef, forwardRef, useState, useEffect } from 'react';
 
 export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
   const [{ validators: currentValidators }, dispatch] = useDeploymentPageContext();
+  const { nextStep } = useStep();
   const [validatorCount, setValidatorCount] = useState<number>(currentValidators?.length || 1);
   const [validators, setValidators] = useState<Validator[]>(
     currentValidators || Array.from({ length: validatorCount }, getRandomWallet),
@@ -32,7 +34,7 @@ export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
     e.preventDefault();
 
     dispatch({ type: 'set_validators', payload: validators.filter(Boolean) });
-    dispatch({ type: 'next_step' });
+    nextStep();
   };
 
   return (

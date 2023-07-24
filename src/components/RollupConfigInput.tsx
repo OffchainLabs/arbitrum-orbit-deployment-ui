@@ -1,3 +1,4 @@
+import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 import { ForwardedRef, forwardRef, useState } from 'react';
 
@@ -26,6 +27,7 @@ type StakeTokenType = 'ETH' | 'Custom';
 export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
   const [stakeTokenType, setStakeTokenType] = useState<StakeTokenType>('ETH');
   const [{ rollupConfig }, dispatch] = useDeploymentPageContext();
+  const { nextStep } = useStep();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +47,7 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
         payload: { ...rollupConfig, ...updatedRollupConfig },
       });
 
-      dispatch({ type: 'next_step' });
+      nextStep();
     }
   };
 

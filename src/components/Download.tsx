@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { ExternalLink } from '@/components/ExternalLink';
 import { RollupConfigData } from '@/types/rollupConfigDataType';
 import { L3Config } from '@/types/l3ConfigType';
-import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 
 // Function to remove unwanted fields
 const removeFields = (obj: any, fieldsToRemove: string[]): any => {

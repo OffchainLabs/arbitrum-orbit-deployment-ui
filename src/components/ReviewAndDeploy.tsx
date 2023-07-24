@@ -1,7 +1,9 @@
 import React, { ForwardedRef, forwardRef } from 'react';
-import { useSigner } from 'wagmi';
+import { useNetwork, useSigner } from 'wagmi';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 import { deployRollup } from '@/utils/deployRollup';
+import { ChainId } from '@/types/ChainId';
+import { useStep } from '@/hooks/useStep';
 
 type ReviewAndDeployProps = {
   isLoading: boolean;
@@ -12,6 +14,8 @@ export const ReviewAndDeploy = forwardRef(
   ({ isLoading, setIsLoading }: ReviewAndDeployProps, ref: ForwardedRef<HTMLFormElement>) => {
     const [{ rollupConfig, validators, batchPoster }, dispatch] = useDeploymentPageContext();
     const { data: signer } = useSigner();
+    const { chain } = useNetwork();
+    const { nextStep } = useStep();
 
     if (!rollupConfig) return <div>No rollup config found</div>;
     if (!validators) return <div>No validators found</div>;
@@ -20,6 +24,7 @@ export const ReviewAndDeploy = forwardRef(
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
+
       try {
         setIsLoading(true);
         const rollupContracts = await deployRollup({
@@ -29,7 +34,7 @@ export const ReviewAndDeploy = forwardRef(
           signer,
         });
         dispatch({ type: 'set_rollup_contracts', payload: rollupContracts });
-        dispatch({ type: 'next_step' });
+        nextStep();
       } catch (e) {
         console.error(e);
       } finally {

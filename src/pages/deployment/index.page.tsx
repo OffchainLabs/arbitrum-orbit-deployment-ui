@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { Steps } from 'primereact/steps';
-import { NumberParam, useQueryParams, withDefault } from 'use-query-params';
 import { useAccount } from 'wagmi';
 
 import { RollupConfigInput } from '@/components/RollupConfigInput';
@@ -11,9 +10,10 @@ import { ResetButton } from '@/components/ResetButton';
 
 import { spaceGrotesk } from '@/fonts';
 
-import { DeploymentPageContextProvider, useDeploymentPageContext } from './DeploymentPageContext';
+import { DeploymentPageContextProvider } from './DeploymentPageContext';
 import { DeploymentSummary } from './DeploymentSummary';
 import { Download } from '@/components/Download';
+import { StepMap, useStep } from '@/hooks/useStep';
 
 const steps = [
   {
@@ -42,14 +42,6 @@ const stepsStyleProps = {
   },
 };
 
-enum Step {
-  RollupDeploymentConfiguration = 1,
-  ValidatorConfiguration = 2,
-  BatchPosterConfiguration = 3,
-  Deploy = 4,
-  Download = 5,
-}
-
 // This hook prevents next.js from throwing an error on SSR
 // due to wagmi not being available on the server
 export const useIsMounted = () => {
@@ -65,47 +57,41 @@ function StepTitle({ children }: { children: React.ReactNode }) {
 function DeploymentPage() {
   const { isConnected } = useAccount();
   const isMounted = useIsMounted();
-  const [{ step }] = useQueryParams({
-    step: withDefault(NumberParam, Step.RollupDeploymentConfiguration),
-  });
+  const { currentStep, previousStep, nextStep } = useStep();
 
-  const [, dispatch] = useDeploymentPageContext();
   const rollupConfigFormRef = useRef<HTMLFormElement>(null);
   const validatorFormRef = useRef<HTMLFormElement>(null);
   const batchPosterFormRef = useRef<HTMLFormElement>(null);
   const reviewAndDeployFormRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const isFirstStep = step === Step.RollupDeploymentConfiguration;
-  const isLastStep = step === Step.Download;
 
-  const handlePrevious = () => {
-    dispatch({ type: 'previous_step' });
-  };
+  const isFirstStep = currentStep?.previous === undefined;
+  const isLastStep = currentStep?.next === undefined;
 
   const handleNext = () => {
-    switch (step) {
-      case Step.ValidatorConfiguration:
+    switch (currentStep) {
+      case StepMap.ValidatorConfiguration:
         if (validatorFormRef.current) {
           validatorFormRef.current.requestSubmit();
         }
         break;
-      case Step.RollupDeploymentConfiguration:
+      case StepMap.RollupDeploymentConfiguration:
         if (rollupConfigFormRef.current) {
           rollupConfigFormRef.current.requestSubmit();
         }
         break;
-      case Step.BatchPosterConfiguration:
+      case StepMap.BatchPosterConfiguration:
         if (batchPosterFormRef.current) {
           batchPosterFormRef.current.requestSubmit();
         }
         break;
-      case Step.Deploy:
+      case StepMap.Deploy:
         if (reviewAndDeployFormRef.current) {
           reviewAndDeployFormRef.current.requestSubmit();
         }
         break;
       default:
-        dispatch({ type: 'next_step' });
+        nextStep();
     }
   };
 
@@ -143,13 +129,18 @@ function DeploymentPage() {
           Please ensure you have at least 1.5 Goerli ETH before getting started.
         </span>
         <div className="h-8" />
-        <Steps model={steps} activeIndex={step - 1} className="w-full" {...stepsStyleProps} />
+        <Steps
+          model={steps}
+          activeIndex={currentStep ? currentStep.id - 1 : 1}
+          className="w-full"
+          {...stepsStyleProps}
+        />
         <div className="my-5 flex w-full justify-between gap-5">
           <button
             className={` rounded-lg border px-3 py-2 text-[#243145] hover:border-[#243145]
             ${isFirstStep && 'cursor-not-allowed bg-gray-100 text-gray-300 hover:border-gray-300'}
             `}
-            onClick={handlePrevious}
+            onClick={previousStep}
             disabled={isFirstStep}
           >
             <i className="pi pi-arrow-left mx-2"></i>
@@ -170,7 +161,7 @@ function DeploymentPage() {
 
         <div className="grid w-full grid-cols-2 gap-4 pb-8">
           <div>
-            {step === Step.RollupDeploymentConfiguration && (
+            {currentStep === StepMap.RollupDeploymentConfiguration && (
               <>
                 <StepTitle>Configure Rollup</StepTitle>
                 <div className="h-4" />
@@ -178,7 +169,7 @@ function DeploymentPage() {
               </>
             )}
 
-            {step === Step.ValidatorConfiguration && (
+            {currentStep === StepMap.ValidatorConfiguration && (
               <>
                 <StepTitle>Configure Validators</StepTitle>
                 <div className="h-4" />
@@ -186,7 +177,7 @@ function DeploymentPage() {
               </>
             )}
 
-            {step === Step.BatchPosterConfiguration && (
+            {currentStep === StepMap.BatchPosterConfiguration && (
               <>
                 <StepTitle>Configure Batch Poster</StepTitle>
                 <div className="h-4" />
@@ -194,7 +185,7 @@ function DeploymentPage() {
               </>
             )}
 
-            {step === Step.Deploy && (
+            {currentStep === StepMap.Deploy && (
               <>
                 <StepTitle>Review & Deploy Config</StepTitle>
                 <div className="h-4" />
@@ -205,7 +196,7 @@ function DeploymentPage() {
                 />
               </>
             )}
-            {step === Step.Download && (
+            {currentStep === StepMap.Download && (
               <>
                 <StepTitle>Configure Batch Poster</StepTitle>
                 <div className="h-4" />
@@ -217,7 +208,7 @@ function DeploymentPage() {
             <StepTitle>Deployment Summary</StepTitle>
             <div className="h-4" />
 
-            {step < Step.Download ? (
+            {currentStep !== StepMap.Download ? (
               <div>Deployment summary will appear after the rollup is deployed.</div>
             ) : (
               <DeploymentSummary />
@@ -227,6 +218,14 @@ function DeploymentPage() {
       </div>
     </main>
   );
+}
+
+export function getServerSideProps() {
+  return {
+    props: {
+      //
+    },
+  };
 }
 
 export default function DeploymentPageWithContext() {
