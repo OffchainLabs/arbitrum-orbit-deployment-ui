@@ -32,7 +32,7 @@ export type RollupConfigData = {
   'node': {
     'forwarding-target': string;
     'sequencer': {
-      "max-tx-data-size": number;
+      'max-tx-data-size': number;
       'enable': boolean;
       'dangerous': {
         'no-coordinator': boolean;
@@ -43,7 +43,7 @@ export type RollupConfigData = {
       enable: boolean;
     };
     'batch-poster': {
-      "max-size": number;
+      'max-size': number;
       'enable': boolean;
       'parent-chain-wallet': {
         'private-key': string;
@@ -56,8 +56,8 @@ export type RollupConfigData = {
         'private-key': string;
       };
     };
-      "caching": {
-        "archive": boolean;
-      };
+    'caching': {
+      archive: boolean;
+    };
   };
 };

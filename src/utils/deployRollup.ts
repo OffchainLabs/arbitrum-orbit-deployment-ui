@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { Signer } from '@ethersproject/abstract-signer';
 
 import { RollupConfig } from '@/components/RollupConfigInput';
@@ -7,7 +7,9 @@ import { RollupConfigData } from '@/types/rollupConfigDataType';
 
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
-import { RollupContracts } from '@/types/RollupContracts';
+import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
+
+export type RollupConfigPayload = Omit<RollupConfig, 'baseStake'> & { baseStake: BigNumber };
 
 // Function to update local storage with new rollup data and l3 data
 function updateLocalStorage(data: RollupConfigData, l3config: L3Config) {
@@ -32,11 +34,15 @@ function updateLocalStorage(data: RollupConfigData, l3config: L3Config) {
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
+  validators: Validator[];
+  batchPoster: BatchPoster;
   signer: Signer;
 };
 
 export async function deployRollup({
   rollupConfig,
+  validators,
+  batchPoster,
   signer,
 }: DeployRollupProps): Promise<RollupContracts> {
   // Defining L3 config
@@ -56,12 +62,12 @@ export async function deployRollup({
     infrastructureFeeCollector: await signer.getAddress(),
     batchPoster: '',
     staker: '',
-    chainName:'',
-    chainId: 0
+    chainName: '',
+    chainId: 0,
   };
 
   // On Arbitrum Goerli, so need to change it for other networks
-  const rollupCreatorAddress = '0xCB6E6240682EbA7b24c82c8a8fd1655b36C23F95';
+  const rollupCreatorAddress = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
   const rollupCreator = new ethers.Contract(rollupCreatorAddress, RollupCreator.abi, signer);
 
   let rollupConfigData: RollupConfigData = {
@@ -161,11 +167,26 @@ export async function deployRollup({
   const chainConfig: string = JSON.stringify(
     rollupConfigData.chain['info-json'][0]['chain-config'],
   );
-  rollupConfig.chainConfig = chainConfig;
+
+  const rollupConfigPayload: RollupConfigPayload = {
+    ...rollupConfig,
+    chainConfig: chainConfig,
+    baseStake: ethers.utils.parseEther(rollupConfig.baseStake),
+  };
+  const validatorAddresses = validators.map((v) => v.address);
+  const batchPosterAddress = batchPoster.address;
   console.log(chainConfig);
   console.log('Going for deployment');
 
-  const createRollupTx = await rollupCreator.createRollup(rollupConfig);
+  console.log(rollupConfigPayload);
+  console.log(validatorAddresses);
+  console.log(batchPosterAddress);
+
+  const createRollupTx = await rollupCreator.createRollup(
+    rollupConfigPayload,
+    batchPosterAddress,
+    validatorAddresses,
+  );
   const createRollupTxReceipt = await createRollupTx.wait();
   const createRollupTxReceiptEvents = createRollupTxReceipt.events ?? [];
 
@@ -205,9 +226,16 @@ export async function deployRollup({
     'deployed-at': rollupContracts.deployedAtBlockNumber,
   };
 
-  l3Config.rollup= rollupCreatedEvent.args.rollupAddress;
+  rollupConfigData.node['batch-poster']['parent-chain-wallet']['private-key'] =
+    batchPoster.privateKey || '';
+  rollupConfigData.node.staker['parent-chain-wallet']['private-key'] =
+    validators[0].privateKey || '';
+
+  l3Config.rollup = rollupCreatedEvent.args.rollupAddress;
+  l3Config.staker = validators[0].address;
+  l3Config.batchPoster = batchPoster.address;
   l3Config.inbox = rollupCreatedEvent.args.inboxAddress;
-  l3Config.outbox =  await rollupCore.outbox();
+  l3Config.outbox = await rollupCore.outbox();
   l3Config.adminProxy = rollupCreatedEvent.args.adminProxy;
   l3Config.sequencerInbox = rollupCreatedEvent.args.sequencerInbox;
   l3Config.bridge = rollupCreatedEvent.args.bridge;

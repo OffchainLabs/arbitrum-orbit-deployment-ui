@@ -1,5 +1,3 @@
-import { useRouter } from 'next/router';
-
 import { useDeploymentPageContext } from './DeploymentPageContext';
 
 function BlockExplorerLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -16,26 +14,10 @@ function BlockExplorerLink({ href, children }: { href: string; children: React.R
 }
 
 export function DeploymentSummary() {
-  const router = useRouter();
-  const [{ rollupContracts, validators = [], batchPoster }, dispatch] = useDeploymentPageContext();
-
-  function reset() {
-    localStorage.removeItem('rollupData');
-    localStorage.removeItem('l3Config');
-
-    dispatch({ type: 'reset' });
-
-    router.push('/deployment?step=1');
-  }
+  const [{ rollupContracts, validators = [], batchPoster }] = useDeploymentPageContext();
 
   return (
     <div className="flex flex-col gap-3">
-      <button
-        onClick={reset}
-        className="w-full rounded-lg border border-[#243145] px-3 py-2 text-[#243145]"
-      >
-        Reset and Start Over
-      </button>
       {rollupContracts && (
         <>
           <div className="flex flex-col gap-1">
@@ -127,7 +109,7 @@ export function DeploymentSummary() {
               <li className="flex flex-col">
                 <span className="font-bold">Validator #{index + 1} address:</span>
                 <BlockExplorerLink href={`https://goerli.arbiscan.io/address/${validator}`}>
-                  {validator}
+                  {validator.address}
                 </BlockExplorerLink>
               </li>
             ))}
@@ -143,7 +125,7 @@ export function DeploymentSummary() {
             <li className="flex flex-col">
               <span className="font-bold">Batch Poster address:</span>
               <BlockExplorerLink href={`https://goerli.arbiscan.io/address/${batchPoster}`}>
-                {batchPoster}
+                {batchPoster.address}
               </BlockExplorerLink>
             </li>
           </ul>
