@@ -1,26 +1,7 @@
 import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
+import { RollupConfig } from '@/types/rollupConfigDataType';
 import { ForwardedRef, forwardRef, useState } from 'react';
-
-export type RollupConfig = {
-  confirmPeriodBlocks: number;
-  stakeToken: string;
-  baseStake: string;
-  owner: string;
-  extraChallengeTimeBlocks: number;
-  wasmModuleRoot: string;
-  loserStakeEscrow: string;
-  chainId: number;
-  chainName: string;
-  chainConfig: string;
-  genesisBlockNum: number;
-  sequencerInboxMaxTimeVariation: {
-    delayBlocks: number;
-    futureBlocks: number;
-    delaySeconds: number;
-    futureSeconds: number;
-  };
-};
 
 type StakeTokenType = 'ETH' | 'Custom';
 

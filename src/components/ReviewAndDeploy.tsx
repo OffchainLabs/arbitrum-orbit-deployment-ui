@@ -12,7 +12,8 @@ type ReviewAndDeployProps = {
 
 export const ReviewAndDeploy = forwardRef(
   ({ isLoading, setIsLoading }: ReviewAndDeployProps, ref: ForwardedRef<HTMLFormElement>) => {
-    const [{ rollupConfig, validators, batchPoster }, dispatch] = useDeploymentPageContext();
+    const [{ rollupConfig, validators, batchPoster, chainType }, dispatch] =
+      useDeploymentPageContext();
     const { data: signer } = useSigner();
     const { chain } = useNetwork();
     const { nextStep } = useStep();
@@ -40,6 +41,7 @@ export const ReviewAndDeploy = forwardRef(
           validators,
           batchPoster,
           signer,
+          chainType,
         });
         dispatch({ type: 'set_rollup_contracts', payload: rollupContracts });
         nextStep();

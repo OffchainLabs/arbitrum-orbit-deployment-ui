@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers';
+
 export type RollupConfigData = {
   'chain': {
     'info-json': Array<{
@@ -60,4 +62,48 @@ export type RollupConfigData = {
       archive: boolean;
     };
   };
+};
+
+export type AnyTrustConfigData = RollupConfigData & {
+  node: {
+    'data-availability': {
+      'enable': boolean;
+      'sequencer-inbox-address': string;
+      'parent-chain-node-url': string;
+      'rest-aggregator': {
+        enable: boolean;
+        urls: string;
+      };
+      'rpc-aggregator': {
+        'enable': boolean;
+        'assumed-honest': number;
+        'backends': string;
+      };
+    };
+  };
+};
+
+export type RollupConfig = {
+  confirmPeriodBlocks: number;
+  stakeToken: string;
+  baseStake: string;
+  owner: string;
+  extraChallengeTimeBlocks: number;
+  wasmModuleRoot: string;
+  loserStakeEscrow: string;
+  chainId: number;
+  chainName: string;
+  chainConfig: string;
+  genesisBlockNum: number;
+  sequencerInboxMaxTimeVariation: {
+    delayBlocks: number;
+    futureBlocks: number;
+    delaySeconds: number;
+    futureSeconds: number;
+  };
+};
+export type RollupConfigPayload = Omit<RollupConfig, 'baseStake'> & { baseStake: BigNumber };
+
+export type AnyTrustConfig = RollupConfig & {
+  sequencerInboxAddress: string;
 };

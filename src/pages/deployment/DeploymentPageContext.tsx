@@ -1,16 +1,18 @@
 import { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
-
-import { RollupConfig } from '@/components/RollupConfigInput';
-import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
 import { ethers } from 'ethers';
 import { useAccount } from 'wagmi';
-import { StepMap, useStep } from '@/hooks/useStep';
+
+import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
+import { useStep } from '@/hooks/useStep';
+import { RollupConfig } from '@/types/rollupConfigDataType';
+import { RollupStepMap } from '@/types/Steps';
 
 type DeploymentPageContextState = {
   rollupContracts?: RollupContracts;
   rollupConfig?: RollupConfig;
   validators?: Validator[];
   batchPoster?: BatchPoster;
+  chainType: ChainType;
 };
 
 const defaultRollupConfig: RollupConfig = {
@@ -33,6 +35,12 @@ const defaultRollupConfig: RollupConfig = {
     futureSeconds: 3600,
   },
 };
+export const ChainType = {
+  Rollup: 'Rollup',
+  AnyTrust: 'AnyTrust',
+} as const;
+
+export type ChainType = (typeof ChainType)[keyof typeof ChainType];
 
 function getDefaultRollupConfig(owner: string = '') {
   return { ...defaultRollupConfig, owner };
@@ -43,6 +51,7 @@ const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
   rollupContracts: undefined,
   validators: undefined,
   batchPoster: undefined,
+  chainType: ChainType.Rollup,
 };
 
 function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState {
@@ -62,6 +71,7 @@ function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState
 type DeploymentPageContextAction =
   | { type: 'set_rollup_contracts'; payload: RollupContracts }
   | { type: 'set_rollup_config'; payload: RollupConfig }
+  | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Validator[] }
   | { type: 'set_batch_poster'; payload: BatchPoster }
   | { type: 'reset'; payload: string };
@@ -86,6 +96,9 @@ function reducer(
 
     case 'set_rollup_config':
       return { ...state, rollupConfig: action.payload };
+
+    case 'set_chain_type':
+      return { ...state, chainType: action.payload };
 
     case 'set_validators':
       return { ...state, validators: action.payload };
@@ -118,7 +131,7 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
 
   useEffect(() => {
     if (!isValidStep) {
-      goToStep(StepMap.RollupDeploymentConfiguration);
+      goToStep(RollupStepMap.ConfigureChain);
     }
   }, [isValidStep]);
 

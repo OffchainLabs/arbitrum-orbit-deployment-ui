@@ -10,28 +10,26 @@ import { ResetButton } from '@/components/ResetButton';
 
 import { spaceGrotesk } from '@/fonts';
 
-import { DeploymentPageContextProvider } from './DeploymentPageContext';
+import {
+  ChainType,
+  DeploymentPageContextProvider,
+  useDeploymentPageContext,
+} from './DeploymentPageContext';
 import { DeploymentSummary } from './DeploymentSummary';
 import { Download } from '@/components/Download';
-import { StepMap, useStep } from '@/hooks/useStep';
-
-const steps = [
-  {
-    label: 'Configure Rollup',
-  },
-  {
-    label: 'Configure Validators',
-  },
-  {
-    label: 'Configure Batch Poster',
-  },
-  {
-    label: 'Review & Deploy',
-  },
-  {
-    label: 'Download Config',
-  },
-];
+import { useStep } from '@/hooks/useStep';
+import { ChainTypeForm } from '@/components/ChainTypeForm';
+import { KeysetForm } from '@/components/KeysetForm';
+import {
+  ChooseChainType,
+  ConfigureValidators,
+  ConfigureChain,
+  ConfigureBatchPoster,
+  ReviewAndDeployRollup,
+  ConfigureKeyset,
+  ReviewAndDeployAnyTrust,
+  DownloadConfig,
+} from '@/types/Steps';
 
 const stepsStyleProps = {
   pt: {
@@ -57,37 +55,55 @@ function StepTitle({ children }: { children: React.ReactNode }) {
 function DeploymentPage() {
   const { isConnected } = useAccount();
   const isMounted = useIsMounted();
-  const { currentStep, previousStep, nextStep } = useStep();
+  const { currentStep, previousStep, nextStep, chainStepMap, createSortedStepMapArray } = useStep();
 
+  const pickChainFormRef = useRef<HTMLFormElement>(null);
   const rollupConfigFormRef = useRef<HTMLFormElement>(null);
   const validatorFormRef = useRef<HTMLFormElement>(null);
   const batchPosterFormRef = useRef<HTMLFormElement>(null);
   const reviewAndDeployFormRef = useRef<HTMLFormElement>(null);
+  const keysetFormRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const isFirstStep = currentStep?.previous === null;
   const isLastStep = currentStep?.next === null;
+  const steps = createSortedStepMapArray(chainStepMap).map((step) => ({ label: step.label }));
+
+  if (!currentStep) {
+    return null;
+  }
 
   const handleNext = () => {
     switch (currentStep) {
-      case StepMap.ValidatorConfiguration:
+      case ChooseChainType:
+        if (pickChainFormRef.current) {
+          pickChainFormRef.current.requestSubmit();
+        }
+        break;
+      case ConfigureValidators:
         if (validatorFormRef.current) {
           validatorFormRef.current.requestSubmit();
         }
         break;
-      case StepMap.RollupDeploymentConfiguration:
+      case ConfigureChain:
         if (rollupConfigFormRef.current) {
           rollupConfigFormRef.current.requestSubmit();
         }
         break;
-      case StepMap.BatchPosterConfiguration:
+      case ConfigureBatchPoster:
         if (batchPosterFormRef.current) {
           batchPosterFormRef.current.requestSubmit();
         }
         break;
-      case StepMap.Deploy:
+      case ReviewAndDeployRollup:
+      case ReviewAndDeployAnyTrust:
         if (reviewAndDeployFormRef.current) {
           reviewAndDeployFormRef.current.requestSubmit();
+        }
+        break;
+      case ConfigureKeyset:
+        if (keysetFormRef.current) {
+          keysetFormRef.current.requestSubmit();
         }
         break;
       default:
@@ -161,7 +177,15 @@ function DeploymentPage() {
 
         <div className="grid w-full grid-cols-2 gap-4 pb-8">
           <div>
-            {currentStep === StepMap.RollupDeploymentConfiguration && (
+            {currentStep === ChooseChainType && (
+              <>
+                <StepTitle>Choose Chain Type</StepTitle>
+                <div className="h-4" />
+                <ChainTypeForm ref={pickChainFormRef} />
+              </>
+            )}
+
+            {currentStep === ConfigureChain && (
               <>
                 <StepTitle>Configure Rollup</StepTitle>
                 <div className="h-4" />
@@ -169,7 +193,7 @@ function DeploymentPage() {
               </>
             )}
 
-            {currentStep === StepMap.ValidatorConfiguration && (
+            {currentStep === ConfigureValidators && (
               <>
                 <StepTitle>Configure Validators</StepTitle>
                 <div className="h-4" />
@@ -177,7 +201,7 @@ function DeploymentPage() {
               </>
             )}
 
-            {currentStep === StepMap.BatchPosterConfiguration && (
+            {currentStep === ConfigureBatchPoster && (
               <>
                 <StepTitle>Configure Batch Poster</StepTitle>
                 <div className="h-4" />
@@ -185,7 +209,7 @@ function DeploymentPage() {
               </>
             )}
 
-            {currentStep === StepMap.Deploy && (
+            {(currentStep === ReviewAndDeployRollup || currentStep === ReviewAndDeployAnyTrust) && (
               <>
                 <StepTitle>Review & Deploy Config</StepTitle>
                 <div className="h-4" />
@@ -196,7 +220,14 @@ function DeploymentPage() {
                 />
               </>
             )}
-            {currentStep === StepMap.Download && (
+            {currentStep === ConfigureKeyset && (
+              <>
+                <StepTitle>Configure Keyset</StepTitle>
+                <div className="h-4" />
+                <KeysetForm ref={keysetFormRef} isLoading={isLoading} setIsLoading={setIsLoading} />
+              </>
+            )}
+            {currentStep === DownloadConfig && (
               <>
                 <StepTitle>Configure Batch Poster</StepTitle>
                 <div className="h-4" />
@@ -208,7 +239,7 @@ function DeploymentPage() {
             <StepTitle>Deployment Summary</StepTitle>
             <div className="h-4" />
 
-            {currentStep !== StepMap.Download ? (
+            {currentStep !== DownloadConfig ? (
               <div>Deployment summary will appear after the rollup is deployed.</div>
             ) : (
               <DeploymentSummary />
