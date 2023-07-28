@@ -57,8 +57,6 @@ function StepTitle({ children }: { children: React.ReactNode }) {
 }
 
 function DeploymentPage() {
-  const { isConnected } = useAccount();
-  const isMounted = useIsMounted();
   const { currentStep, previousStep, nextStep, chainStepMap, createSortedStepMapArray } = useStep();
 
   const pickChainFormRef = useRef<HTMLFormElement>(null);
@@ -120,18 +118,6 @@ function DeploymentPage() {
         nextStep();
     }
   };
-
-  if (isMounted && !isConnected) {
-    return (
-      <div className="flex h-[calc(100vh-120px)] w-full items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-xl font-medium">Please connect your wallet to continue.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <main className="flex w-full justify-center">
@@ -270,6 +256,22 @@ export function getServerSideProps() {
 }
 
 export default function DeploymentPageWithContext() {
+  const { address } = useAccount();
+  const { isConnected } = useAccount();
+  const isMounted = useIsMounted();
+
+  if ((isMounted && !isConnected) || !address) {
+    return (
+      <div className="flex h-[calc(100vh-120px)] w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-xl font-medium">Please connect your wallet to continue.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <DeploymentPageContextProvider>
       <DeploymentPage />
