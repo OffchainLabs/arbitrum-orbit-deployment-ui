@@ -2,6 +2,8 @@ import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import { ForwardedRef, forwardRef, useState } from 'react';
+import { ExternalLink } from './ExternalLink';
+import { OpenDocsLink } from './OpenDocsLink';
 
 type StakeTokenType = 'ETH' | 'Custom';
 
@@ -34,14 +36,7 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
 
   return (
     <div className="flex flex-col gap-4">
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
-        className="text-lg font-bold uppercase text-[#1366C1] underline"
-      >
-        Open supporting documentation for this flow
-      </a>
+      <OpenDocsLink />
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}>
         <div className="flex flex-col gap-2">
           <label htmlFor="chainId" className="font-bold">
@@ -172,12 +167,6 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
             Please set the owner address to one which you are comfortable exposing private keys for
             (on your local device).
           </p>
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-          >
-            Next
-          </button>
         </div>
       </form>
     </div>

@@ -3,6 +3,7 @@ import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageConte
 import { Validator } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
 import { ForwardedRef, forwardRef, useState, useEffect } from 'react';
+import { OpenDocsLink } from './OpenDocsLink';
 
 export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
   const [{ validators: currentValidators }, dispatch] = useDeploymentPageContext();
@@ -39,14 +40,7 @@ export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
 
   return (
     <div className="flex flex-col gap-4">
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
-        className="text-lg font-bold uppercase text-[#1366C1] underline"
-      >
-        Open supporting documentation for this flow
-      </a>
+      <OpenDocsLink />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}>
         <label htmlFor="numberOfValidators" className="font-bold">
@@ -84,12 +78,6 @@ export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
             />
           </div>
         ))}
-        <button
-          type="submit"
-          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-        >
-          Next
-        </button>
       </form>
     </div>
   );

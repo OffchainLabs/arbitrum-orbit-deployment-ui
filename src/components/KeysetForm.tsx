@@ -3,6 +3,8 @@ import { ChainId } from '@/types/ChainId';
 import { setValidKeyset } from '@/utils/setValidKeyset';
 import React, { ForwardedRef, forwardRef } from 'react';
 import { useNetwork, useSigner } from 'wagmi';
+import { OpenDocsLink } from './OpenDocsLink';
+import { ChainType } from '@/pages/deployment/DeploymentPageContext';
 
 const DEFAULT_KEYSET_STRING =
   '0x00000000000000010000000000000001012160000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
@@ -35,10 +37,7 @@ export const KeysetForm = forwardRef(
       const anyTrustConfigData = anyTrustConfigDataString
         ? JSON.parse(anyTrustConfigDataString)
         : '';
-      if (!anyTrustConfigData) {
-        debugger;
-        return;
-      }
+
       try {
         setIsLoading(true);
         await setValidKeyset({
@@ -56,6 +55,8 @@ export const KeysetForm = forwardRef(
 
     return (
       <div className="flex flex-col gap-4">
+        <OpenDocsLink />
+
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum dapibus tellus id diam
           placerat, in pharetra orci efficitur.
@@ -70,17 +71,7 @@ export const KeysetForm = forwardRef(
             {DEFAULT_KEYSET_STRING}
           </pre>
         </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}>
-          <button
-            type="submit"
-            className={`w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white ${
-              isLoading && 'cursor-not-allowed bg-gray-400'
-            }`}
-            disabled={isLoading}
-          >
-            Deploy
-          </button>
-        </form>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}></form>
       </div>
     );
   },

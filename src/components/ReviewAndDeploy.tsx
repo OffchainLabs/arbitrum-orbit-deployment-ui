@@ -4,6 +4,7 @@ import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageConte
 import { deployRollup } from '@/utils/deployRollup';
 import { ChainId } from '@/types/ChainId';
 import { useStep } from '@/hooks/useStep';
+import { OpenDocsLink } from './OpenDocsLink';
 
 type ReviewAndDeployProps = {
   isLoading: boolean;
@@ -54,6 +55,7 @@ export const ReviewAndDeploy = forwardRef(
 
     return (
       <div className="flex flex-col gap-4">
+        <OpenDocsLink />
         <h3 className="font-bold">Rollup Config</h3>
         <div className="ml-4 flex flex-col gap-2">
           <div>
@@ -110,17 +112,7 @@ export const ReviewAndDeploy = forwardRef(
             {batchPoster.address}
           </pre>
         </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}>
-          <button
-            type="submit"
-            className={`w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white ${
-              isLoading && 'cursor-not-allowed bg-gray-400'
-            }`}
-            disabled={isLoading}
-          >
-            Deploy
-          </button>
-        </form>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}></form>
       </div>
     );
   },

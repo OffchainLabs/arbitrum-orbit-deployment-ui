@@ -29,7 +29,11 @@ import {
   ConfigureKeyset,
   ReviewAndDeployAnyTrust,
   DownloadConfig,
+  DeployLocally,
 } from '@/types/Steps';
+import { DeployLocallyComponent } from '@/components/DeployLocally';
+import { OpenDocsLink } from '@/components/OpenDocsLink';
+import { NextButton } from '@/components/NextButton';
 
 const stepsStyleProps = {
   pt: {
@@ -67,7 +71,13 @@ function DeploymentPage() {
 
   const isFirstStep = currentStep?.previous === null;
   const isLastStep = currentStep?.next === null;
-  const steps = createSortedStepMapArray(chainStepMap).map((step) => ({ label: step.label }));
+  const steps = createSortedStepMapArray(chainStepMap);
+  const stepLabels = steps.map((step) => ({ label: step.label }));
+
+  const shouldDisplayDeploymentSummary =
+    currentStep === DownloadConfig ||
+    currentStep === ConfigureKeyset ||
+    currentStep === DeployLocally;
 
   if (!currentStep) {
     return null;
@@ -144,10 +154,13 @@ function DeploymentPage() {
           <br />
           Please ensure you have at least 1.5 Goerli ETH before getting started.
         </span>
+        <div className="flex w-full items-baseline justify-end">
+          <ResetButton className="" />
+        </div>
         <div className="h-8" />
         <Steps
-          model={steps}
-          activeIndex={currentStep ? currentStep.id - 1 : 1}
+          model={stepLabels}
+          activeIndex={steps.findIndex((step) => step === currentStep)}
           className="w-full"
           {...stepsStyleProps}
         />
@@ -162,17 +175,7 @@ function DeploymentPage() {
             <i className="pi pi-arrow-left mx-2"></i>
             Back
           </button>
-          <ResetButton />
-          <button
-            className={`rounded-lg bg-[#243145] px-3 py-2 text-white ${
-              (isLoading || isLastStep) && 'cursor-not-allowed bg-gray-400'
-            }`}
-            onClick={handleNext}
-            disabled={isLoading || isLastStep}
-          >
-            Next
-            <i className="pi pi-arrow-right mx-2"></i>
-          </button>
+          <NextButton onClick={handleNext} isLoading={isLoading} isLastStep={isLastStep} />
         </div>
 
         <div className="grid w-full grid-cols-2 gap-4 pb-8">
@@ -229,9 +232,16 @@ function DeploymentPage() {
             )}
             {currentStep === DownloadConfig && (
               <>
-                <StepTitle>Configure Batch Poster</StepTitle>
+                <StepTitle>Download Config</StepTitle>
                 <div className="h-4" />
                 <Download />
+              </>
+            )}
+            {currentStep === DeployLocally && (
+              <>
+                <StepTitle>Configure Keyset</StepTitle>
+                <div className="h-4" />
+                <DeployLocallyComponent />
               </>
             )}
           </div>
@@ -239,10 +249,10 @@ function DeploymentPage() {
             <StepTitle>Deployment Summary</StepTitle>
             <div className="h-4" />
 
-            {currentStep !== DownloadConfig ? (
-              <div>Deployment summary will appear after the rollup is deployed.</div>
-            ) : (
+            {shouldDisplayDeploymentSummary ? (
               <DeploymentSummary />
+            ) : (
+              <div>Deployment summary will appear after the rollup is deployed.</div>
             )}
           </div>
         </div>

@@ -1,8 +1,13 @@
 import { useRouter } from 'next/router';
 import { useDeploymentPageContext } from '../pages/deployment/DeploymentPageContext';
 import { useAccount } from 'wagmi';
+import { ButtonHTMLAttributes, FC } from 'react';
 
-export const ResetButton = () => {
+interface ResetButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
+}
+
+export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
   const router = useRouter();
   const { address } = useAccount();
   const [, dispatch] = useDeploymentPageContext();
@@ -18,10 +23,10 @@ export const ResetButton = () => {
 
   return (
     <button
-      className=" rounded-lg border border-[#243145] px-3 py-2 text-[#243145]"
+      className={`my-2 rounded-lg border border-[#243145] px-3 py-2 text-xs text-[#243145] ${className}`}
       onClick={reset}
     >
-      <i className="pi pi-refresh mx-2"></i>
+      <i className="pi pi-refresh mx-2 text-xs"></i>
       Reset and Start Over
     </button>
   );

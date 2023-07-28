@@ -2,7 +2,7 @@ export const ChooseChainType = {
   id: 1,
   next: 2,
   previous: null,
-  label: 'Choose Chain Type',
+  label: 'Chain Type',
 } as const;
 
 export const ConfigureChain = {
@@ -16,41 +16,48 @@ export const ConfigureValidators = {
   id: 3,
   next: 4,
   previous: 2,
-  label: 'Configure Validators',
+  label: 'Validators',
 } as const;
 
 export const ConfigureBatchPoster = {
   id: 4,
   next: 5,
   previous: 3,
-  label: 'Configure Batch Poster',
+  label: 'Batch Poster',
 } as const;
 
 export const ReviewAndDeployRollup = {
   id: 5,
   next: 7,
   previous: 4,
-  label: 'Review & Deploy Config',
+  label: 'Review & Deploy',
 } as const;
 
 export const DownloadConfig = {
   id: 7,
-  next: null,
+  next: 8,
   previous: 5,
-  label: 'Download Config',
+  label: 'Download',
 } as const;
 
 export const ReviewAndDeployAnyTrust = {
   ...ReviewAndDeployRollup,
   next: 6,
-  label: 'Review & Deploy AnyTrust',
+  label: 'Review & Deploy',
 } as const;
 
 export const ConfigureKeyset = {
   id: 6,
   next: 7,
   previous: 5,
-  label: 'Configure Keyset',
+  label: 'Keyset',
+} as const;
+
+export const DeployLocally = {
+  id: 8,
+  next: null,
+  previous: 7,
+  label: 'Deploy Locally',
 } as const;
 
 export const RollupStepMap = {
@@ -60,6 +67,7 @@ export const RollupStepMap = {
   ConfigureBatchPoster,
   ReviewAndDeploy: ReviewAndDeployRollup,
   DownloadConfig,
+  DeployLocally,
 } as const;
 
 export const AnyTrustStepMap = {

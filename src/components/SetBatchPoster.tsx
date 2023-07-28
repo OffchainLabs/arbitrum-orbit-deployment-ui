@@ -3,6 +3,7 @@ import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageConte
 import { BatchPoster } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
 import { forwardRef, ForwardedRef, useState, useEffect } from 'react';
+import { OpenDocsLink } from './OpenDocsLink';
 
 export const SetBatchPoster = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
   const [{ batchPoster: currentBatchPoster }, dispatch] = useDeploymentPageContext();
@@ -29,14 +30,7 @@ export const SetBatchPoster = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>
   return (
     <div className="flex flex-col gap-4">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
-          className="text-lg font-bold uppercase text-[#1366C1] underline"
-        >
-          Open supporting documentation for this flow
-        </a>
+        <OpenDocsLink />
 
         <label htmlFor="batchPoster" className="font-bold">
           Batch Poster Address
@@ -57,12 +51,6 @@ export const SetBatchPoster = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>
           onChange={(e) => handleAddressChange(e.target.value)}
           className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
         />
-        <button
-          type="submit"
-          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-        >
-          Next
-        </button>
       </form>
     </div>
   );
