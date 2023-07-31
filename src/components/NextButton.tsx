@@ -6,28 +6,32 @@ interface NextButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   isLoading: boolean;
-  isLastStep: boolean;
 }
 
-export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading, isLastStep }) => {
+export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading }) => {
   const { currentStep } = useStep();
+  const isLastStep = currentStep?.next === null;
 
   const isDeploymentStep =
-    currentStep === ReviewAndDeployRollup ||
-    currentStep === ReviewAndDeployAnyTrust ||
-    currentStep === ConfigureKeyset;
+    currentStep === ReviewAndDeployRollup || currentStep === ReviewAndDeployAnyTrust;
+
+  const isTransactionStep = currentStep === ConfigureKeyset;
 
   const getLabel = () => {
     if (isDeploymentStep) {
       if (isLoading) return 'Deploying';
       return 'Deploy';
     }
+    if (isTransactionStep) {
+      if (isLoading) return 'Sending Transaction';
+      return 'Send Transaction';
+    }
     return 'Next';
   };
 
   const getIcon = () => {
-    if (isDeploymentStep) {
-      if (isLoading) return <i className="pi pi-spin pi-spinner mx-2"></i>;
+    if (isLoading) return <i className="pi pi-spin pi-spinner mx-2"></i>;
+    if (isDeploymentStep || isTransactionStep) {
       return <i className="pi pi-sign-in mx-2"></i>;
     }
     return <i className="pi pi-arrow-right mx-2"></i>;

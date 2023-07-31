@@ -53,6 +53,13 @@ export const ConfigureKeyset = {
   label: 'Keyset',
 } as const;
 
+export const DownloadAnyTrustConfig = {
+  id: 7,
+  next: 8,
+  previous: 6,
+  label: 'Download',
+} as const;
+
 export const DeployLocally = {
   id: 8,
   next: null,
@@ -74,6 +81,7 @@ export const AnyTrustStepMap = {
   ...RollupStepMap,
   ReviewAndDeploy: ReviewAndDeployAnyTrust,
   ConfigureKeyset,
+  DownloadConfig: DownloadAnyTrustConfig,
 } as const;
 
 export type RollupStep = (typeof RollupStepMap)[keyof typeof RollupStepMap];

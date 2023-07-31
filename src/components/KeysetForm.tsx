@@ -1,10 +1,11 @@
 import { useStep } from '@/hooks/useStep';
+import { DeploymentSummary } from '@/pages/deployment/DeploymentSummary';
 import { ChainId } from '@/types/ChainId';
 import { setValidKeyset } from '@/utils/setValidKeyset';
 import React, { ForwardedRef, forwardRef } from 'react';
 import { useNetwork, useSigner } from 'wagmi';
-import { OpenDocsLink } from './OpenDocsLink';
-import { ChainType } from '@/pages/deployment/DeploymentPageContext';
+import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
+import { StepTitle } from './StepTitle';
 
 const DEFAULT_KEYSET_STRING =
   '0x00000000000000010000000000000001012160000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
@@ -54,24 +55,33 @@ export const KeysetForm = forwardRef(
     };
 
     return (
-      <div className="flex flex-col gap-4">
-        <OpenDocsLink />
-
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum dapibus tellus id diam
-          placerat, in pharetra orci efficitur.
-        </p>
-        <h3 className="font-bold">Keyset</h3>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum dapibus tellus id diam
-          placerat, in pharetra orci efficitur.
-        </p>
-        <div>
-          <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-            {DEFAULT_KEYSET_STRING}
-          </pre>
+      <div className="mx-0 grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-baseline gap-2">
+            <StepTitle>Configure Keyset</StepTitle>
+            <InfoCircleWithTooltip
+              href="https://developer.arbitrum.io/inside-anytrust#keysets"
+              infoText="Read about Keyset in the docs"
+            />
+          </div>
+          <p>
+            A Keyset specifies the public keys of Committee members and the number of signatures
+            required for a Data Availability Certificate to be valid. Keysets make Committee
+            membership changes possible and provide Committee members the ability to change their
+            keys.
+          </p>
+          <h3 className="font-bold">Default Keyset</h3>
+          <div>
+            <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
+              {DEFAULT_KEYSET_STRING}
+            </pre>
+          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}></form>
         </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}></form>
+        <div>
+          <StepTitle>Deployment Summary</StepTitle>
+          <DeploymentSummary />
+        </div>
       </div>
     );
   },

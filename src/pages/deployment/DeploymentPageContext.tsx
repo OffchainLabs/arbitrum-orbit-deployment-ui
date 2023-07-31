@@ -12,7 +12,7 @@ type DeploymentPageContextState = {
   rollupConfig?: RollupConfig;
   validators?: Validator[];
   batchPoster?: BatchPoster;
-  chainType: ChainType;
+  chainType?: ChainType;
 };
 
 const defaultRollupConfig: RollupConfig = {
@@ -51,7 +51,7 @@ const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
   rollupContracts: undefined,
   validators: undefined,
   batchPoster: undefined,
-  chainType: ChainType.Rollup,
+  chainType: undefined,
 };
 
 function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState {
@@ -131,7 +131,7 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
 
   useEffect(() => {
     if (!isValidStep) {
-      goToStep(RollupStepMap.ConfigureChain);
+      goToStep(RollupStepMap.ChooseChainType);
     }
   }, [isValidStep]);
 

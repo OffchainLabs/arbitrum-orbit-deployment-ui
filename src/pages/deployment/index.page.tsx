@@ -1,39 +1,36 @@
-import React, { useRef, useState } from 'react';
 import { Steps } from 'primereact/steps';
+import React, { useRef, useState } from 'react';
 import { useAccount } from 'wagmi';
 
-import { RollupConfigInput } from '@/components/RollupConfigInput';
-import { SetValidators } from '@/components/SetValidators';
-import { SetBatchPoster } from '@/components/SetBatchPoster';
-import { ReviewAndDeploy } from '@/components/ReviewAndDeploy';
 import { ResetButton } from '@/components/ResetButton';
+import { ReviewAndDeploy } from '@/components/ReviewAndDeploy';
+import { RollupConfigInput } from '@/components/RollupConfigInput';
+import { SetBatchPoster } from '@/components/SetBatchPoster';
+import { SetValidators } from '@/components/SetValidators';
 
 import { spaceGrotesk } from '@/fonts';
 
-import {
-  ChainType,
-  DeploymentPageContextProvider,
-  useDeploymentPageContext,
-} from './DeploymentPageContext';
-import { DeploymentSummary } from './DeploymentSummary';
-import { Download } from '@/components/Download';
-import { useStep } from '@/hooks/useStep';
 import { ChainTypeForm } from '@/components/ChainTypeForm';
+import { DeployLocallyComponent } from '@/components/DeployLocally';
+import { Download } from '@/components/Download';
 import { KeysetForm } from '@/components/KeysetForm';
+import { NextButton } from '@/components/NextButton';
+import { useStep } from '@/hooks/useStep';
 import {
   ChooseChainType,
-  ConfigureValidators,
-  ConfigureChain,
   ConfigureBatchPoster,
-  ReviewAndDeployRollup,
+  ConfigureChain,
   ConfigureKeyset,
-  ReviewAndDeployAnyTrust,
-  DownloadConfig,
+  ConfigureValidators,
   DeployLocally,
+  DownloadAnyTrustConfig,
+  DownloadConfig,
+  ReviewAndDeployAnyTrust,
+  ReviewAndDeployRollup,
 } from '@/types/Steps';
-import { DeployLocallyComponent } from '@/components/DeployLocally';
-import { OpenDocsLink } from '@/components/OpenDocsLink';
-import { NextButton } from '@/components/NextButton';
+import { DeploymentPageContextProvider } from './DeploymentPageContext';
+import { BackButton } from '@/components/BackButton';
+import { ExternalLink } from '@/components/ExternalLink';
 
 const stepsStyleProps = {
   pt: {
@@ -52,12 +49,8 @@ export const useIsMounted = () => {
   return mounted;
 };
 
-function StepTitle({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-left text-3xl">{children}</h3>;
-}
-
 function DeploymentPage() {
-  const { currentStep, previousStep, nextStep, chainStepMap, createSortedStepMapArray } = useStep();
+  const { currentStep, nextStep, chainStepMap, createSortedStepMapArray } = useStep();
 
   const pickChainFormRef = useRef<HTMLFormElement>(null);
   const rollupConfigFormRef = useRef<HTMLFormElement>(null);
@@ -67,15 +60,8 @@ function DeploymentPage() {
   const keysetFormRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFirstStep = currentStep?.previous === null;
-  const isLastStep = currentStep?.next === null;
   const steps = createSortedStepMapArray(chainStepMap);
   const stepLabels = steps.map((step) => ({ label: step.label }));
-
-  const shouldDisplayDeploymentSummary =
-    currentStep === DownloadConfig ||
-    currentStep === ConfigureKeyset ||
-    currentStep === DeployLocally;
 
   if (!currentStep) {
     return null;
@@ -119,9 +105,40 @@ function DeploymentPage() {
     }
   };
 
+  const StepContent = () => {
+    switch (currentStep) {
+      case ChooseChainType:
+        return <ChainTypeForm ref={pickChainFormRef} />;
+      case ConfigureChain:
+        return <RollupConfigInput ref={rollupConfigFormRef} />;
+      case ConfigureValidators:
+        return <SetValidators ref={validatorFormRef} />;
+      case ConfigureBatchPoster:
+        return <SetBatchPoster ref={batchPosterFormRef} />;
+      case ReviewAndDeployRollup:
+      case ReviewAndDeployAnyTrust:
+        return (
+          <ReviewAndDeploy
+            ref={reviewAndDeployFormRef}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
+        );
+      case ConfigureKeyset:
+        return <KeysetForm ref={keysetFormRef} isLoading={isLoading} setIsLoading={setIsLoading} />;
+      case DownloadConfig:
+      case DownloadAnyTrustConfig:
+        return <Download />;
+      case DeployLocally:
+        return <DeployLocallyComponent />;
+      default:
+        return <div>Invalid step</div>;
+    }
+  };
+
   return (
     <main className="flex w-full justify-center">
-      <div className="flex w-[1024px] flex-col items-center">
+      <div className="flex w-[1024px] flex-col ">
         <span className="w-full rounded-lg bg-[#FFEED3] px-3 py-2 text-left text-sm text-[#60461F]">
           All parameters shown are defaults (including some randomly generated addresses), which we
           recommend using for testing purposes.
@@ -140,108 +157,29 @@ function DeploymentPage() {
           <br />
           Please ensure you have at least 1.5 Goerli ETH before getting started.
         </span>
-        <div className="flex w-full items-baseline justify-end">
+        <div className="my-2 flex w-full items-baseline justify-between">
+          <ExternalLink
+            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
+            className="text-lg  text-[#1366C1] underline"
+          >
+            Open Supporting Documentation For This Flow
+            <i className="pi pi-external-link mx-2"></i>
+          </ExternalLink>{' '}
           <ResetButton className="" />
         </div>
-        <div className="h-8" />
-        <Steps
-          model={stepLabels}
-          activeIndex={steps.findIndex((step) => step === currentStep)}
-          className="w-full"
-          {...stepsStyleProps}
-        />
-        <div className="my-5 flex w-full justify-between gap-5">
-          <button
-            className={` rounded-lg border px-3 py-2 text-[#243145] hover:border-[#243145]
-            ${isFirstStep && 'cursor-not-allowed bg-gray-100 text-gray-300 hover:border-gray-300'}
-            `}
-            onClick={previousStep}
-            disabled={isFirstStep}
-          >
-            <i className="pi pi-arrow-left mx-2"></i>
-            Back
-          </button>
-          <NextButton onClick={handleNext} isLoading={isLoading} isLastStep={isLastStep} />
+        <div className=" flex w-full justify-between gap-5">
+          <Steps
+            model={stepLabels}
+            activeIndex={steps.findIndex((step) => step === currentStep)}
+            className="mb-3 w-full"
+            {...stepsStyleProps}
+          />
         </div>
-
-        <div className="grid w-full grid-cols-2 gap-4 pb-8">
-          <div>
-            {currentStep === ChooseChainType && (
-              <>
-                <StepTitle>Choose Chain Type</StepTitle>
-                <div className="h-4" />
-                <ChainTypeForm ref={pickChainFormRef} />
-              </>
-            )}
-
-            {currentStep === ConfigureChain && (
-              <>
-                <StepTitle>Configure Rollup</StepTitle>
-                <div className="h-4" />
-                <RollupConfigInput ref={rollupConfigFormRef} />
-              </>
-            )}
-
-            {currentStep === ConfigureValidators && (
-              <>
-                <StepTitle>Configure Validators</StepTitle>
-                <div className="h-4" />
-                <SetValidators ref={validatorFormRef} />
-              </>
-            )}
-
-            {currentStep === ConfigureBatchPoster && (
-              <>
-                <StepTitle>Configure Batch Poster</StepTitle>
-                <div className="h-4" />
-                <SetBatchPoster ref={batchPosterFormRef} />
-              </>
-            )}
-
-            {(currentStep === ReviewAndDeployRollup || currentStep === ReviewAndDeployAnyTrust) && (
-              <>
-                <StepTitle>Review & Deploy Config</StepTitle>
-                <div className="h-4" />
-                <ReviewAndDeploy
-                  ref={reviewAndDeployFormRef}
-                  isLoading={isLoading}
-                  setIsLoading={setIsLoading}
-                />
-              </>
-            )}
-            {currentStep === ConfigureKeyset && (
-              <>
-                <StepTitle>Configure Keyset</StepTitle>
-                <div className="h-4" />
-                <KeysetForm ref={keysetFormRef} isLoading={isLoading} setIsLoading={setIsLoading} />
-              </>
-            )}
-            {currentStep === DownloadConfig && (
-              <>
-                <StepTitle>Download Config</StepTitle>
-                <div className="h-4" />
-                <Download />
-              </>
-            )}
-            {currentStep === DeployLocally && (
-              <>
-                <StepTitle>Configure Keyset</StepTitle>
-                <div className="h-4" />
-                <DeployLocallyComponent />
-              </>
-            )}
-          </div>
-          <div>
-            <StepTitle>Deployment Summary</StepTitle>
-            <div className="h-4" />
-
-            {shouldDisplayDeploymentSummary ? (
-              <DeploymentSummary />
-            ) : (
-              <div>Deployment summary will appear after the rollup is deployed.</div>
-            )}
-          </div>
+        <div className="mb-3 flex w-full justify-between ">
+          <BackButton />
+          <NextButton onClick={handleNext} isLoading={isLoading} />
         </div>
+        <StepContent />
       </div>
     </main>
   );
@@ -260,7 +198,7 @@ export default function DeploymentPageWithContext() {
   const { isConnected } = useAccount();
   const isMounted = useIsMounted();
 
-  if ((isMounted && !isConnected) || !address) {
+  if (!isMounted || !isConnected || !address) {
     return (
       <div className="flex h-[calc(100vh-120px)] w-full items-center justify-center">
         <div className="flex flex-col items-center gap-3">

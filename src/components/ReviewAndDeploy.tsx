@@ -1,10 +1,10 @@
+import { useStep } from '@/hooks/useStep';
+import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
+import { ChainId } from '@/types/ChainId';
+import { deployRollup } from '@/utils/deployRollup';
 import React, { ForwardedRef, forwardRef } from 'react';
 import { useNetwork, useSigner } from 'wagmi';
-import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
-import { deployRollup } from '@/utils/deployRollup';
-import { ChainId } from '@/types/ChainId';
-import { useStep } from '@/hooks/useStep';
-import { OpenDocsLink } from './OpenDocsLink';
+import { StepTitle } from './StepTitle';
 
 type ReviewAndDeployProps = {
   isLoading: boolean;
@@ -54,66 +54,72 @@ export const ReviewAndDeploy = forwardRef(
     };
 
     return (
-      <div className="flex flex-col gap-4">
-        <OpenDocsLink />
-        <h3 className="font-bold">Rollup Config</h3>
-        <div className="ml-4 flex flex-col gap-2">
+      <>
+        <StepTitle>Review & Deploy Config</StepTitle>
+        <div className="mx-0 my-2 grid grid-cols-2 gap-4">
           <div>
-            <span className="font-bold">Chain ID</span>
-            <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-              {rollupConfig.chainId}
-            </pre>
+            <h3 className="font-bold">Rollup Config</h3>
+            <div className="ml-4 flex flex-col gap-2">
+              <div>
+                <span className="font-bold">Chain ID</span>
+                <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
+                  {rollupConfig.chainId}
+                </pre>
+              </div>
+              <div>
+                <span className="font-bold">Chain Name</span>
+                <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
+                  {rollupConfig.chainName}
+                </pre>
+              </div>
+              <div>
+                <span className="font-bold">Challenge Period Blocks</span>
+                <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
+                  {rollupConfig.confirmPeriodBlocks}
+                </pre>
+              </div>
+              <div>
+                <span className="font-bold">Stake Token</span>
+                <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
+                  {rollupConfig.stakeToken}
+                </pre>
+              </div>
+              <div>
+                <span className="font-bold">Base Stake (in Ether)</span>
+                <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
+                  {rollupConfig.baseStake}
+                </pre>
+              </div>
+              <div>
+                <span className="font-bold">Owner</span>
+                <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
+                  {rollupConfig.owner}
+                </pre>
+              </div>
+            </div>
           </div>
           <div>
-            <span className="font-bold">Chain Name</span>
-            <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-              {rollupConfig.chainName}
-            </pre>
-          </div>
-          <div>
-            <span className="font-bold">Challenge Period Blocks</span>
-            <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-              {rollupConfig.confirmPeriodBlocks}
-            </pre>
-          </div>
-          <div>
-            <span className="font-bold">Stake Token</span>
-            <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-              {rollupConfig.stakeToken}
-            </pre>
-          </div>
-          <div>
-            <span className="font-bold">Base Stake (in Ether)</span>
-            <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-              {rollupConfig.baseStake}
-            </pre>
-          </div>
-          <div>
-            <span className="font-bold">Owner</span>
-            <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-              {rollupConfig.owner}
-            </pre>
-          </div>
-        </div>
-        <h3 className="font-bold">Validators</h3>
-        <div className="ml-4 flex flex-col gap-2">
-          {validators.map((validator, index) => (
-            <div key={index}>
-              <span className="font-bold">Validator {index + 1}</span>
+            <h3 className="font-bold">Validators</h3>
+            <div className="ml-4 flex flex-col gap-2">
+              {validators.map((validator, index) => (
+                <div key={index}>
+                  <span className="font-bold">Validator {index + 1}</span>
+                  <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
+                    {validator.address}
+                  </pre>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2">
+              <h3 className="font-bold">Batch Poster</h3>
               <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-                {validator.address}
+                {batchPoster.address}
               </pre>
             </div>
-          ))}
+          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}></form>
         </div>
-        <div>
-          <span className="font-bold">Batch Poster</span>
-          <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-            {batchPoster.address}
-          </pre>
-        </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}></form>
-      </div>
+      </>
     );
   },
 );

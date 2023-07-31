@@ -1,8 +1,10 @@
 import { ExternalLink } from './ExternalLink';
+import { StepTitle } from './StepTitle';
 
 export const DeployLocallyComponent = () => {
   return (
     <div>
+      <StepTitle>Deploy Locally</StepTitle>
       Once you've downloaded both config files, please follow the steps below to complete local
       deployment of your Orbit chain. For more details on the steps involved and additional context,
       please visit the{' '}

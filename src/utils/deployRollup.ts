@@ -24,7 +24,7 @@ type DeployRollupProps = {
   validators: Validator[];
   batchPoster: BatchPoster;
   signer: Signer;
-  chainType: ChainType;
+  chainType?: ChainType;
 };
 
 export async function deployRollup({

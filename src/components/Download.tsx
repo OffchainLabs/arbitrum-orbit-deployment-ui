@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-
-import { ExternalLink } from '@/components/ExternalLink';
-import { RollupConfigData } from '@/types/rollupConfigDataType';
+import { useEffect, useState } from 'react';
 import { L3Config } from '@/types/l3ConfigType';
-import { OpenDocsLink } from './OpenDocsLink';
+import { RollupConfigData } from '@/types/rollupConfigDataType';
+import { CodeComponent } from './CodeComponent';
+import { StepTitle } from './StepTitle';
+import { useClipboard } from 'use-clipboard-copy';
 
 // Function to remove unwanted fields
 const removeFields = (obj: any, fieldsToRemove: string[]): any => {
@@ -88,15 +88,6 @@ export function Download() {
     }
   }, []);
 
-  const downloadJSON = (dataToDownload: RollupConfigData | L3Config | null, fileName: string) => {
-    const element = document.createElement('a');
-    const file = new Blob([JSON.stringify(dataToDownload, null, 2)], { type: 'application/json' });
-    element.href = URL.createObjectURL(file);
-    element.download = fileName;
-    document.body.appendChild(element);
-    element.click();
-  };
-
   if (!data) {
     return (
       <div>
@@ -106,23 +97,30 @@ export function Download() {
     );
   }
 
+  const dataWithParsedInfoJson = () => {
+    const parsedData = JSON.parse(JSON.stringify(data));
+    const infoJson = JSON.parse(parsedData.chain['info-json']);
+    parsedData.chain['info-json'] = infoJson;
+    return parsedData;
+  };
+
   return (
-    <div className="flex flex-col gap-4">
-      <OpenDocsLink />
-      <div className="flex flex-col gap-2">
-        <button
-          onClick={() => downloadJSON(data, 'nodeConfig.json')}
-          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-        >
-          Download Rollup JSON
-        </button>
-        <button
-          onClick={() => downloadJSON(l3Config, 'orbitSetupScriptConfig.json')}
-          className="w-full rounded-lg bg-[#243145] px-3 py-2 text-2xl text-white"
-        >
-          Download L3Config JSON
-        </button>
+    <>
+      <StepTitle>Download Config</StepTitle>
+      <div className="mx-0 my-2 grid grid-cols-2 gap-4">
+        <div>
+          <h4 className="font-bold">Rollup Config</h4>
+          <CodeComponent
+            data={data}
+            fileName="nodeConfig.json"
+            transformDataFunc={dataWithParsedInfoJson}
+          />
+        </div>
+        <div>
+          <h4 className="font-bold">L3 Config</h4>
+          <CodeComponent data={l3Config} fileName="orbitSetupScriptConfig.json" />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
