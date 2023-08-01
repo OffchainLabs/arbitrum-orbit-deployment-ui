@@ -1,11 +1,6 @@
 import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
 import { L3Config } from '@/types/l3ConfigType';
-import {
-  AnyTrustConfig,
-  AnyTrustConfigData,
-  RollupConfig,
-  RollupConfigData,
-} from '@/types/rollupConfigDataType';
+import { AnyTrustConfigData, RollupConfig, RollupConfigData } from '@/types/rollupConfigDataType';
 import { ethers } from 'ethers';
 
 export const buildChainConfig = (chainConfig: { chainId: number; owner: string }) => ({
@@ -190,46 +185,28 @@ export const buildL3Config = async ({
   batchPoster,
   signer,
 }: BuildL3ConfigParams): Promise<L3Config> => {
-  // Defining L3 config
-  const l3Config: L3Config = {
-    chainOwner: '',
-    rollup: '',
-    inbox: '',
-    outbox: '',
-    adminProxy: '',
-    sequencerInbox: '',
-    bridge: '',
-    utils: '',
-    validatorWalletCreator: '',
-    deployedAtBlockNumber: 0,
-    minL2BaseFee: 100000000,
-    networkFeeReceiver: '',
-    infrastructureFeeCollector: '',
-    batchPoster: '',
-    staker: '',
-    chainName: '',
-    chainId: 0,
-  };
-
   try {
-    l3Config.networkFeeReceiver = await signer.getAddress();
-    l3Config.infrastructureFeeCollector = await signer.getAddress();
-    l3Config.rollup = rollupCreatedEvent.args?.rollupAddress;
-    l3Config.staker = validators[0].address;
-    l3Config.batchPoster = batchPoster.address;
-    l3Config.inbox = rollupCreatedEvent.args?.inboxAddress;
-    l3Config.outbox = await rollupCore.outbox();
-    l3Config.adminProxy = rollupCreatedEvent.args?.adminProxy;
-    l3Config.sequencerInbox = rollupCreatedEvent.args?.sequencerInbox;
-    l3Config.bridge = rollupCreatedEvent.args?.bridge;
-    l3Config.utils = await rollupCore.validatorUtils();
-    l3Config.validatorWalletCreator = await rollupCore.validatorWalletCreator();
-    l3Config.deployedAtBlockNumber = createRollupTxReceipt.blockNumber;
-    l3Config.chainOwner = rollupConfig.owner;
-    l3Config.chainId = Number(rollupConfig.chainId);
-    l3Config.chainName = rollupConfig.chainName;
+    const l3Config: L3Config = {
+      networkFeeReceiver: await signer.getAddress(),
+      infrastructureFeeCollector: await signer.getAddress(),
+      rollup: rollupCreatedEvent.args?.rollupAddress,
+      staker: validators[0].address,
+      batchPoster: batchPoster.address,
+      inbox: rollupCreatedEvent.args?.inboxAddress,
+      outbox: await rollupCore.outbox(),
+      adminProxy: rollupCreatedEvent.args?.adminProxy,
+      sequencerInbox: rollupCreatedEvent.args?.sequencerInbox,
+      bridge: rollupCreatedEvent.args?.bridge,
+      utils: await rollupCore.validatorUtils(),
+      validatorWalletCreator: await rollupCore.validatorWalletCreator(),
+      deployedAtBlockNumber: createRollupTxReceipt.blockNumber,
+      chainOwner: rollupConfig.owner,
+      chainId: Number(rollupConfig.chainId),
+      chainName: rollupConfig.chainName,
+      minL2BaseFee: 100000000,
+    };
+    return l3Config;
   } catch (e) {
     throw new Error(`Failed to build L3 Config: ${e}`);
   }
-  return l3Config;
 };
