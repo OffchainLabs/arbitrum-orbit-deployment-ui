@@ -32,7 +32,7 @@ export const ChainTypeForm = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}>
+    <form onSubmit={handleSubmit} className="flex w-2/3 flex-col gap-4" ref={ref}>
       <StepTitle>Choose Chain Type</StepTitle>
       <ExternalLink
         href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/faqs/protocol-faqs#q-rollup-vs-anytrust`}
