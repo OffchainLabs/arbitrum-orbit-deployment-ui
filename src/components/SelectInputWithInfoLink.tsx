@@ -1,13 +1,11 @@
-import { FC, ChangeEvent, SelectHTMLAttributes } from 'react';
+import { FC, SelectHTMLAttributes } from 'react';
 import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 
 interface SelectInputWithInfoLinkProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   href: string;
-  name: string;
   infoText: string;
   options: string[];
-  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export const SelectInputWithInfoLink: FC<SelectInputWithInfoLinkProps> = ({
@@ -16,7 +14,7 @@ export const SelectInputWithInfoLink: FC<SelectInputWithInfoLinkProps> = ({
   name,
   infoText,
   options,
-  onChange = () => {},
+  onChange,
   ...rest
 }) => (
   <div className="flex flex-col gap-2">

@@ -1,8 +1,7 @@
 import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 import { RollupConfig } from '@/types/rollupConfigDataType';
-import { ForwardedRef, forwardRef, useState } from 'react';
-import { ExternalLink } from './ExternalLink';
+import { ForwardedRef, forwardRef } from 'react';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
@@ -10,7 +9,6 @@ import { StepTitle } from './StepTitle';
 type StakeTokenType = 'ETH' | 'Custom';
 
 export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
-  const [stakeTokenType, setStakeTokenType] = useState<StakeTokenType>('ETH');
   const [{ rollupConfig }, dispatch] = useDeploymentPageContext();
   const { nextStep } = useStep();
 
@@ -50,7 +48,6 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
           placeholder="12345678"
           infoText="Read about Chain ID in the docs"
           defaultValue={rollupConfig?.chainId || ''}
-          onChange={() => {}}
         />
         <TextInputWithInfoLink
           label="Chain Name"
@@ -58,7 +55,6 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
           name="chainName"
           infoText="Read about Chain Name in the docs"
           defaultValue={rollupConfig?.chainName || ''}
-          onChange={() => {}}
         />
         <TextInputWithInfoLink
           label="Challenge Period Blocks"
@@ -67,7 +63,6 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
           type="number"
           infoText="Read about Challenge Period Blocks in the docs"
           defaultValue={rollupConfig?.confirmPeriodBlocks || ''}
-          onChange={() => {}}
         />
         <SelectInputWithInfoLink
           label="Stake Token"
@@ -84,7 +79,6 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
           type="number"
           infoText="Read about Base Stake in the docs"
           defaultValue={rollupConfig?.baseStake || ''}
-          onChange={() => {}}
         />
         <TextInputWithInfoLink
           label="Owner"
@@ -92,7 +86,6 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
           name="owner"
           infoText="Read about Owner in the docs"
           defaultValue={rollupConfig?.owner || ''}
-          onChange={() => {}}
         />
       </form>
     </>

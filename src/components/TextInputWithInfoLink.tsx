@@ -1,14 +1,10 @@
-import { ChangeEvent, FC, InputHTMLAttributes, useState } from 'react';
+import { FC, InputHTMLAttributes } from 'react';
 import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 
 interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   href: string;
-  name: string;
-  placeholder?: string;
   infoText: string;
-  value?: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const TextInputWithInfoLink: FC<TextInputWithInfoLinkProps> = ({
@@ -18,7 +14,7 @@ export const TextInputWithInfoLink: FC<TextInputWithInfoLinkProps> = ({
   placeholder,
   infoText,
   value,
-  onChange = () => {},
+  onChange,
   type = 'text',
   ...rest
 }) => {
@@ -36,7 +32,6 @@ export const TextInputWithInfoLink: FC<TextInputWithInfoLinkProps> = ({
         type={type}
         placeholder={placeholder}
         value={value}
-        onChange={onChange}
         className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
         {...rest}
       />
