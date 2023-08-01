@@ -2,10 +2,9 @@ import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
 import { Validator } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
-import { ForwardedRef, forwardRef, useState, useEffect } from 'react';
-import { OpenDocsLink } from './OpenDocsLink';
-import { TextInputWithInfoLink } from './TextInputWithInfoLink';
+import { ForwardedRef, forwardRef, useEffect, useState } from 'react';
 import { StepTitle } from './StepTitle';
+import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 
 export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
   const [{ validators: currentValidators }, dispatch] = useDeploymentPageContext();
