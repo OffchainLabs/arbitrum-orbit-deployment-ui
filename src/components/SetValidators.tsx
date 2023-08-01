@@ -82,7 +82,6 @@ export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
                 value={validator.address}
                 onChange={(e) => handleAddressChange(index, e.target.value)}
                 className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
-                disabled={index === 0}
               />
             </div>
           ))}

@@ -14,7 +14,6 @@ export const TextInputWithInfoLink: FC<TextInputWithInfoLinkProps> = ({
   placeholder,
   infoText,
   value,
-  onChange,
   type = 'text',
   ...rest
 }) => {
