@@ -18,7 +18,7 @@ export const ChainTypePicker: React.FC<ChainTypePickerProps> = ({
   return (
     <div
       className={
-        ' grid cursor-pointer grid-cols-9 items-center justify-center rounded-lg border border-[#243145] p-3  accent-[#243145] hover:bg-[#f2f7ff]	' +
+        ' grid cursor-pointer grid-cols-9 items-center justify-center rounded border border-[#243145] py-6 pr-6 accent-[#243145] hover:bg-[#f2f7ff]	' +
         (selectedChainType === chainType ? ' bg-[#f2f7ff]' : '')
       }
       onClick={() => {
@@ -37,7 +37,7 @@ export const ChainTypePicker: React.FC<ChainTypePickerProps> = ({
           readOnly
         />
       </div>
-      <div className="col-span-8 cursor-pointer justify-center">
+      <div className="col-span-8 cursor-pointer justify-center text-left">
         <label htmlFor="rollup" className="cursor-pointer text-lg font-bold">
           {label}
         </label>

@@ -32,14 +32,13 @@ export const ChainTypeForm = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-2/3 flex-col gap-4" ref={ref}>
+    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4" ref={ref}>
       <StepTitle>Choose Chain Type</StepTitle>
       <ExternalLink
         href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/faqs/protocol-faqs#q-rollup-vs-anytrust`}
-        className="text-lg  text-[#1366C1] underline"
+        className="text-sm text-[#1366C1] "
       >
         Learn more about AnyTrust vs. Rollup
-        <i className="pi pi-external-link mx-2"></i>
       </ExternalLink>
       <ChainTypePicker
         selectedChainType={selectedChainType}

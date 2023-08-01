@@ -5,9 +5,10 @@ import { ButtonHTMLAttributes, FC } from 'react';
 
 interface ResetButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
-export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
+export const ResetButton: FC<ResetButtonProps> = ({ className, setIsLoading }) => {
   const router = useRouter();
   const { address } = useAccount();
   const [, dispatch] = useDeploymentPageContext();
@@ -17,16 +18,15 @@ export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
     localStorage.removeItem('l3Config');
 
     dispatch({ type: 'reset', payload: address ? address : '' });
-
+    setIsLoading(false);
     router.push('/deployment?step=1');
   }
 
   return (
     <button
-      className={`my-2 rounded-lg border border-[#243145] px-3 py-2 text-xs text-[#243145] ${className}`}
+      className={`my-2 w-64 border border-white py-2 text-left text-sm text-[#243145] underline${className}`}
       onClick={reset}
     >
-      <i className="pi pi-refresh mx-2 text-xs"></i>
       Reset and Start Over
     </button>
   );

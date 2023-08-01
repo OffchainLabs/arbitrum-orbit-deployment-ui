@@ -137,51 +137,58 @@ function DeploymentPage() {
   };
 
   return (
-    <main className="flex min-h-screen w-full justify-center">
-      <div className="flex w-[1024px] flex-col ">
-        <span className="w-full rounded-lg bg-[#FFEED3] px-3 py-2 text-left text-sm text-[#60461F]">
-          All parameters shown are defaults (including some randomly generated addresses), which we
-          recommend using for testing purposes.
-          <br />
-          More information around parameter customization and guidance can be found in the{' '}
-          <a
-            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            documentation
-          </a>
-          .
-          <br />
-          <br />
-          Please ensure you have at least 1.5 Goerli ETH before getting started.
-        </span>
-        <div className="my-2 flex w-full items-baseline justify-between">
-          <ExternalLink
-            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
-            className="text-lg  text-[#1366C1] underline"
-          >
-            Open Supporting Documentation For This Flow
-            <i className="pi pi-external-link mx-2"></i>
-          </ExternalLink>{' '}
-          <ResetButton className="" />
+    <>
+      <main className="flex min-h-screen w-full justify-center">
+        <div className="flex w-[1024px] flex-col gap-2">
+          <p className="text-left text-sm">
+            All parameters shown are defaults (including some randomly generated addresses), which
+            we recommend using for testing purposes. More information around parameter customization
+            and guidance can be found in the{' '}
+            <a
+              href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              documentation
+            </a>
+            .
+            <br />
+          </p>
+          <p className="text-left text-sm">
+            Please ensure you have at least 1.5 Goerli ETH before getting started.
+          </p>
+          <div className="flex w-full items-baseline justify-between">
+            <ExternalLink
+              href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
+              className=" text-sm text-[#1366C1] "
+            >
+              Open Supporting Documentation For This Flow
+            </ExternalLink>
+          </div>
+          <div className="my-2">
+            <Steps
+              model={stepLabels}
+              activeIndex={steps.findIndex((step) => step === currentStep)}
+              className="mb-3 w-full "
+              {...stepsStyleProps}
+            />
+          </div>
+          <div className="pb-32">
+            <StepContent />
+          </div>
+          <div className="fixed bottom-0 left-0 z-50 flex w-full flex-col items-center justify-between bg-transparent">
+            <div className="flex w-[1024px] flex-col justify-between">
+              <div className="flex w-full gap-32">
+                <BackButton isLoading={isLoading} />
+                <NextButton onClick={handleNext} isLoading={isLoading} />
+              </div>
+              <ResetButton setIsLoading={setIsLoading} />
+            </div>
+          </div>
         </div>
-        <div className=" flex w-full justify-between gap-5">
-          <Steps
-            model={stepLabels}
-            activeIndex={steps.findIndex((step) => step === currentStep)}
-            className="mb-3 w-full"
-            {...stepsStyleProps}
-          />
-        </div>
-        <div className="mb-3 flex w-full justify-between ">
-          <BackButton />
-          <NextButton onClick={handleNext} isLoading={isLoading} />
-        </div>
-        <StepContent />
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
 
