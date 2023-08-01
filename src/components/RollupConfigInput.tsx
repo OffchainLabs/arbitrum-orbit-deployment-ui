@@ -77,6 +77,7 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
           href={`${commonDocLink}#base-stake`}
           name="baseStake"
           type="number"
+          step="any"
           infoText="Read about Base Stake in the docs"
           defaultValue={rollupConfig?.baseStake || ''}
         />
