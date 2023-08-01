@@ -16,7 +16,7 @@ import 'primeflex/primeflex.css';
 
 import '@/styles/globals.css';
 import { wagmiClient, chains, appInfo } from '@/setupWagmi';
-import { spaceGrotesk } from '@/fonts';
+import { spaceGrotesk, unica77 } from '@/fonts';
 import Head from 'next/head';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
@@ -60,7 +60,7 @@ export default function App({ Component, pageProps }: AppProps) {
               },
             }}
           >
-            <div className="items flex w-full flex-col" style={spaceGrotesk.style}>
+            <div className="items flex w-full flex-col" style={unica77.style}>
               <Head>
                 <title>Arbitrum Orbit Deployment UI</title>
               </Head>
