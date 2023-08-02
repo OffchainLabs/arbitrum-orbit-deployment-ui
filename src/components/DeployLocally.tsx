@@ -1,7 +1,10 @@
+import { useConfigDownloads } from '@/hooks/useConfigDownloads';
 import { ExternalLink } from './ExternalLink';
 import { StepTitle } from './StepTitle';
 
 export const DeployLocallyComponent = () => {
+  const { downloadRollupConfig, downloadL3Config } = useConfigDownloads();
+
   return (
     <div>
       <StepTitle>Deploy Locally</StepTitle>
@@ -31,8 +34,15 @@ export const DeployLocallyComponent = () => {
           <br />
           <pre className="overflow-auto rounded-lg bg-gray-100 p-4 text-sm">yarn install</pre>
           <br />
-          Then, move both the <b>nodeConfig.json</b> and <b>orbitSetupScriptConfig.json</b> files
-          into the <b>config</b> directory within the cloned repo.
+          Then, move both the{' '}
+          <b onClick={downloadRollupConfig} className="cursor-pointer underline">
+            nodeConfig.json
+          </b>{' '}
+          and{' '}
+          <b onClick={downloadL3Config} className="cursor-pointer underline">
+            orbitSetupScriptConfig.json
+          </b>{' '}
+          files into the <b>config</b> directory within the cloned repo.
         </li>
         <br />
         <li>

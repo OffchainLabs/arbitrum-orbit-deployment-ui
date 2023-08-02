@@ -12,7 +12,7 @@ type ReviewAndDeployProps = {
 };
 
 export const ReviewAndDeploy = forwardRef(
-  ({ isLoading, setIsLoading }: ReviewAndDeployProps, ref: ForwardedRef<HTMLFormElement>) => {
+  ({ setIsLoading }: ReviewAndDeployProps, ref: ForwardedRef<HTMLFormElement>) => {
     const [{ rollupConfig, validators, batchPoster, chainType }, dispatch] =
       useDeploymentPageContext();
     const { data: signer } = useSigner();
