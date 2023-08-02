@@ -24,7 +24,7 @@ export const ResetButton: FC<ResetButtonProps> = ({ className, setIsLoading }) =
 
   return (
     <button
-      className={`my-2 w-64 border border-white py-2 text-left text-sm text-[#243145] underline${className}`}
+      className={`my-2 w-64 py-2 text-left text-sm text-[#243145] underline ${className}`}
       onClick={reset}
     >
       Reset and Start Over

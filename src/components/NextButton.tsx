@@ -37,7 +37,7 @@ export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading 
     <button
       className={`w-full rounded-lg bg-[#243145] px-3 py-2 text-white ${
         (isLoading || isLastStep) && 'cursor-not-allowed bg-gray-400'
-      } ${className}`}
+      } ${isLastStep && 'invisible'} ${className}`}
       onClick={onClick}
       disabled={isLoading || isLastStep}
     >
