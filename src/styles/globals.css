@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.select-wrapper::after {
+  @apply pointer-events-none absolute right-0 px-4 text-2xl leading-5; /* Adjust size and line-height here */
+  top: 50%;
+  transform: translateY(-80%);
+  content: '⌄';
+}

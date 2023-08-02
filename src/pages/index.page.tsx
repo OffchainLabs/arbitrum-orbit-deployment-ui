@@ -11,8 +11,8 @@ export default function Home() {
   const ExternalLinkTile: FC<ExternalLinkTileProps> = ({ href, title, children, ...rest }) => (
     <a target="_blank" rel="noopener noreferrer" href={href} {...rest}>
       <button className="w-full rounded-lg  border border-transparent px-2 py-3 text-left transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-        <h2 className={`mb-2 text-3xl font-regular`}>{title}</h2>
-        <p className={`m-0 max-w-[28ch] text-sm font-regular`}>{children}</p>
+        <h2 className={`font-regular mb-2 text-2xl`}>{title}</h2>
+        <p className={`font-regular m-0 max-w-[28ch] text-sm`}>{children}</p>
       </button>
     </a>
   );

@@ -161,12 +161,12 @@ function DeploymentPage() {
           <div className="flex w-full items-baseline justify-between">
             <ExternalLink
               href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
-              className=" text-sm text-[#1366C1] "
+              className="text-sm text-[#1366C1]"
             >
               Open Supporting Documentation For This Flow
             </ExternalLink>
           </div>
-          <div className="my-2">
+          <div className="mb-1 mt-4">
             <Steps
               model={stepLabels}
               activeIndex={steps.findIndex((step) => step === currentStep)}

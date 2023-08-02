@@ -24,16 +24,22 @@ export const SelectInputWithInfoLink: FC<SelectInputWithInfoLinkProps> = ({
       </label>
       <InfoCircleWithTooltip href={href} infoText={infoText} />
     </div>
-    <select
-      id={name}
-      name={name}
-      onChange={onChange}
-      className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
-      {...rest}
-    >
-      {options.map((option, index) => (
-        <option key={index}>{option}</option>
-      ))}
-    </select>
+    <div className="select-wrapper relative">
+      <select
+        id={name}
+        name={name}
+        onChange={onChange}
+        className={
+          `w-full appearance-none rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input` +
+          ' ' +
+          (rest.disabled ? 'cursor-not-allowed bg-gray-200 opacity-50' : '')
+        }
+        {...rest}
+      >
+        {options.map((option, index) => (
+          <option key={index}>{option}</option>
+        ))}
+      </select>
+    </div>
   </div>
 );
