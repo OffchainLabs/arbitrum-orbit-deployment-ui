@@ -1,80 +1,49 @@
 import Image from 'next/image';
+import { FC, ReactNode } from 'react';
+
+interface ExternalLinkTileProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string;
+  title: string;
+  children: ReactNode;
+}
 
 export default function Home() {
+  const ExternalLinkTile: FC<ExternalLinkTileProps> = ({ href, title, children, ...rest }) => (
+    <a target="_blank" rel="noopener noreferrer" href={href} {...rest}>
+      <button className="w-full rounded-lg  border border-transparent px-2 py-3 text-left transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
+        <h2 className={`font-regular mb-2 text-2xl`}>{title}</h2>
+        <p className={`font-regular m-0 max-w-[28ch] text-sm`}>{children}</p>
+      </button>
+    </a>
+  );
+
   return (
     <main className="flex h-[calc(100vh-120px)] w-full justify-center">
-      <div className="flex h-[calc(100vh-120px)] w-[1440px] flex-col items-center justify-center gap-32">
-        <div className="">
-          <Image src="/logo.svg" alt="Logo" width={192} height={192} />
-        </div>
-
-        <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-          <a
-            href="/deployment"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Deploy Orbit Chain{' '}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>Configure your appchain here</p>
-          </a>
-
-          <a
+      <div className="mt-16 flex w-[1024px] flex-col items-start gap-16 pl-10 sm:pl-0">
+        <Image src="/logo.svg" alt="Logo" width={192} height={192} />
+        <div className="-ml-2 flex flex-wrap items-start justify-start gap-16">
+          <ExternalLinkTile
             href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-gentle-introduction`}
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            target="_blank"
-            rel="noopener noreferrer"
+            title="Learn about Orbit"
           >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Learn about Orbit{' '}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Dig into the details of how this works
-            </p>
-          </a>
-
-          <a
+            Dig into the details of how this works
+          </ExternalLinkTile>
+          <ExternalLinkTile href="/deployment" title="Deploy Orbit Chain">
+            Configure your appchain here
+          </ExternalLinkTile>
+        </div>
+        <div className="w-1/2 border border-zinc-300" />
+        <div className="-ml-2 flex items-start justify-start gap-16">
+          <ExternalLinkTile
             href="https://docs.google.com/forms/d/e/1FAIpQLSe5YWxFbJ8DgWcDNbIW2YYuTRmegtx2FHObym00_sOt0kq4wA/viewform"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            target="_blank"
-            rel="noopener noreferrer"
+            title="Get in Touch"
           >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Get in Touch{' '}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Connect with us to learn if an appchain makes sense for you
-            </p>
-          </a>
-
-          <a
-            href="https://discord.gg/KsewXePB"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Get Support{' '}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Join the <span className="font-bold">#orbit-support</span> channel in Discord if you
-              run into any issues
-            </p>
-          </a>
+            Connect with us to learn if an appchain makes sense for you
+          </ExternalLinkTile>
+          <ExternalLinkTile href="https://discord.gg/KsewXePB" title="Get Support">
+            Join the <span className="font-bold">#orbit-support</span> channel in Discord if you run
+            into any issues
+          </ExternalLinkTile>
         </div>
       </div>
     </main>
