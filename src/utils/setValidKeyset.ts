@@ -1,20 +1,34 @@
+import { PublicClient, WalletClient } from 'viem';
 import { AnyTrustConfigData } from '@/types/rollupConfigDataType';
-import { ethers } from 'ethers';
 import SequencerInbox from '@/ethereum/SequencerInbox.json';
+import { assertIsHexString } from './validators';
 
 export const setValidKeyset = async ({
   anyTrustConfigData,
-  signer,
+  account,
+  publicClient,
+  walletClient,
   keyset,
 }: {
   anyTrustConfigData: AnyTrustConfigData;
   keyset: string;
-  signer: ethers.Signer;
+  account: `0x${string}`;
+  publicClient: PublicClient;
+  walletClient: WalletClient;
 }) => {
   try {
     const keysetAddress = anyTrustConfigData.node['data-availability']['sequencer-inbox-address'];
-    const sequencerInboxContract = new ethers.Contract(keysetAddress, SequencerInbox.abi, signer);
-    return sequencerInboxContract.setValidKeyset(keyset);
+    assertIsHexString(keysetAddress);
+
+    const { request } = await publicClient.simulateContract({
+      address: keysetAddress,
+      abi: SequencerInbox.abi,
+      functionName: 'setValidKeyset',
+      args: [keyset],
+      account,
+    });
+
+    return walletClient.writeContract(request);
   } catch (e) {
     throw new Error(`Error setting keyset: ${e}`);
   }

@@ -1,8 +1,7 @@
-import { ethers } from 'ethers';
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 
 export const getRandomWallet = () => {
-  const wallet = ethers.Wallet.createRandom();
-  const privateKey = wallet.privateKey;
-  const address = wallet.address;
-  return { privateKey, address };
+  const privateKey = generatePrivateKey();
+  const account = privateKeyToAccount(privateKey);
+  return { privateKey, address: account.address };
 };

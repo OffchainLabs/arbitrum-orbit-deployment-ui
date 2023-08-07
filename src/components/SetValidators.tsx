@@ -1,14 +1,14 @@
 import { useStep } from '@/hooks/useStep';
-import { useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 import { Validator } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
-import { ForwardedRef, forwardRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 
-export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
+export const SetValidators = () => {
   const [{ validators: currentValidators }, dispatch] = useDeploymentPageContext();
-  const { nextStep } = useStep();
+  const { nextStep, validatorFormRef } = useStep();
   const [validatorCount, setValidatorCount] = useState<number>(currentValidators?.length || 1);
   const [validators, setValidators] = useState<Validator[]>(
     currentValidators || Array.from({ length: validatorCount }, getRandomWallet),
@@ -40,7 +40,7 @@ export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={ref}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={validatorFormRef}>
       <StepTitle>Configure Validators</StepTitle>
       <div className="w-1/2">
         <TextInputWithInfoLink
@@ -89,4 +89,4 @@ export const SetValidators = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
       </div>
     </form>
   );
-});
+};

@@ -1,5 +1,3 @@
-import { BigNumber } from 'ethers';
-
 export type RollupConfigData = {
   'chain': {
     'info-json': Array<{
@@ -102,7 +100,7 @@ export type RollupConfig = {
     futureSeconds: number;
   };
 };
-export type RollupConfigPayload = Omit<RollupConfig, 'baseStake'> & { baseStake: BigNumber };
+export type RollupConfigPayload = Omit<RollupConfig, 'baseStake'> & { baseStake: bigint };
 
 export type AnyTrustConfig = RollupConfig & {
   sequencerInboxAddress: string;

@@ -23,8 +23,8 @@ export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading 
       return 'Deploy';
     }
     if (isTransactionStep) {
-      if (isLoading) return 'Set Keyset';
-      return 'Setting Keyset';
+      if (isLoading) return 'Setting Keyset';
+      return 'Set Keyset';
     }
     return 'Next';
   };

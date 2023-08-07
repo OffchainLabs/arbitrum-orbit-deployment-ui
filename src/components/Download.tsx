@@ -1,5 +1,4 @@
 import { useConfigDownloads } from '@/hooks/useConfigDownloads';
-import Image from 'next/image';
 import { CodeComponent } from './CodeComponent';
 import { StepTitle } from './StepTitle';
 

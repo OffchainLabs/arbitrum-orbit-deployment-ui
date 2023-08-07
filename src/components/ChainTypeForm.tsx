@@ -1,14 +1,14 @@
+import { useState } from 'react';
 import { useStep } from '@/hooks/useStep';
-import { ChainType, useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
-import { ForwardedRef, forwardRef, useState } from 'react';
+import { ChainType } from '@/types/ChainType';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainTypePicker } from './ChainTypePicker';
 import { ExternalLink } from './ExternalLink';
 import { StepTitle } from './StepTitle';
 
-export const ChainTypeForm = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
-  const [, dispatch] = useDeploymentPageContext();
-  const { nextStep } = useStep();
-  const [{ chainType }] = useDeploymentPageContext();
+export const ChainTypeForm = () => {
+  const [{ chainType }, dispatch] = useDeploymentPageContext();
+  const { nextStep, pickChainFormRef } = useStep();
   const [selectedChainType, setSelectedChainType] = useState<ChainType | undefined>(chainType);
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -32,7 +32,7 @@ export const ChainTypeForm = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4" ref={ref}>
+    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4" ref={pickChainFormRef}>
       <StepTitle>Choose Chain Type</StepTitle>
       <ExternalLink
         href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/faqs/protocol-faqs#q-rollup-vs-anytrust`}
@@ -64,4 +64,4 @@ export const ChainTypeForm = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>)
       <p className="text-red-500">{error}</p>
     </form>
   );
-});
+};

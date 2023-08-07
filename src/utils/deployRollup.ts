@@ -1,21 +1,24 @@
-import { Signer } from '@ethersproject/abstract-signer';
-import { BigNumber, ethers } from 'ethers';
-
-import { RollupConfig } from '@/types/rollupConfigDataType';
-
+import { PublicClient, WalletClient, decodeEventLog } from 'viem';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
-import { ChainType } from '@/pages/deployment/DeploymentPageContext';
-import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
+import { ChainType } from '@/types/ChainType';
+import {
+  BatchPoster,
+  RollupContracts,
+  RollupCreatedEvent,
+  Validator,
+} from '@/types/RollupContracts';
+import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
   buildChainConfig,
   buildL3Config,
   buildRollupConfigData,
+  buildRollupConfigPayload,
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
+import { assertIsHexString } from './validators';
 
-export type RollupConfigPayload = Omit<RollupConfig, 'baseStake'> & { baseStake: BigNumber };
 // On Arbitrum Goerli, so need to change it for other networks
 const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
 
@@ -23,67 +26,92 @@ type DeployRollupProps = {
   rollupConfig: RollupConfig;
   validators: Validator[];
   batchPoster: BatchPoster;
-  signer: Signer;
+  publicClient: PublicClient;
+  walletClient: WalletClient;
   chainType?: ChainType;
+  account: `0x${string}`;
 };
 
 export async function deployRollup({
   rollupConfig,
   validators,
   batchPoster,
-  signer,
+  publicClient,
+  walletClient,
+  account,
   chainType = ChainType.Rollup,
 }: DeployRollupProps): Promise<RollupContracts> {
   try {
     const chainConfig: string = JSON.stringify(buildChainConfig(rollupConfig));
 
-    const rollupConfigPayload: RollupConfigPayload = {
-      ...rollupConfig,
-      chainConfig: chainConfig,
-      baseStake: ethers.utils.parseEther(rollupConfig.baseStake),
-    };
+    const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
     console.log(chainConfig);
     console.log('Going for deployment');
 
-    const rollupCreator = new ethers.Contract(
-      ARB_GOERLI_CREATOR_ADDRESS,
-      RollupCreator.abi,
-      signer,
-    );
-    const createRollupTx = await rollupCreator.createRollup(
-      rollupConfigPayload,
-      batchPosterAddress,
-      validatorAddresses,
-    );
-    const createRollupTxReceipt = await createRollupTx.wait();
-    const createRollupTxReceiptEvents = createRollupTxReceipt.events ?? [];
+    const { request } = await publicClient.simulateContract({
+      address: ARB_GOERLI_CREATOR_ADDRESS,
+      abi: RollupCreator.abi,
+      functionName: 'createRollup',
+      args: [rollupConfigPayload, batchPosterAddress, validatorAddresses],
+      account,
+    });
 
-    const rollupCreatedEvent = createRollupTxReceiptEvents.find(
-      (event: { event: string }) => event.event === 'RollupCreated',
-    );
+    const hash = await walletClient.writeContract(request);
+    const createRollupTxReceipt = await publicClient.waitForTransactionReceipt({
+      hash: hash,
+    });
 
-    if (!rollupCreatedEvent) {
+    const rollupCreatedEvent = createRollupTxReceipt.logs
+      .map((log) => {
+        try {
+          return decodeEventLog({
+            ...log,
+            abi: RollupCreator.abi as any,
+          });
+        } catch (e) {}
+      })
+      .filter((event) => !!event)
+      .find((event) => (event ? event.eventName === 'RollupCreated' : false)) as
+      | RollupCreatedEvent
+      | {};
+
+    if (!('args' in rollupCreatedEvent)) {
       throw new Error('RollupCreated event not found');
     }
 
-    const rollupCore = new ethers.Contract(
-      rollupCreatedEvent.args.rollupAddress,
-      RollupCore.abi,
-      signer,
-    );
+    const outbox = await publicClient.readContract({
+      address: rollupCreatedEvent.args.rollupAddress,
+      abi: RollupCore.abi,
+      functionName: 'outbox',
+    });
+    assertIsHexString(outbox);
+
+    const validatorUtils = await publicClient.readContract({
+      address: rollupCreatedEvent.args.rollupAddress,
+      abi: RollupCore.abi,
+      functionName: 'validatorUtils',
+    });
+    assertIsHexString(validatorUtils);
+
+    const validatorWalletCreator = await publicClient.readContract({
+      address: rollupCreatedEvent.args.rollupAddress,
+      abi: RollupCore.abi,
+      functionName: 'validatorWalletCreator',
+    });
+    assertIsHexString(validatorWalletCreator);
 
     const rollupContracts: RollupContracts = {
       rollup: rollupCreatedEvent.args.rollupAddress,
       inbox: rollupCreatedEvent.args.inboxAddress,
-      outbox: await rollupCore.outbox(),
+      outbox: outbox,
       adminProxy: rollupCreatedEvent.args.adminProxy,
       sequencerInbox: rollupCreatedEvent.args.sequencerInbox,
       bridge: rollupCreatedEvent.args.bridge,
-      utils: await rollupCore.validatorUtils(),
-      validatorWalletCreator: await rollupCore.validatorWalletCreator(),
-      deployedAtBlockNumber: createRollupTxReceipt.blockNumber,
+      utils: validatorUtils,
+      validatorWalletCreator: validatorWalletCreator,
+      deployedAtBlockNumber: Number(createRollupTxReceipt.blockNumber),
     };
 
     let rollupConfigData = buildRollupConfigData({
@@ -102,13 +130,11 @@ export async function deployRollup({
 
     // Defining L3 config
     const l3Config = await buildL3Config({
-      rollupCore,
-      rollupCreatedEvent,
+      address: account,
       rollupConfig,
-      createRollupTxReceipt,
+      rollupContracts,
       validators,
       batchPoster,
-      signer,
     });
 
     updateLocalStorage(rollupConfigData, l3Config);

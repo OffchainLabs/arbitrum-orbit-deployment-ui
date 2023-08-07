@@ -1,3 +1,5 @@
+'use client';
+
 import { useDeploymentPageContext } from './DeploymentPageContext';
 
 function BlockExplorerLink({ href, children }: { href: string; children: React.ReactNode }) {

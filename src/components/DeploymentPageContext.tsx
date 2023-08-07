@@ -1,11 +1,19 @@
-import { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
-import { ethers } from 'ethers';
-import { useAccount } from 'wagmi';
-
+'use client';
 import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
-import { useStep } from '@/hooks/useStep';
-import { RollupConfig } from '@/types/rollupConfigDataType';
 import { RollupStepMap } from '@/types/Steps';
+import { RollupConfig } from '@/types/rollupConfigDataType';
+import {
+  Dispatch,
+  RefObject,
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+} from 'react';
+import { useAccount } from 'wagmi';
+import { useStep } from '@/hooks/useStep';
+import { ChainType } from '@/types/ChainType';
 
 type DeploymentPageContextState = {
   rollupContracts?: RollupContracts;
@@ -13,20 +21,21 @@ type DeploymentPageContextState = {
   validators?: Validator[];
   batchPoster?: BatchPoster;
   chainType?: ChainType;
+  isLoading: boolean;
 };
 
 const defaultRollupConfig: RollupConfig = {
   confirmPeriodBlocks: 150,
-  stakeToken: ethers.constants.AddressZero,
+  stakeToken: '0x0000000000000000000000000000000000000000',
   baseStake: '0.1',
   owner: '',
   extraChallengeTimeBlocks: 0,
   // Needs to be changed after PR by Lee about new Wasm root
   wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21',
-  loserStakeEscrow: ethers.constants.AddressZero,
+  loserStakeEscrow: '0x0000000000000000000000000000000000000000',
   chainId: Math.floor(Math.random() * 100000000000) + 1,
   chainName: 'My Arbitrum L3 Chain',
-  chainConfig: ethers.constants.HashZero,
+  chainConfig: '0x0000000000000000000000000000000000000000000000000000000000000000',
   genesisBlockNum: 0,
   sequencerInboxMaxTimeVariation: {
     delayBlocks: 5760,
@@ -35,12 +44,6 @@ const defaultRollupConfig: RollupConfig = {
     futureSeconds: 3600,
   },
 };
-export const ChainType = {
-  Rollup: 'Rollup',
-  AnyTrust: 'AnyTrust',
-} as const;
-
-export type ChainType = (typeof ChainType)[keyof typeof ChainType];
 
 function getDefaultRollupConfig(owner: string = '') {
   return { ...defaultRollupConfig, owner };
@@ -52,6 +55,7 @@ const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
   validators: undefined,
   batchPoster: undefined,
   chainType: undefined,
+  isLoading: false,
 };
 
 function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState {
@@ -74,16 +78,19 @@ type DeploymentPageContextAction =
   | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Validator[] }
   | { type: 'set_batch_poster'; payload: BatchPoster }
+  | { type: 'set_is_loading'; payload: boolean }
   | { type: 'reset'; payload: string };
 
 type DeploymentPageContextValue = [
   DeploymentPageContextState,
   Dispatch<DeploymentPageContextAction>,
+  { [key: string]: RefObject<HTMLFormElement> | null },
 ];
 
 export const DeploymentPageContext = createContext<DeploymentPageContextValue>([
   getDeploymentPageContextStateInitialValue(),
   () => {},
+  {},
 ]);
 
 function reducer(
@@ -106,6 +113,9 @@ function reducer(
     case 'set_batch_poster':
       return { ...state, batchPoster: action.payload };
 
+    case 'set_is_loading':
+      return { ...state, isLoading: action.payload };
+
     case 'reset':
       return {
         ...deploymentPageContextStateDefaultValue,
@@ -125,8 +135,24 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
     rollupConfig: getDefaultRollupConfig(address),
   }));
 
+  const pickChainFormRef = useRef<HTMLFormElement>(null);
+  const rollupConfigFormRef = useRef<HTMLFormElement>(null);
+  const validatorFormRef = useRef<HTMLFormElement>(null);
+  const batchPosterFormRef = useRef<HTMLFormElement>(null);
+  const reviewAndDeployFormRef = useRef<HTMLFormElement>(null);
+  const keysetFormRef = useRef<HTMLFormElement>(null);
+
   useEffect(() => {
-    localStorage.setItem('arbitrum:orbit:state', JSON.stringify(state));
+    localStorage.setItem(
+      'arbitrum:orbit:state',
+      JSON.stringify({
+        rollupConfig: state.rollupConfig,
+        chainType: state.chainType,
+        rollupContracts: state.rollupContracts,
+        validators: state.validators,
+        batchPoster: state.batchPoster,
+      }),
+    );
   }, [state]);
 
   useEffect(() => {
@@ -136,7 +162,20 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
   }, [isValidStep]);
 
   return (
-    <DeploymentPageContext.Provider value={[state, dispatch]}>
+    <DeploymentPageContext.Provider
+      value={[
+        state,
+        dispatch,
+        {
+          pickChainFormRef,
+          rollupConfigFormRef,
+          validatorFormRef,
+          batchPosterFormRef,
+          reviewAndDeployFormRef,
+          keysetFormRef,
+        },
+      ]}
+    >
       {children}
     </DeploymentPageContext.Provider>
   );

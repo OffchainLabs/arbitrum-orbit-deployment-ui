@@ -1,4 +1,6 @@
+'use client';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { FC, ReactNode } from 'react';
 
 interface ExternalLinkTileProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -8,6 +10,7 @@ interface ExternalLinkTileProps extends React.AnchorHTMLAttributes<HTMLAnchorEle
 }
 
 export default function Home() {
+  const router = useRouter();
   const ExternalLinkTile: FC<ExternalLinkTileProps> = ({ href, title, children, ...rest }) => (
     <a target="_blank" rel="noopener noreferrer" href={href} {...rest}>
       <button className="w-full rounded-lg  border border-transparent px-2 py-3 text-left transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
@@ -28,9 +31,19 @@ export default function Home() {
           >
             Dig into the details of how this works
           </ExternalLinkTile>
-          <ExternalLinkTile href="/deployment" title="Deploy Orbit Chain">
-            Configure your appchain here
-          </ExternalLinkTile>
+          <a target="_blank" rel="noopener noreferrer">
+            <button
+              className="w-full rounded-lg  border border-transparent px-2 py-3 text-left transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+              onClick={() => {
+                router.push('/deployment/step/1');
+              }}
+            >
+              <h2 className={`font-regular mb-2 text-2xl`}>Deploy Orbit Chain</h2>
+              <p className={`font-regular m-0 max-w-[28ch] text-sm`}>
+                Configure your appchain here
+              </p>
+            </button>
+          </a>
         </div>
         <div className="w-1/2 border border-zinc-300" />
         <div className="-ml-2 flex items-start justify-start gap-16">
