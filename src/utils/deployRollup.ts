@@ -3,7 +3,7 @@ import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
 import { ChainType } from '@/types/ChainType';
 import {
-  BatchPoster,
+  ConfigWallet,
   RollupContracts,
   RollupCreatedEvent,
   Validator,
@@ -25,7 +25,7 @@ const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
   validators: Validator[];
-  batchPoster: BatchPoster;
+  batchPoster: ConfigWallet;
   publicClient: PublicClient;
   walletClient: WalletClient;
   chainType?: ChainType;

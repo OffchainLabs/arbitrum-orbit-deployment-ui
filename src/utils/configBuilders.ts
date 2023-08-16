@@ -1,5 +1,5 @@
 import { parseEther } from 'viem';
-import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
+import { ConfigWallet, RollupContracts, Validator } from '@/types/RollupContracts';
 import { L3Config } from '@/types/l3ConfigType';
 import {
   AnyTrustConfigData,
@@ -48,7 +48,7 @@ export function buildRollupConfigData({
   rollupConfig: RollupConfig;
   rollupContracts: RollupContracts;
   validators: Validator[];
-  batchPoster: BatchPoster;
+  batchPoster: ConfigWallet;
 }): RollupConfigData {
   return {
     'chain': {
@@ -156,7 +156,7 @@ export const buildRollupConfigPayload = ({
     const rollupConfigPayload: RollupConfigPayload = {
       ...rollupConfig,
       chainConfig,
-      baseStake: parseEther(rollupConfig.baseStake),
+      baseStake: parseEther(String(rollupConfig.baseStake)),
     };
     return rollupConfigPayload;
   } catch (e) {
@@ -197,7 +197,7 @@ export type BuildL3ConfigParams = {
   address: string;
   rollupConfig: RollupConfig;
   validators: Validator[];
-  batchPoster: BatchPoster;
+  batchPoster: ConfigWallet;
   rollupContracts: RollupContracts;
 };
 

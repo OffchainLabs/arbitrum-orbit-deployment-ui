@@ -1,5 +1,5 @@
 'use client';
-import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
+import { ConfigWallet, RollupContracts, Validator } from '@/types/RollupContracts';
 import { RollupStepMap } from '@/types/Steps';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
@@ -14,20 +14,21 @@ import {
 import { useAccount } from 'wagmi';
 import { useStep } from '@/hooks/useStep';
 import { ChainType } from '@/types/ChainType';
+import { RollupConfigFormValues } from './RollupConfigInput';
 
 type DeploymentPageContextState = {
   rollupContracts?: RollupContracts;
-  rollupConfig?: RollupConfig;
+  rollupConfig: RollupConfig;
   validators?: Validator[];
-  batchPoster?: BatchPoster;
+  batchPoster?: ConfigWallet;
   chainType?: ChainType;
   isLoading: boolean;
 };
 
 const defaultRollupConfig: RollupConfig = {
   confirmPeriodBlocks: 150,
-  stakeToken: '0x0000000000000000000000000000000000000000',
-  baseStake: '0.1',
+  stakeToken: 'ETH',
+  baseStake: 0.1,
   owner: '',
   extraChallengeTimeBlocks: 0,
   // Needs to be changed after PR by Lee about new Wasm root
@@ -74,10 +75,10 @@ function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState
 
 type DeploymentPageContextAction =
   | { type: 'set_rollup_contracts'; payload: RollupContracts }
-  | { type: 'set_rollup_config'; payload: RollupConfig }
+  | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
   | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Validator[] }
-  | { type: 'set_batch_poster'; payload: BatchPoster }
+  | { type: 'set_batch_poster'; payload: ConfigWallet }
   | { type: 'set_is_loading'; payload: boolean }
   | { type: 'reset'; payload: string };
 
@@ -102,7 +103,7 @@ function reducer(
       return { ...state, rollupContracts: action.payload };
 
     case 'set_rollup_config':
-      return { ...state, rollupConfig: action.payload };
+      return { ...state, rollupConfig: { ...state.rollupConfig, ...action.payload } };
 
     case 'set_chain_type':
       return { ...state, chainType: action.payload };
