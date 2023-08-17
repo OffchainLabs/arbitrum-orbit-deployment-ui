@@ -12,7 +12,7 @@ export type RollupContracts = {
 
 export type ConfigWallet = {
   address: string;
-  privateKey: string;
+  privateKey?: string;
 };
 
 export type RollupCreatedEvent = {

@@ -1,52 +1,50 @@
 import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from './DeploymentPageContext';
-import { BatchPoster } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { StepTitle } from './StepTitle';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { ConfigWallet } from '@/types/RollupContracts';
 
+// Schema for Zod validation
 const batchPosterSchema = z.object({
-  batchPosterAddress: z.string().regex(/^0x[0-9a-fA-F]{40}$/, 'Must be a valid address'),
-  privateKey: z.string().nonempty('Must be a valid private key'),
+  batchPosterAddress: z.string().regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid address'),
 });
-
-export type BatchPosterFormValues = z.infer<typeof batchPosterSchema>;
+type BatchPosterFormValues = z.infer<typeof batchPosterSchema>;
 
 export const SetBatchPoster = () => {
   const [{ batchPoster: currentBatchPoster }, dispatch] = useDeploymentPageContext();
+  console.log({ currentBatchPoster });
   const { nextStep, batchPosterFormRef } = useStep();
-  const batchPoster = currentBatchPoster || getRandomWallet();
+  const [batchPoster] = useState<ConfigWallet>(currentBatchPoster || getRandomWallet());
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
-  } = useForm<BatchPosterFormValues>({
+  } = useForm({
     resolver: zodResolver(batchPosterSchema),
-    values: {
-      batchPosterAddress: batchPoster.address,
-      privateKey: batchPoster.privateKey,
-    },
+    defaultValues: { batchPosterAddress: batchPoster.address },
   });
 
-  useEffect(() => {
-    if (batchPoster) {
-      setValue('batchPosterAddress', batchPoster.address);
-      setValue('privateKey', batchPoster.privateKey);
-    }
-  }, [batchPoster, setValue]);
+  const onSubmit = (data: BatchPosterFormValues) => {
+    const payload = {
+      address: data.batchPosterAddress,
+      privateKey:
+        // Remove the private key if the user entered a custom address
+        currentBatchPoster?.address === data.batchPosterAddress
+          ? currentBatchPoster.privateKey
+          : undefined,
+    };
 
-  const onSubmit = () => {
     dispatch({
       type: 'set_batch_poster',
-      payload: batchPoster,
+      payload,
     });
-    nextStep();
+    // nextStep();
   };
 
   return (
@@ -61,19 +59,14 @@ export const SetBatchPoster = () => {
         href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-5-configure-your-chains-batch-poster`}
         placeholder="Enter address"
         infoText="Read about Batch Poster in the docs"
-        {...register('batchPosterAddress', {
-          onChange: (e) => setValue('batchPosterAddress', e.target.value),
+        {...(register('batchPosterAddress'),
+        {
+          defaultValue: batchPoster.address,
         })}
-        error={errors.batchPosterAddress?.message}
       />
-      <TextInputWithInfoLink
-        label="Private Key"
-        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-5-configure-your-chains-batch-poster`}
-        placeholder="Private Key"
-        infoText="Private key for the Batch Poster"
-        {...register('privateKey')}
-        error={errors.privateKey?.message}
-      />
+      {errors.batchPosterAddress && (
+        <p className="text-sm text-red-500">{String(errors.batchPosterAddress?.message)}</p>
+      )}
     </form>
   );
 };

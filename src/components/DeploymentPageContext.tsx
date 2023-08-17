@@ -1,5 +1,5 @@
 'use client';
-import { ConfigWallet, RollupContracts, Validator } from '@/types/RollupContracts';
+import { ConfigWallet, RollupContracts } from '@/types/RollupContracts';
 import { RollupStepMap } from '@/types/Steps';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
@@ -19,7 +19,7 @@ import { RollupConfigFormValues } from './RollupConfigInput';
 type DeploymentPageContextState = {
   rollupContracts?: RollupContracts;
   rollupConfig: RollupConfig;
-  validators?: Validator[];
+  validators?: ConfigWallet[];
   batchPoster?: ConfigWallet;
   chainType?: ChainType;
   isLoading: boolean;
@@ -77,7 +77,7 @@ type DeploymentPageContextAction =
   | { type: 'set_rollup_contracts'; payload: RollupContracts }
   | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
   | { type: 'set_chain_type'; payload: ChainType }
-  | { type: 'set_validators'; payload: Validator[] }
+  | { type: 'set_validators'; payload: ConfigWallet[] }
   | { type: 'set_batch_poster'; payload: ConfigWallet }
   | { type: 'set_is_loading'; payload: boolean }
   | { type: 'reset'; payload: string };

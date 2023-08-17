@@ -1,89 +1,147 @@
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from './DeploymentPageContext';
-import { Validator } from '@/types/RollupContracts';
+import { ConfigWallet } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
 import { useEffect, useState } from 'react';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const addressSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid address');
 const validatorsSchema = z.object({
   numberOfValidators: z.number().min(1).max(16),
-  validators: z.array(addressSchema),
+  addresses: z.array(addressSchema),
 });
-
-export type ValidatorsFormValues = z.infer<typeof validatorsSchema>;
+type ValidatorsFormValues = z.infer<typeof validatorsSchema>;
 
 export const SetValidators = () => {
-  const [{ validators: currentValidators }, dispatch] = useDeploymentPageContext();
-  const { nextStep } = useStep();
-  const [validatorCount, setValidatorCount] = useState<number>(currentValidators?.length || 1);
+  const [{ validators: savedWallets }, dispatch] = useDeploymentPageContext();
+  const { nextStep, validatorFormRef } = useStep();
 
-  const { handleSubmit, control, setValue } = useForm<ValidatorsFormValues>({
+  const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
+  const [wallets, setWallets] = useState<ConfigWallet[]>(
+    savedWallets || Array.from({ length: walletCount }, getRandomWallet),
+  );
+
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(validatorsSchema),
+    defaultValues: {
+      numberOfValidators: walletCount,
+      addresses: wallets.map((wallet) => wallet.address),
+    },
   });
 
-  const initialValidators =
-    currentValidators || Array.from({ length: validatorCount }, getRandomWallet);
-
   useEffect(() => {
-    setValue('validators', Array.from({ length: validatorCount }, getRandomWallet));
-  }, [validatorCount]);
+    setWallets((prev) => {
+      console.log({ prev, walletCount });
+      if (prev.length < walletCount) {
+        return [...prev, ...Array.from({ length: walletCount - prev.length }, getRandomWallet)];
+      } else {
+        return prev.slice(0, walletCount);
+      }
+    });
+    setValue(
+      'addresses',
+      wallets.slice(0, walletCount).map((wallet) => wallet.address),
+    );
+  }, [walletCount]);
 
   const onSubmit = (data: ValidatorsFormValues) => {
-    dispatch({ type: 'set_validators', payload: data.validators.filter(Boolean) });
+    // Remove the private key if the user entered a custom address
+    const compareWallets = (wallets: ConfigWallet[], addresses: string[]): ConfigWallet[] => {
+      return addresses
+        .map((address) => {
+          const wallet = wallets.find((w) => w.address === address);
+          return {
+            privateKey: wallet ? wallet.privateKey : undefined,
+            address,
+          };
+        })
+        .filter(Boolean);
+    };
+    const payload = compareWallets(wallets, data.addresses);
+
+    dispatch({ type: 'set_validators', payload });
     nextStep();
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" ref={validatorFormRef}>
       <StepTitle>Configure Validators</StepTitle>
       <div className="w-1/2">
-        <Controller
+        <TextInputWithInfoLink
+          label="Number of Validators"
+          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-4-configure-your-chains-validators`}
           name="numberOfValidators"
-          control={control}
-          defaultValue={validatorCount}
-          render={({ field }) => (
-            <TextInputWithInfoLink
-              label="Number of Validators"
-              href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-4-configure-your-chains-validators`}
-              placeholder="Number of validators"
-              infoText="Read about Validators in the docs"
-              type="number"
-              min={1}
-              max={16}
-              {...field}
-              onChange={(e) => {
-                setValidatorCount(Math.max(1, Math.min(16, Number(e.target.value))));
-                field.onChange(e);
-              }}
-            />
-          )}
+          placeholder="Number of validators"
+          infoText="Read about Validators in the docs"
+          type="number"
+          {...(register('numberOfValidators'),
+          {
+            min: 1,
+            max: 16,
+            value: walletCount,
+            onChange: (e) => {
+              setWalletCount(Math.max(1, Math.min(16, Number(e.target.value))));
+            },
+          })}
         />
+        {errors.numberOfValidators && (
+          <p className="text-sm text-red-500">
+            {JSON.stringify(errors.numberOfValidators?.message)}
+          </p>
+        )}
       </div>
+
       <label className="font-bold">Validators</label>
       <div className="mx-1 grid grid-cols-2 gap-2">
-        {Array.from({ length: 16 }, (_, index) => (
-          <div key={index}>
-            <Controller
-              name={`validators.${index}`}
-              control={control}
-              defaultValue={initialValidators[index]?.address || ''} // Set the default value here
-              render={({ field }) => (
-                <input
-                  type="text"
-                  placeholder={`Validator ${index + 1}`}
-                  className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
-                  disabled={index === 0}
-                  {...field}
-                />
+        <div className="flex flex-col gap-2">
+          {wallets.slice(0, 8).map((wallet, index) => (
+            <div key={wallet.address + index}>
+              <input
+                type="text"
+                placeholder={`Validator Address ${index + 1}`}
+                className={
+                  'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input ' +
+                  (index === 0 && 'bg-gray-100')
+                }
+                readOnly={index === 0}
+                {...register(`addresses.${index}`, {
+                  value: wallet.address,
+                })}
+              />
+              {errors.addresses?.[index] && (
+                <p className="text-sm text-red-500">{String(errors.addresses[index]?.message)}</p>
               )}
-            />
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col gap-2">
+          {wallets.slice(8, 16).map((wallet, index) => (
+            <div key={wallet.address + index}>
+              <input
+                type="text"
+                placeholder={`Validator ${index + 9}`}
+                className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
+                {...register(`addresses.${index + 8}`, {
+                  value: wallet.address,
+                })}
+              />
+              {errors.addresses?.[index + 8] && (
+                <p className="text-sm text-red-500">
+                  {String(errors.addresses[index + 8]?.message)}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </form>
   );
