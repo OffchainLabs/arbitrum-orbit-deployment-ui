@@ -1,5 +1,6 @@
 import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from './DeploymentPageContext';
+import { ChainType } from '@/types/ChainType';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
@@ -8,7 +9,7 @@ import { StepTitle } from './StepTitle';
 type StakeTokenType = 'ETH' | 'Custom';
 
 export const RollupConfigInput = () => {
-  const [{ rollupConfig }, dispatch] = useDeploymentPageContext();
+  const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,11 +34,13 @@ export const RollupConfigInput = () => {
     }
   };
 
+  const titleContent = chainType === ChainType.Rollup ? 'Configure Rollup' : 'Configure AnyTrust';
+
   const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration`;
 
   return (
     <>
-      <StepTitle>Configure Rollup</StepTitle>
+      <StepTitle>{titleContent}</StepTitle>
       <form
         onSubmit={handleSubmit}
         className="mx-0 grid grid-cols-2 gap-4 py-4"
