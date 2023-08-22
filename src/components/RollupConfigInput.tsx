@@ -6,8 +6,6 @@ import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
 
-type StakeTokenType = 'ETH' | 'Custom';
-
 export const RollupConfigInput = () => {
   const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
