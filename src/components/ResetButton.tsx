@@ -1,14 +1,13 @@
-import { useRouter } from 'next/router';
-import { useDeploymentPageContext } from '../pages/deployment/DeploymentPageContext';
+import { useRouter } from 'next/navigation';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 import { useAccount } from 'wagmi';
 import { ButtonHTMLAttributes, FC } from 'react';
 
 interface ResetButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  setIsLoading: (isLoading: boolean) => void;
 }
 
-export const ResetButton: FC<ResetButtonProps> = ({ className, setIsLoading }) => {
+export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
   const router = useRouter();
   const { address } = useAccount();
   const [, dispatch] = useDeploymentPageContext();
@@ -17,9 +16,9 @@ export const ResetButton: FC<ResetButtonProps> = ({ className, setIsLoading }) =
     localStorage.removeItem('rollupData');
     localStorage.removeItem('l3Config');
 
+    dispatch({ type: 'set_is_loading', payload: false });
     dispatch({ type: 'reset', payload: address ? address : '' });
-    setIsLoading(false);
-    router.push('/deployment?step=1');
+    router.push('/deployment/step/1');
   }
 
   return (

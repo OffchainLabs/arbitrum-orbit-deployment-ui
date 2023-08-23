@@ -1,7 +1,13 @@
+import { parseEther } from 'viem';
 import { BatchPoster, RollupContracts, Validator } from '@/types/RollupContracts';
 import { L3Config } from '@/types/l3ConfigType';
-import { AnyTrustConfigData, RollupConfig, RollupConfigData } from '@/types/rollupConfigDataType';
-import { ethers } from 'ethers';
+import {
+  AnyTrustConfigData,
+  RollupConfig,
+  RollupConfigData,
+  RollupConfigPayload,
+} from '@/types/rollupConfigDataType';
+import { assertIsHexString } from './validators';
 
 export const buildChainConfig = (chainConfig: { chainId: number; owner: string }) => ({
   chainId: Number(chainConfig.chainId),
@@ -139,10 +145,31 @@ export function buildRollupConfigData({
   };
 }
 
+export const buildRollupConfigPayload = ({
+  rollupConfig,
+  chainConfig,
+}: {
+  rollupConfig: RollupConfig;
+  chainConfig: string;
+}): RollupConfigPayload => {
+  try {
+    const rollupConfigPayload: RollupConfigPayload = {
+      ...rollupConfig,
+      chainConfig,
+      baseStake: parseEther(rollupConfig.baseStake),
+    };
+    return rollupConfigPayload;
+  } catch (e) {
+    throw new Error(`Error building rollup config payload: ${e}`);
+  }
+};
+
 export function buildAnyTrustNodeConfig(
   rollupConfig: RollupConfigData,
   sequencerInboxAddress: string,
 ): AnyTrustConfigData {
+  assertIsHexString(sequencerInboxAddress);
+
   return {
     ...rollupConfig,
     node: {
@@ -167,43 +194,31 @@ export function buildAnyTrustNodeConfig(
 }
 
 export type BuildL3ConfigParams = {
-  rollupCore: ethers.Contract;
-  rollupCreatedEvent: ethers.Event;
+  address: string;
   rollupConfig: RollupConfig;
-  createRollupTxReceipt: ethers.providers.TransactionReceipt;
   validators: Validator[];
   batchPoster: BatchPoster;
-  signer: ethers.Signer;
+  rollupContracts: RollupContracts;
 };
 
 export const buildL3Config = async ({
-  rollupCore,
-  rollupCreatedEvent,
+  address,
   rollupConfig,
-  createRollupTxReceipt,
   validators,
   batchPoster,
-  signer,
+  rollupContracts,
 }: BuildL3ConfigParams): Promise<L3Config> => {
   try {
     const l3Config: L3Config = {
-      networkFeeReceiver: await signer.getAddress(),
-      infrastructureFeeCollector: await signer.getAddress(),
-      rollup: rollupCreatedEvent.args?.rollupAddress,
+      networkFeeReceiver: address,
+      infrastructureFeeCollector: address,
       staker: validators[0].address,
       batchPoster: batchPoster.address,
-      inbox: rollupCreatedEvent.args?.inboxAddress,
-      outbox: await rollupCore.outbox(),
-      adminProxy: rollupCreatedEvent.args?.adminProxy,
-      sequencerInbox: rollupCreatedEvent.args?.sequencerInbox,
-      bridge: rollupCreatedEvent.args?.bridge,
-      utils: await rollupCore.validatorUtils(),
-      validatorWalletCreator: await rollupCore.validatorWalletCreator(),
-      deployedAtBlockNumber: createRollupTxReceipt.blockNumber,
       chainOwner: rollupConfig.owner,
       chainId: Number(rollupConfig.chainId),
       chainName: rollupConfig.chainName,
       minL2BaseFee: 100000000,
+      ...rollupContracts,
     };
     return l3Config;
   } catch (e) {

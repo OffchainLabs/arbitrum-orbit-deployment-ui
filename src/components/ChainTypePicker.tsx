@@ -1,4 +1,4 @@
-import { ChainType } from '@/pages/deployment/DeploymentPageContext';
+import { ChainType } from '@/types/ChainType';
 
 type ChainTypePickerProps = {
   selectedChainType?: string;

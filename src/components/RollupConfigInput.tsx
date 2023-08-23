@@ -1,16 +1,14 @@
 import { useStep } from '@/hooks/useStep';
-import { ChainType, useDeploymentPageContext } from '@/pages/deployment/DeploymentPageContext';
+import { useDeploymentPageContext } from './DeploymentPageContext';
+import { ChainType } from '@/types/ChainType';
 import { RollupConfig } from '@/types/rollupConfigDataType';
-import { ForwardedRef, forwardRef } from 'react';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
 
-type StakeTokenType = 'ETH' | 'Custom';
-
-export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormElement>) => {
+export const RollupConfigInput = () => {
   const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
-  const { nextStep } = useStep();
+  const { nextStep, rollupConfigFormRef } = useStep();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +39,11 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
   return (
     <>
       <StepTitle>{titleContent}</StepTitle>
-      <form onSubmit={handleSubmit} className="mx-0 grid grid-cols-2 gap-4 py-4" ref={ref}>
+      <form
+        onSubmit={handleSubmit}
+        className="mx-0 grid grid-cols-2 gap-4 py-4"
+        ref={rollupConfigFormRef}
+      >
         <TextInputWithInfoLink
           label="Chain ID"
           href={`${commonDocLink}#chain-id`}
@@ -93,4 +95,4 @@ export const RollupConfigInput = forwardRef(({}, ref: ForwardedRef<HTMLFormEleme
       </form>
     </>
   );
-});
+};
