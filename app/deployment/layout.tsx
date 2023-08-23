@@ -38,7 +38,7 @@ function DeploymentLayout({ children }: any) {
   };
 
   return (
-    <div className="w-[1024px]">
+    <div className="flex w-[1024px] flex-col gap-2">
       <p className="text-left text-sm">
         All parameters shown are defaults (including some randomly generated addresses), which we
         recommend using for testing purposes. More information around parameter customization and

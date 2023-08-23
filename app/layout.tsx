@@ -35,7 +35,7 @@ if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html>
-      <body>
+      <body style={unica77.style}>
         <PostHogProvider client={posthog}>
           <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider
@@ -67,9 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </div>
                 </div>
               </header>
-              <main className="flex w-full flex-col items-center" style={unica77.style}>
-                {children}
-              </main>
+              <main className="flex w-full flex-col items-center">{children}</main>
             </RainbowKitProvider>
           </WagmiConfig>
         </PostHogProvider>
