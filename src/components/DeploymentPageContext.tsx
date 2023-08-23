@@ -27,7 +27,7 @@ type DeploymentPageContextState = {
 
 const defaultRollupConfig: RollupConfig = {
   confirmPeriodBlocks: 150,
-  stakeToken: 'ETH',
+  stakeToken: '0x0000000000000000000000000000000000000000',
   baseStake: 0.1,
   owner: '',
   extraChallengeTimeBlocks: 0,

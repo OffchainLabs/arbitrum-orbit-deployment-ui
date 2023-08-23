@@ -40,7 +40,6 @@ export const SetValidators = () => {
 
   useEffect(() => {
     setWallets((prev) => {
-      console.log({ prev, walletCount });
       if (prev.length < walletCount) {
         return [...prev, ...Array.from({ length: walletCount - prev.length }, getRandomWallet)];
       } else {

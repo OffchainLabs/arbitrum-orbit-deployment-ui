@@ -32,10 +32,9 @@ export const RollupConfigInput = () => {
   });
 
   const onSubmit = (updatedRollupConfig: RollupConfigFormValues) => {
-    console.log({ updatedRollupConfig });
     dispatch({
       type: 'set_rollup_config',
-      payload: updatedRollupConfig,
+      payload: { ...rollupConfig, ...updatedRollupConfig, stakeToken: rollupConfig.stakeToken },
     });
     nextStep();
   };

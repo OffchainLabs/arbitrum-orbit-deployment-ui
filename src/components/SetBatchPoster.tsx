@@ -17,7 +17,6 @@ type BatchPosterFormValues = z.infer<typeof batchPosterSchema>;
 
 export const SetBatchPoster = () => {
   const [{ batchPoster: currentBatchPoster }, dispatch] = useDeploymentPageContext();
-  console.log({ currentBatchPoster });
   const { nextStep, batchPosterFormRef } = useStep();
   const [batchPoster] = useState<ConfigWallet>(currentBatchPoster || getRandomWallet());
 
@@ -44,7 +43,7 @@ export const SetBatchPoster = () => {
       type: 'set_batch_poster',
       payload,
     });
-    // nextStep();
+    nextStep();
   };
 
   return (

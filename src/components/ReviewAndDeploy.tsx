@@ -11,6 +11,7 @@ export const ReviewAndDeploy = () => {
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
+  const { nextStep, reviewAndDeployFormRef } = useStep();
 
   const { chain } = useNetwork();
   if (!rollupConfig) return <div>No rollup config found</div>;
@@ -24,8 +25,6 @@ export const ReviewAndDeploy = () => {
       </div>
     );
   }
-
-  const { nextStep, reviewAndDeployFormRef } = useStep();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
