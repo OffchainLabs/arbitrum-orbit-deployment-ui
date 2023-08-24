@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useDeploymentPageContext } from './DeploymentPageContext';
+import { ChainType } from '@/types/ChainType';
 import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
@@ -19,7 +20,7 @@ const rollupConfigSchema = z.object({
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export const RollupConfigInput = () => {
-  const [{ rollupConfig }, dispatch] = useDeploymentPageContext();
+  const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
   const {
     handleSubmit,
@@ -39,11 +40,13 @@ export const RollupConfigInput = () => {
     nextStep();
   };
 
+  const titleContent = chainType === ChainType.Rollup ? 'Configure Rollup' : 'Configure AnyTrust';
+
   const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration`;
 
   return (
     <>
-      <StepTitle>Configure Rollup</StepTitle>
+      <StepTitle>{titleContent}</StepTitle>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mx-0 grid grid-cols-2 gap-4 py-4"

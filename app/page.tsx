@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FC, ReactNode } from 'react';
 
@@ -31,19 +32,14 @@ export default function Home() {
           >
             Dig into the details of how this works
           </ExternalLinkTile>
-          <a target="_blank" rel="noopener noreferrer">
-            <button
-              className="w-full rounded-lg  border border-transparent px-2 py-3 text-left transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-              onClick={() => {
-                router.push('/deployment/step/1');
-              }}
-            >
+          <div className="rounded-lg border border-transparent px-2 py-3 text-left transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
+            <Link href="/deployment/step/1">
               <h2 className={`font-regular mb-2 text-2xl`}>Deploy Orbit Chain</h2>
               <p className={`font-regular m-0 max-w-[28ch] text-sm`}>
                 Configure your appchain here
               </p>
-            </button>
-          </a>
+            </Link>
+          </div>
         </div>
         <div className="w-1/2 border border-zinc-300" />
         <div className="-ml-2 flex items-start justify-start gap-16">

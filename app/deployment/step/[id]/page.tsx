@@ -24,30 +24,26 @@ import { useStep } from '@/hooks/useStep';
 export default function StepPage() {
   const { currentStep } = useStep();
 
-  const StepContent = () => {
-    switch (currentStep) {
-      case ChooseChainType:
-        return <ChainTypeForm />;
-      case ConfigureChain:
-        return <RollupConfigInput />;
-      case ConfigureValidators:
-        return <SetValidators />;
-      case ConfigureBatchPoster:
-        return <SetBatchPoster />;
-      case ReviewAndDeployRollup:
-      case ReviewAndDeployAnyTrust:
-        return <ReviewAndDeploy />;
-      case ConfigureKeyset:
-        return <KeysetForm />;
-      case DownloadConfig:
-      case DownloadAnyTrustConfig:
-        return <Download />;
-      case DeployLocally:
-        return <DeployLocallyComponent />;
-      default:
-        return <div>Invalid step</div>;
-    }
-  };
-
-  return <StepContent />;
+  switch (currentStep) {
+    case ChooseChainType:
+      return <ChainTypeForm />;
+    case ConfigureChain:
+      return <RollupConfigInput />;
+    case ConfigureValidators:
+      return <SetValidators />;
+    case ConfigureBatchPoster:
+      return <SetBatchPoster />;
+    case ReviewAndDeployRollup:
+    case ReviewAndDeployAnyTrust:
+      return <ReviewAndDeploy />;
+    case ConfigureKeyset:
+      return <KeysetForm />;
+    case DownloadConfig:
+    case DownloadAnyTrustConfig:
+      return <Download />;
+    case DeployLocally:
+      return <DeployLocallyComponent />;
+    default:
+      return <div>Invalid step</div>;
+  }
 }

@@ -68,11 +68,11 @@ export async function deployRollup({
         } catch (e) {}
       })
       .filter((event) => !!event)
-      .find((event) => (event ? event.eventName === 'RollupCreated' : false)) as
+      .find((event) => event && event.eventName === 'RollupCreated') as
       | RollupCreatedEvent
-      | {};
+      | undefined;
 
-    if (!('args' in rollupCreatedEvent)) {
+    if (!rollupCreatedEvent || !('args' in rollupCreatedEvent)) {
       throw new Error('RollupCreated event not found');
     }
 
