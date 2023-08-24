@@ -1,0 +1,295 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Configuration Builders buildAnyTrustNodeConfig Function builds correctly 1`] = `
+{
+  "chain": {
+    "info-json": [
+      {
+        "chain-config": {
+          "arbitrum": {
+            "AllowDebugPrecompiles": false,
+            "DataAvailabilityCommittee": false,
+            "EnableArbOS": true,
+            "GenesisBlockNum": 0,
+            "InitialArbOSVersion": 10,
+            "InitialChainOwner": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+          },
+          "berlinBlock": 0,
+          "byzantiumBlock": 0,
+          "chainId": 12286328813,
+          "clique": {
+            "epoch": 0,
+            "period": 0,
+          },
+          "constantinopleBlock": 0,
+          "daoForkBlock": null,
+          "daoForkSupport": true,
+          "eip150Block": 0,
+          "eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "eip155Block": 0,
+          "eip158Block": 0,
+          "homesteadBlock": 0,
+          "istanbulBlock": 0,
+          "londonBlock": 0,
+          "muirGlacierBlock": 0,
+          "petersburgBlock": 0,
+        },
+        "chain-id": 12286328813,
+        "chain-name": "My Arbitrum L3 Chain",
+        "parent-chain-id": 421613,
+        "rollup": {
+          "bridge": "0x4816d0Bd98AF5635AEbAc468A9849C2A13Ed2ad0",
+          "deployed-at": 36360310,
+          "inbox": "0xe770844D0e343c5bcac19f16FD9559C6bA425c2F",
+          "rollup": "0x389a3eA93AcF8D3d9cE09008Db3b19b15D3698f0",
+          "sequencer-inbox": "0x3d8d87d6280cA15f54dBF18151582E67F421576A",
+          "validator-utils": "0x6efDC46924fc38763c5366a39BE4Ee1A14f22EA6",
+          "validator-wallet-creator": "0x6601D1Fdc1db54b4AfA47E0876eE6575b0B3Cb60",
+        },
+      },
+    ],
+    "name": "My Arbitrum L3 Chain",
+  },
+  "http": {
+    "addr": "0.0.0.0",
+    "api": [
+      "eth",
+      "net",
+      "web3",
+      "arb",
+      "debug",
+    ],
+    "corsdomain": "*",
+    "port": 8449,
+    "vhosts": "*",
+  },
+  "node": {
+    "batch-poster": {
+      "enable": true,
+      "max-size": 90000,
+      "parent-chain-wallet": {
+        "private-key": "",
+      },
+    },
+    "caching": {
+      "archive": true,
+    },
+    "data-availability": {
+      "enable": true,
+      "parent-chain-node-url": "https://goerli-rollup.arbitrum.io/rpc",
+      "rest-aggregator": {
+        "enable": true,
+        "urls": "http://localhost:9876",
+      },
+      "rpc-aggregator": {
+        "assumed-honest": 1,
+        "backends": "[{"url":"http://localhost:9876","pubkey":"YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==","signermask":1}]",
+        "enable": true,
+      },
+      "sequencer-inbox-address": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+    },
+    "delayed-sequencer": {
+      "enable": true,
+    },
+    "forwarding-target": "",
+    "sequencer": {
+      "dangerous": {
+        "no-coordinator": true,
+      },
+      "enable": true,
+      "max-block-speed": "250ms",
+      "max-tx-data-size": 85000,
+    },
+    "staker": {
+      "enable": true,
+      "parent-chain-wallet": {
+        "private-key": "0x3c5e657d99fcc95720df192aeca2be2c8ba743badbea6fcde2c086c16c8c2eb0",
+      },
+      "strategy": "MakeNodes",
+    },
+  },
+  "parent-chain": {
+    "connection": {
+      "url": "https://goerli-rollup.arbitrum.io/rpc",
+    },
+  },
+}
+`;
+
+exports[`Configuration Builders buildChainConfig Function builds correctly 1`] = `
+{
+  "arbitrum": {
+    "AllowDebugPrecompiles": false,
+    "DataAvailabilityCommittee": false,
+    "EnableArbOS": true,
+    "GenesisBlockNum": 0,
+    "InitialArbOSVersion": 10,
+    "InitialChainOwner": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+  },
+  "berlinBlock": 0,
+  "byzantiumBlock": 0,
+  "chainId": 42,
+  "clique": {
+    "epoch": 0,
+    "period": 0,
+  },
+  "constantinopleBlock": 0,
+  "daoForkBlock": null,
+  "daoForkSupport": true,
+  "eip150Block": 0,
+  "eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "eip155Block": 0,
+  "eip158Block": 0,
+  "homesteadBlock": 0,
+  "istanbulBlock": 0,
+  "londonBlock": 0,
+  "muirGlacierBlock": 0,
+  "petersburgBlock": 0,
+}
+`;
+
+exports[`Configuration Builders buildL3Config Function builds correctly 1`] = `
+{
+  "adminProxy": "0xAaa60c3c0f3Fb37C57B2BF0E3e7533Cb6Ba79552",
+  "batchPoster": "0x3697A6Fd9682b905Cd81aB634BBc0d3bDe042059",
+  "bridge": "0x4816d0Bd98AF5635AEbAc468A9849C2A13Ed2ad0",
+  "chainId": 12286328813,
+  "chainName": "My Arbitrum L3 Chain",
+  "chainOwner": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+  "deployedAtBlockNumber": 36360310,
+  "inbox": "0xe770844D0e343c5bcac19f16FD9559C6bA425c2F",
+  "infrastructureFeeCollector": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+  "minL2BaseFee": 100000000,
+  "networkFeeReceiver": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+  "outbox": "0x5B8674639103E827d124a70CD1d48d3E59F41188",
+  "rollup": "0x389a3eA93AcF8D3d9cE09008Db3b19b15D3698f0",
+  "sequencerInbox": "0x3d8d87d6280cA15f54dBF18151582E67F421576A",
+  "staker": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+  "utils": "0x6efDC46924fc38763c5366a39BE4Ee1A14f22EA6",
+  "validatorWalletCreator": "0x6601D1Fdc1db54b4AfA47E0876eE6575b0B3Cb60",
+}
+`;
+
+exports[`Configuration Builders buildRollupConfigData Function builds correctly 1`] = `
+{
+  "chain": {
+    "info-json": [
+      {
+        "chain-config": {
+          "arbitrum": {
+            "AllowDebugPrecompiles": false,
+            "DataAvailabilityCommittee": false,
+            "EnableArbOS": true,
+            "GenesisBlockNum": 0,
+            "InitialArbOSVersion": 10,
+            "InitialChainOwner": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+          },
+          "berlinBlock": 0,
+          "byzantiumBlock": 0,
+          "chainId": 12286328813,
+          "clique": {
+            "epoch": 0,
+            "period": 0,
+          },
+          "constantinopleBlock": 0,
+          "daoForkBlock": null,
+          "daoForkSupport": true,
+          "eip150Block": 0,
+          "eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "eip155Block": 0,
+          "eip158Block": 0,
+          "homesteadBlock": 0,
+          "istanbulBlock": 0,
+          "londonBlock": 0,
+          "muirGlacierBlock": 0,
+          "petersburgBlock": 0,
+        },
+        "chain-id": 12286328813,
+        "chain-name": "My Arbitrum L3 Chain",
+        "parent-chain-id": 421613,
+        "rollup": {
+          "bridge": "0x4816d0Bd98AF5635AEbAc468A9849C2A13Ed2ad0",
+          "deployed-at": 36360310,
+          "inbox": "0xe770844D0e343c5bcac19f16FD9559C6bA425c2F",
+          "rollup": "0x389a3eA93AcF8D3d9cE09008Db3b19b15D3698f0",
+          "sequencer-inbox": "0x3d8d87d6280cA15f54dBF18151582E67F421576A",
+          "validator-utils": "0x6efDC46924fc38763c5366a39BE4Ee1A14f22EA6",
+          "validator-wallet-creator": "0x6601D1Fdc1db54b4AfA47E0876eE6575b0B3Cb60",
+        },
+      },
+    ],
+    "name": "My Arbitrum L3 Chain",
+  },
+  "http": {
+    "addr": "0.0.0.0",
+    "api": [
+      "eth",
+      "net",
+      "web3",
+      "arb",
+      "debug",
+    ],
+    "corsdomain": "*",
+    "port": 8449,
+    "vhosts": "*",
+  },
+  "node": {
+    "batch-poster": {
+      "enable": true,
+      "max-size": 90000,
+      "parent-chain-wallet": {
+        "private-key": "",
+      },
+    },
+    "caching": {
+      "archive": true,
+    },
+    "delayed-sequencer": {
+      "enable": true,
+    },
+    "forwarding-target": "",
+    "sequencer": {
+      "dangerous": {
+        "no-coordinator": true,
+      },
+      "enable": true,
+      "max-block-speed": "250ms",
+      "max-tx-data-size": 85000,
+    },
+    "staker": {
+      "enable": true,
+      "parent-chain-wallet": {
+        "private-key": "0x3c5e657d99fcc95720df192aeca2be2c8ba743badbea6fcde2c086c16c8c2eb0",
+      },
+      "strategy": "MakeNodes",
+    },
+  },
+  "parent-chain": {
+    "connection": {
+      "url": "https://goerli-rollup.arbitrum.io/rpc",
+    },
+  },
+}
+`;
+
+exports[`Configuration Builders buildRollupConfigPayload Function builds correctly 1`] = `
+{
+  "baseStake": 100000000000000000n,
+  "chainConfig": "ChainConfig",
+  "chainId": 12286328813,
+  "chainName": "My Arbitrum L3 Chain",
+  "confirmPeriodBlocks": 150,
+  "extraChallengeTimeBlocks": 0,
+  "genesisBlockNum": 0,
+  "loserStakeEscrow": "0x0000000000000000000000000000000000000000",
+  "owner": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
+  "sequencerInboxMaxTimeVariation": {
+    "delayBlocks": 5760,
+    "delaySeconds": 86400,
+    "futureBlocks": 48,
+    "futureSeconds": 3600,
+  },
+  "stakeToken": "0x0000000000000000000000000000000000000000",
+  "wasmModuleRoot": "0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21",
+}
+`;
