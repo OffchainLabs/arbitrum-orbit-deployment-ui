@@ -2,8 +2,13 @@ import { PublicClient, WalletClient, decodeEventLog } from 'viem';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
 import { ChainType } from '@/types/ChainType';
-import { ConfigWallet, RollupContracts, RollupCreatedEvent } from '@/types/RollupContracts';
-import { RollupConfig } from '@/types/rollupConfigDataType';
+import {
+  ConfigWallet,
+  ConfigWalletSchema,
+  RollupContracts,
+  RollupCreatedEvent,
+} from '@/types/RollupContracts';
+import { RollupConfig, RollupConfigPayloadSchema } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
   buildChainConfig,
@@ -13,6 +18,7 @@ import {
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
+import { z } from 'zod';
 
 // On Arbitrum Goerli, so need to change it for other networks
 const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
@@ -27,6 +33,13 @@ type DeployRollupProps = {
   account: `0x${string}`;
 };
 
+const RollupCreateSchema = z.object({
+  rollupConfigPayload: RollupConfigPayloadSchema,
+  batchPoster: ConfigWalletSchema,
+  validators: z.array(ConfigWalletSchema),
+});
+const assertIsValidRollupCreatePayload = RollupCreateSchema.parse;
+
 export async function deployRollup({
   rollupConfig,
   validators,
@@ -37,6 +50,7 @@ export async function deployRollup({
   chainType = ChainType.Rollup,
 }: DeployRollupProps): Promise<RollupContracts> {
   try {
+    // todo: run the runtime validation over the schema
     const chainConfig: string = JSON.stringify(buildChainConfig(rollupConfig));
 
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
@@ -44,6 +58,12 @@ export async function deployRollup({
     const batchPosterAddress = batchPoster.address;
     console.log(chainConfig);
     console.log('Going for deployment');
+
+    assertIsValidRollupCreatePayload({
+      rollupConfigPayload,
+      batchPoster,
+      validators,
+    });
 
     const { request } = await publicClient.simulateContract({
       address: ARB_GOERLI_CREATOR_ADDRESS,

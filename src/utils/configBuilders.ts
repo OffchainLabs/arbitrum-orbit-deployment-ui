@@ -9,7 +9,7 @@ import {
 } from '@/types/rollupConfigDataType';
 import { assertIsHexString } from './validators';
 
-export const buildChainConfig = (chainConfig: { chainId: number; owner: string }) => ({
+export const buildChainConfig = (chainConfig: { chainId: number; owner: `0x${string}` }) => ({
   chainId: Number(chainConfig.chainId),
   homesteadBlock: 0,
   daoForkBlock: null,

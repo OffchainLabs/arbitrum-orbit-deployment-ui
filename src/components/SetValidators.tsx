@@ -8,11 +8,11 @@ import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Address } from 'abitype/zod';
 
-const addressSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid address');
 const validatorsSchema = z.object({
   numberOfValidators: z.number().min(1).max(16),
-  addresses: z.array(addressSchema),
+  addresses: z.array(Address),
 });
 type ValidatorsFormValues = z.infer<typeof validatorsSchema>;
 
@@ -54,7 +54,10 @@ export const SetValidators = () => {
 
   const onSubmit = (data: ValidatorsFormValues) => {
     // Remove the private key if the user entered a custom address
-    const compareWallets = (wallets: ConfigWallet[], addresses: string[]): ConfigWallet[] => {
+    const compareWallets = (
+      wallets: ConfigWallet[],
+      addresses: `0x${string}`[],
+    ): ConfigWallet[] => {
       return addresses
         .map((address) => {
           const wallet = wallets.find((w) => w.address === address);

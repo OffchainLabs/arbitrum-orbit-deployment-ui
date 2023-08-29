@@ -1,3 +1,6 @@
+import { z } from 'zod';
+import { Address } from 'abitype/zod';
+
 export type RollupContracts = {
   rollup: string;
   inbox: string;
@@ -10,10 +13,12 @@ export type RollupContracts = {
   deployedAtBlockNumber: number;
 };
 
-export type ConfigWallet = {
-  address: string;
-  privateKey?: string;
-};
+export const ConfigWalletSchema = z.object({
+  address: Address,
+  privateKey: Address.optional(),
+});
+
+export type ConfigWallet = z.infer<typeof ConfigWalletSchema>;
 
 export type RollupCreatedEvent = {
   args: {

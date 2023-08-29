@@ -1,3 +1,6 @@
+import { z } from 'zod';
+import { Address } from 'abitype/zod';
+
 export type RollupConfigData = {
   'chain': {
     'info-json': Array<{
@@ -81,26 +84,33 @@ export type AnyTrustConfigData = RollupConfigData & {
   };
 };
 
-export type RollupConfig = {
-  confirmPeriodBlocks: number;
-  stakeToken: string;
-  baseStake: number;
-  owner: string;
-  extraChallengeTimeBlocks: number;
-  wasmModuleRoot: string;
-  loserStakeEscrow: string;
-  chainId: number;
-  chainName: string;
-  chainConfig: string;
-  genesisBlockNum: number;
-  sequencerInboxMaxTimeVariation: {
-    delayBlocks: number;
-    futureBlocks: number;
-    delaySeconds: number;
-    futureSeconds: number;
-  };
-};
-export type RollupConfigPayload = Omit<RollupConfig, 'baseStake'> & { baseStake: bigint };
+const RollupConfigSchema = z.object({
+  confirmPeriodBlocks: z.number(),
+  stakeToken: Address,
+  baseStake: z.number(),
+  owner: Address,
+  extraChallengeTimeBlocks: z.number(),
+  wasmModuleRoot: Address,
+  loserStakeEscrow: Address,
+  chainId: z.number(),
+  chainName: z.string(),
+  genesisBlockNum: z.number(),
+  sequencerInboxMaxTimeVariation: z.object({
+    delayBlocks: z.number(),
+    futureBlocks: z.number(),
+    delaySeconds: z.number(),
+    futureSeconds: z.number(),
+  }),
+});
+
+export type RollupConfig = z.infer<typeof RollupConfigSchema>;
+
+export const RollupConfigPayloadSchema = RollupConfigSchema.omit({ baseStake: true }).extend({
+  baseStake: z.bigint(),
+  chainConfig: z.string(),
+});
+
+export type RollupConfigPayload = z.infer<typeof RollupConfigPayloadSchema>;
 
 export type AnyTrustConfig = RollupConfig & {
   sequencerInboxAddress: string;

@@ -25,18 +25,19 @@ type DeploymentPageContextState = {
   isLoading: boolean;
 };
 
+const DEFAULT_OWNER = '0x0000000' as `0x${string}`;
+
 const defaultRollupConfig: RollupConfig = {
   confirmPeriodBlocks: 150,
   stakeToken: '0x0000000000000000000000000000000000000000',
   baseStake: 0.1,
-  owner: '',
+  owner: DEFAULT_OWNER,
   extraChallengeTimeBlocks: 0,
   // Needs to be changed after PR by Lee about new Wasm root
   wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21',
   loserStakeEscrow: '0x0000000000000000000000000000000000000000',
   chainId: Math.floor(Math.random() * 100000000000) + 1,
   chainName: 'My Arbitrum L3 Chain',
-  chainConfig: '0x0000000000000000000000000000000000000000000000000000000000000000',
   genesisBlockNum: 0,
   sequencerInboxMaxTimeVariation: {
     delayBlocks: 5760,
@@ -46,7 +47,7 @@ const defaultRollupConfig: RollupConfig = {
   },
 };
 
-function getDefaultRollupConfig(owner: string = '') {
+function getDefaultRollupConfig(owner: `0x${string}` = DEFAULT_OWNER) {
   return { ...defaultRollupConfig, owner };
 }
 
@@ -80,7 +81,7 @@ type DeploymentPageContextAction =
   | { type: 'set_validators'; payload: ConfigWallet[] }
   | { type: 'set_batch_poster'; payload: ConfigWallet }
   | { type: 'set_is_loading'; payload: boolean }
-  | { type: 'reset'; payload: string };
+  | { type: 'reset'; payload: `0x${string}` };
 
 type DeploymentPageContextValue = [
   DeploymentPageContextState,

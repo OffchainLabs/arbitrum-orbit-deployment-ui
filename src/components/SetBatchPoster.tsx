@@ -8,10 +8,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ConfigWallet } from '@/types/RollupContracts';
+import { assertIsHexString } from '@/utils/validators';
+import { Address } from 'abitype/zod';
 
 // Schema for Zod validation
 const batchPosterSchema = z.object({
-  batchPosterAddress: z.string().regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid address'),
+  batchPosterAddress: Address,
 });
 type BatchPosterFormValues = z.infer<typeof batchPosterSchema>;
 
@@ -30,6 +32,7 @@ export const SetBatchPoster = () => {
   });
 
   const onSubmit = (data: BatchPosterFormValues) => {
+    assertIsHexString(data.batchPosterAddress);
     const payload = {
       address: data.batchPosterAddress,
       privateKey:
