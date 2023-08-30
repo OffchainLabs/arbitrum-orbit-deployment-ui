@@ -10,7 +10,7 @@ export type RollupContracts = {
   deployedAtBlockNumber: number;
 };
 
-export type ConfigWallet = {
+export type Wallet = {
   address: string;
   privateKey?: string;
 };

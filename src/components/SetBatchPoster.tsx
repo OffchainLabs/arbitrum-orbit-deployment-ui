@@ -7,18 +7,18 @@ import { StepTitle } from './StepTitle';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ConfigWallet } from '@/types/RollupContracts';
+import { Wallet } from '@/types/RollupContracts';
+import { AddressSchema } from '@/utils/schemas';
 
-// Schema for Zod validation
 const batchPosterSchema = z.object({
-  batchPosterAddress: z.string().regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid address'),
+  batchPosterAddress: AddressSchema,
 });
 type BatchPosterFormValues = z.infer<typeof batchPosterSchema>;
 
 export const SetBatchPoster = () => {
   const [{ batchPoster: currentBatchPoster }, dispatch] = useDeploymentPageContext();
   const { nextStep, batchPosterFormRef } = useStep();
-  const [batchPoster] = useState<ConfigWallet>(currentBatchPoster || getRandomWallet());
+  const [batchPoster] = useState<Wallet>(currentBatchPoster || getRandomWallet());
 
   const {
     register,
@@ -58,10 +58,8 @@ export const SetBatchPoster = () => {
         href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-5-configure-your-chains-batch-poster`}
         placeholder="Enter address"
         infoText="Read about Batch Poster in the docs"
-        {...(register('batchPosterAddress'),
-        {
-          defaultValue: batchPoster.address,
-        })}
+        defaultValue={batchPoster.address}
+        register={() => register('batchPosterAddress')}
       />
       {errors.batchPosterAddress && (
         <p className="text-sm text-red-500">{String(errors.batchPosterAddress?.message)}</p>

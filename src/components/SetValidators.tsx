@@ -1,18 +1,19 @@
-import { useStep } from '@/hooks/useStep';
-import { useDeploymentPageContext } from './DeploymentPageContext';
-import { ConfigWallet } from '@/types/RollupContracts';
-import { getRandomWallet } from '@/utils/getRandomWallet';
-import { useEffect, useState } from 'react';
-import { StepTitle } from './StepTitle';
-import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const addressSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid address');
+import { useStep } from '@/hooks/useStep';
+import { Wallet } from '@/types/RollupContracts';
+import { getRandomWallet } from '@/utils/getRandomWallet';
+import { AddressSchema } from '@/utils/schemas';
+import { useDeploymentPageContext } from './DeploymentPageContext';
+import { StepTitle } from './StepTitle';
+import { TextInputWithInfoLink } from './TextInputWithInfoLink';
+
 const validatorsSchema = z.object({
   numberOfValidators: z.number().min(1).max(16),
-  addresses: z.array(addressSchema),
+  addresses: z.array(AddressSchema),
 });
 type ValidatorsFormValues = z.infer<typeof validatorsSchema>;
 
@@ -21,7 +22,7 @@ export const SetValidators = () => {
   const { nextStep, validatorFormRef } = useStep();
 
   const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
-  const [wallets, setWallets] = useState<ConfigWallet[]>(
+  const [wallets, setWallets] = useState<Wallet[]>(
     savedWallets || Array.from({ length: walletCount }, getRandomWallet),
   );
 
@@ -39,22 +40,26 @@ export const SetValidators = () => {
   });
 
   useEffect(() => {
-    setWallets((prev) => {
-      if (prev.length < walletCount) {
-        return [...prev, ...Array.from({ length: walletCount - prev.length }, getRandomWallet)];
-      } else {
-        return prev.slice(0, walletCount);
-      }
-    });
+    let newWallets = wallets;
+    if (wallets.length < walletCount) {
+      newWallets = [
+        ...wallets,
+        ...Array.from({ length: walletCount - wallets.length }, getRandomWallet),
+      ];
+    } else {
+      newWallets = wallets.slice(0, walletCount);
+    }
+
+    setWallets(newWallets);
     setValue(
       'addresses',
-      wallets.slice(0, walletCount).map((wallet) => wallet.address),
+      newWallets.map((wallet) => wallet.address),
     );
   }, [walletCount]);
 
   const onSubmit = (data: ValidatorsFormValues) => {
     // Remove the private key if the user entered a custom address
-    const compareWallets = (wallets: ConfigWallet[], addresses: string[]): ConfigWallet[] => {
+    const compareWallets = (wallets: Wallet[], addresses: string[]): Wallet[] => {
       return addresses
         .map((address) => {
           const wallet = wallets.find((w) => w.address === address);
