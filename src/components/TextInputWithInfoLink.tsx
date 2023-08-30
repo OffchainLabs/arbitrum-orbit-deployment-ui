@@ -1,6 +1,5 @@
 import { UseFormRegisterReturn, InternalFieldName } from 'react-hook-form';
 import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
-import { type } from 'os';
 import { InputHTMLAttributes } from 'react';
 
 interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElement> {
