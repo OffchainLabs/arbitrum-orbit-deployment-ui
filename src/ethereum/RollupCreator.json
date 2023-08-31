@@ -37,6 +37,12 @@
           "type": "address"
         },
         {
+          "indexed": true,
+          "internalType": "address",
+          "name": "nativeToken",
+          "type": "address"
+        },
+        {
           "indexed": false,
           "internalType": "address",
           "name": "inboxAddress",
@@ -81,6 +87,12 @@
         {
           "indexed": false,
           "internalType": "address",
+          "name": "upgradeExecutor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
           "name": "validatorUtils",
           "type": "address"
         },
@@ -99,19 +111,6 @@
       "inputs": [],
       "name": "TemplatesUpdated",
       "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "bridgeCreator",
-      "outputs": [
-        {
-          "internalType": "contract BridgeCreator",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
     },
     {
       "inputs": [],
@@ -221,6 +220,11 @@
           "internalType": "address[]",
           "name": "_validators",
           "type": "address[]"
+        },
+        {
+          "internalType": "address",
+          "name": "_nativeToken",
+          "type": "address"
         }
       ],
       "name": "createRollup",
@@ -232,6 +236,32 @@
         }
       ],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "erc20BridgeCreator",
+      "outputs": [
+        {
+          "internalType": "contract ERC20BridgeCreator",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ethBridgeCreator",
+      "outputs": [
+        {
+          "internalType": "contract BridgeCreator",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -297,7 +327,12 @@
       "inputs": [
         {
           "internalType": "contract BridgeCreator",
-          "name": "_bridgeCreator",
+          "name": "_ethBridgeCreator",
+          "type": "address"
+        },
+        {
+          "internalType": "contract ERC20BridgeCreator",
+          "name": "_erc20BridgeCreator",
           "type": "address"
         },
         {
@@ -318,6 +353,11 @@
         {
           "internalType": "contract IRollupUser",
           "name": "_rollupUserLogic",
+          "type": "address"
+        },
+        {
+          "internalType": "contract UpgradeExecutor",
+          "name": "_upgradeExecutorLogic",
           "type": "address"
         },
         {
@@ -347,6 +387,19 @@
       "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "upgradeExecutorLogic",
+      "outputs": [
+        {
+          "internalType": "contract UpgradeExecutor",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {

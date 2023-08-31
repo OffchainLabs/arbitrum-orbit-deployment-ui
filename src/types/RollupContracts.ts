@@ -11,6 +11,7 @@ export type RollupContracts = {
   utils: string;
   validatorWalletCreator: string;
   deployedAtBlockNumber: number;
+  nativeToken: string;
 };
 
 export const WalletSchema = z.object({
@@ -27,5 +28,6 @@ export type RollupCreatedEvent = {
     adminProxy: `0x${string}`;
     sequencerInbox: `0x${string}`;
     bridge: `0x${string}`;
+    nativeToken: `0x${string}`;
   };
 };

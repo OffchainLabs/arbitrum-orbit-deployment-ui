@@ -16,7 +16,7 @@ import { assertIsHexString } from './validators';
 import { ChainId } from '@/types/ChainId';
 import { z } from 'zod';
 
-const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
+const ARB_GOERLI_CREATOR_ADDRESS = '0x48e4A81a86cF4C7191927a86FA55B41F263e1975';
 const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
 
 type DeployRollupProps = {
@@ -51,6 +51,8 @@ export async function deployRollup({
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
+    const nativeToken = rollupConfig.nativeToken;
+
     console.log(chainConfig);
     console.log('Going for deployment');
 
@@ -71,7 +73,7 @@ export async function deployRollup({
       address: rollupCreatorContractAddress,
       abi: RollupCreator.abi,
       functionName: 'createRollup',
-      args: [rollupConfigPayload, batchPosterAddress, validatorAddresses],
+      args: [rollupConfigPayload, batchPosterAddress, validatorAddresses, nativeToken],
       account,
     });
 
@@ -129,6 +131,7 @@ export async function deployRollup({
       utils: validatorUtils,
       validatorWalletCreator: validatorWalletCreator,
       deployedAtBlockNumber: Number(createRollupTxReceipt.blockNumber),
+      nativeToken: rollupCreatedEvent.args.nativeToken,
     };
 
     let rollupConfigData = buildRollupConfigData({

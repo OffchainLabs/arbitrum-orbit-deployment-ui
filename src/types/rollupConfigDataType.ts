@@ -96,6 +96,7 @@ const RollupConfigSchema = z.object({
   chainId: z.number(),
   chainName: z.string(),
   genesisBlockNum: z.number(),
+  nativeToken: z.string(),
   sequencerInboxMaxTimeVariation: z.object({
     delayBlocks: z.number(),
     futureBlocks: z.number(),
@@ -110,8 +111,6 @@ export const RollupConfigPayloadSchema = RollupConfigSchema.omit({ baseStake: tr
   baseStake: z.bigint(),
   chainConfig: z.string(),
 });
-
-export type RollupConfigPayload = z.infer<typeof RollupConfigPayloadSchema>;
 
 export type AnyTrustConfig = RollupConfig & {
   sequencerInboxAddress: string;
