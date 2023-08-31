@@ -15,7 +15,7 @@ import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
 
 // On Arbitrum Goerli, so need to change it for other networks
-const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
+const ARB_GOERLI_CREATOR_ADDRESS = '0x48e4A81a86cF4C7191927a86FA55B41F263e1975';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -42,6 +42,8 @@ export async function deployRollup({
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
+    const nativeToken = rollupConfig.nativeToken;
+
     console.log(chainConfig);
     console.log('Going for deployment');
 
@@ -49,7 +51,7 @@ export async function deployRollup({
       address: ARB_GOERLI_CREATOR_ADDRESS,
       abi: RollupCreator.abi,
       functionName: 'createRollup',
-      args: [rollupConfigPayload, batchPosterAddress, validatorAddresses],
+      args: [rollupConfigPayload, batchPosterAddress, validatorAddresses, nativeToken],
       account,
     });
 
@@ -107,6 +109,7 @@ export async function deployRollup({
       utils: validatorUtils,
       validatorWalletCreator: validatorWalletCreator,
       deployedAtBlockNumber: Number(createRollupTxReceipt.blockNumber),
+      nativeToken: rollupCreatedEvent.args.nativeToken,
     };
 
     let rollupConfigData = buildRollupConfigData({

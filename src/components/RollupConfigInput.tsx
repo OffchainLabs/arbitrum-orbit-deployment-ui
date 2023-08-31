@@ -16,6 +16,7 @@ const rollupConfigSchema = z.object({
   stakeToken: z.string(),
   baseStake: z.number().gt(0),
   owner: AddressSchema,
+  nativeToken: AddressSchema,
 });
 
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
@@ -121,6 +122,15 @@ export const RollupConfigInput = () => {
           defaultValue={rollupConfig?.owner || ''}
           register={() => register('owner')}
           error={errors.owner?.message}
+        />
+
+        <TextInputWithInfoLink
+          label="Native Token"
+          href={`${commonDocLink}#owner`} // todo: update link
+          infoText="Read about native token in the docs"
+          defaultValue={rollupConfig?.nativeToken || ''}
+          register={() => register('nativeToken')}
+          error={errors.nativeToken?.message}
         />
       </form>
     </>

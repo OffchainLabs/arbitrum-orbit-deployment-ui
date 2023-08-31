@@ -38,6 +38,7 @@ const defaultRollupConfig: RollupConfig = {
   chainName: 'My Arbitrum L3 Chain',
   chainConfig: '0x0000000000000000000000000000000000000000000000000000000000000000',
   genesisBlockNum: 0,
+  nativeToken: '0x0000000000000000000000000000000000000000',
   sequencerInboxMaxTimeVariation: {
     delayBlocks: 5760,
     futureBlocks: 48,

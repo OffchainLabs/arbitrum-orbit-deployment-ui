@@ -93,6 +93,7 @@ export type RollupConfig = {
   chainName: string;
   chainConfig: string;
   genesisBlockNum: number;
+  nativeToken: string;
   sequencerInboxMaxTimeVariation: {
     delayBlocks: number;
     futureBlocks: number;
