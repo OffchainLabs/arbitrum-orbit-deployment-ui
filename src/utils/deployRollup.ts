@@ -2,12 +2,7 @@ import { PublicClient, WalletClient, decodeEventLog } from 'viem';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
 import { ChainType } from '@/types/ChainType';
-import {
-  BatchPoster,
-  RollupContracts,
-  RollupCreatedEvent,
-  Validator,
-} from '@/types/RollupContracts';
+import { Wallet, RollupContracts, RollupCreatedEvent } from '@/types/RollupContracts';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
@@ -24,8 +19,8 @@ const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
-  validators: Validator[];
-  batchPoster: BatchPoster;
+  validators: Wallet[];
+  batchPoster: Wallet;
   publicClient: PublicClient;
   walletClient: WalletClient;
   chainType?: ChainType;

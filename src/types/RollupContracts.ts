@@ -10,12 +10,7 @@ export type RollupContracts = {
   deployedAtBlockNumber: number;
 };
 
-export type Validator = {
-  address: string;
-  privateKey?: string;
-};
-
-export type BatchPoster = {
+export type Wallet = {
   address: string;
   privateKey?: string;
 };
