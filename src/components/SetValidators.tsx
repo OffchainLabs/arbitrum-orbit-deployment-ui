@@ -40,15 +40,10 @@ export const SetValidators = () => {
   });
 
   useEffect(() => {
-    let newWallets = wallets;
-    if (wallets.length < walletCount) {
-      newWallets = [
-        ...wallets,
-        ...Array.from({ length: walletCount - wallets.length }, getRandomWallet),
-      ];
-    } else {
-      newWallets = wallets.slice(0, walletCount);
-    }
+    const newWallets =
+      wallets.length < walletCount
+        ? [...wallets, ...Array.from({ length: walletCount - wallets.length }, getRandomWallet)] // Add new wallets
+        : wallets.slice(0, walletCount); // Remove wallets
 
     setWallets(newWallets);
     setValue(
