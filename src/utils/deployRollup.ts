@@ -1,3 +1,4 @@
+import { arbitrumGoerli } from '@wagmi/core/chains';
 import { PublicClient, WalletClient, decodeEventLog } from 'viem';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
@@ -13,9 +14,12 @@ import {
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
+import { Chain } from 'wagmi';
+import { ChainId } from '@/types/ChainId';
 
 // On Arbitrum Goerli, so need to change it for other networks
 const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
+const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -45,8 +49,13 @@ export async function deployRollup({
     console.log(chainConfig);
     console.log('Going for deployment');
 
+    const contractAddress =
+      (await publicClient.getChainId()) === ChainId.ArbitrumGoerli
+        ? ARB_GOERLI_CREATOR_ADDRESS
+        : ARB_SEPOLIA_CREATOR_ADDRESS;
+
     const { request } = await publicClient.simulateContract({
-      address: ARB_GOERLI_CREATOR_ADDRESS,
+      address: contractAddress,
       abi: RollupCreator.abi,
       functionName: 'createRollup',
       args: [rollupConfigPayload, batchPosterAddress, validatorAddresses],
