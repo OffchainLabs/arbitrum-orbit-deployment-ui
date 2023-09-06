@@ -60,7 +60,7 @@ export function buildRollupConfigData({
       'info-json': [
         {
           'chain-id': Number(rollupConfig.chainId),
-          'parent-chain-id': 421613,
+          'parent-chain-id': parentChainId,
           'chain-name': rollupConfig.chainName,
           'chain-config': {
             chainId: Number(rollupConfig.chainId),
