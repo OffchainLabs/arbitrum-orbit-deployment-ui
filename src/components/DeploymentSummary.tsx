@@ -23,7 +23,7 @@ export function DeploymentSummary() {
   const [{ rollupContracts, validators = [], batchPoster }] = useDeploymentPageContext();
 
   const blockExplorerUrl = useMemo(
-    () => chain?.blockExplorers?.default ?? 'https://goerli.arbiscan.io',
+    () => chain?.blockExplorers?.default?.url ?? 'https://goerli.arbiscan.io',
     [chain],
   );
 
@@ -107,7 +107,7 @@ export function DeploymentSummary() {
             {validators.map((validator, index) => (
               <li className="flex flex-col">
                 <span className="font-bold">Validator #{index + 1} address:</span>
-                <BlockExplorerLink href={`${blockExplorerUrl}/address/${validator}`}>
+                <BlockExplorerLink href={`${blockExplorerUrl}/address/${validator.address}`}>
                   {validator.address}
                 </BlockExplorerLink>
               </li>
@@ -123,7 +123,7 @@ export function DeploymentSummary() {
           <ul className="flex flex-col gap-2 rounded-lg border border-black p-3">
             <li className="flex flex-col">
               <span className="font-bold">Batch Poster address:</span>
-              <BlockExplorerLink href={`${blockExplorerUrl}/address/${batchPoster}`}>
+              <BlockExplorerLink href={`${blockExplorerUrl}/address/${batchPoster.address}`}>
                 {batchPoster.address}
               </BlockExplorerLink>
             </li>
