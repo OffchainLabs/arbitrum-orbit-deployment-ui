@@ -9,19 +9,11 @@ const arbitrumSepolia = {
   name: 'Arbitrum Sepolia',
   network: 'arbitrum-sepolia',
   nativeCurrency: {
-    name: 'Arbitrum Sepolia Ether',
+    name: 'Ether',
     symbol: 'ETH',
     decimals: 18,
   },
   rpcUrls: {
-    alchemy: {
-      http: ['https://arb-sepolia.g.alchemy.com/v2'],
-      webSocket: ['wss://arb-sepolia.g.alchemy.com/v2'],
-    },
-    infura: {
-      http: ['https://arbitrum-sepolia.infura.io/v3'],
-      webSocket: ['wss://arbitrum-sepolia.infura.io/ws/v3'],
-    },
     default: {
       http: ['https://sepolia-rollup.arbitrum.io/rpc'],
     },
@@ -30,19 +22,9 @@ const arbitrumSepolia = {
     },
   },
   blockExplorers: {
-    etherscan: {
-      name: 'Arbiscan',
-      url: 'https://sepolia.arbiscan.io/',
-    },
     default: {
-      name: 'Arbiscan',
-      url: 'https://sepolia.arbiscan.io/',
-    },
-  },
-  contracts: {
-    multicall3: {
-      address: '0xded9AD2E65F3c4315745dD915Dbe0A4Df61b2320' as `0x${string}`,
-      blockCreated: 4139226,
+      name: 'Blockscout',
+      url: 'https://sepolia-explorer.arbitrum.io',
     },
   },
   testnet: true,
