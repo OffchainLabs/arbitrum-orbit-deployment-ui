@@ -37,10 +37,10 @@ const arbitrumSepolia = {
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     arbitrumGoerli,
-    // Ideally, we wouldn't need to regiter Goerli, but there's currently an issue with WalletConnect v2: https://github.com/wagmi-dev/references/issues/225
+    // Ideally, we wouldn't need to register the L1s, but there's currently an issue with WalletConnect v2: https://github.com/wagmi-dev/references/issues/225
     goerli,
-    sepolia,
     arbitrumSepolia,
+    sepolia,
   ],
   [publicProvider()],
 );

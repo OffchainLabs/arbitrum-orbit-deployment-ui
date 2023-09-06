@@ -15,7 +15,6 @@ import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
 import { ChainId } from '@/types/ChainId';
 
-// On Arbitrum Goerli, so need to change it for other networks
 const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
 const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
 
