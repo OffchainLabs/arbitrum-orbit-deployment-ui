@@ -4,8 +4,12 @@ import { goerli, arbitrumGoerli, sepolia } from '@wagmi/core/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { connectorsForWallets, getDefaultWallets } from '@rainbow-me/rainbowkit';
 
+import { ChainId } from '@/types/ChainId';
+import { getRpcUrl } from '@/utils/getRpcUrl';
+import { getBlockExplorerUrl } from '@/utils/getBlockExplorerUrl';
+
 const arbitrumSepolia = {
-  id: 421614,
+  id: ChainId.ArbitrumSepolia,
   name: 'Arbitrum Sepolia',
   network: 'arbitrum-sepolia',
   nativeCurrency: {
@@ -15,16 +19,16 @@ const arbitrumSepolia = {
   },
   rpcUrls: {
     default: {
-      http: ['https://sepolia-rollup.arbitrum.io/rpc'],
+      http: [getRpcUrl(ChainId.ArbitrumSepolia)],
     },
     public: {
-      http: ['https://sepolia-rollup.arbitrum.io/rpc'],
+      http: [getRpcUrl(ChainId.ArbitrumSepolia)],
     },
   },
   blockExplorers: {
     default: {
       name: 'Blockscout',
-      url: 'https://sepolia-explorer.arbitrum.io',
+      url: getBlockExplorerUrl(ChainId.ArbitrumSepolia),
     },
   },
   testnet: true,

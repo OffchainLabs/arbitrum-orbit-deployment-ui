@@ -7,6 +7,7 @@ import {
   RollupConfigData,
   RollupConfigPayload,
 } from '@/types/rollupConfigDataType';
+import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsHexString } from './validators';
 
 export const buildChainConfig = (chainConfig: { chainId: number; owner: string }) => ({
@@ -44,12 +45,16 @@ export function buildRollupConfigData({
   rollupContracts,
   validators,
   batchPoster,
+  parentChainId,
 }: {
   rollupConfig: RollupConfig;
   rollupContracts: RollupContracts;
   validators: Wallet[];
   batchPoster: Wallet;
+  parentChainId: number;
 }): RollupConfigData {
+  const parentChainRpcUrl = getRpcUrl(parentChainId);
+
   return {
     'chain': {
       'info-json': [
@@ -101,7 +106,7 @@ export function buildRollupConfigData({
     },
     'parent-chain': {
       connection: {
-        url: 'https://goerli-rollup.arbitrum.io/rpc',
+        url: parentChainRpcUrl,
       },
     },
     'http': {
@@ -167,8 +172,11 @@ export const buildRollupConfigPayload = ({
 export function buildAnyTrustNodeConfig(
   rollupConfig: RollupConfigData,
   sequencerInboxAddress: string,
+  parentChainId: number,
 ): AnyTrustConfigData {
   assertIsHexString(sequencerInboxAddress);
+
+  const parentChainRpcUrl = getRpcUrl(parentChainId);
 
   return {
     ...rollupConfig,
@@ -177,7 +185,7 @@ export function buildAnyTrustNodeConfig(
       'data-availability': {
         'enable': true,
         'sequencer-inbox-address': sequencerInboxAddress,
-        'parent-chain-node-url': 'https://goerli-rollup.arbitrum.io/rpc',
+        'parent-chain-node-url': parentChainRpcUrl,
         'rest-aggregator': {
           enable: true,
           urls: 'http://localhost:9876',
