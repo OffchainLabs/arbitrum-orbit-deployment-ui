@@ -3,10 +3,10 @@
 import { spaceGrotesk, unica77 } from '@/fonts';
 import { appInfo, chains, wagmiConfig } from '../src/setupWagmi';
 import { ConnectButton, RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
-import Head from 'next/head';
 import { WagmiConfig } from 'wagmi';
 import { arbitrumGoerli } from 'wagmi/chains';
 import { PostHogProvider } from 'posthog-js/react';
+import posthog from 'posthog-js';
 
 import '@rainbow-me/rainbowkit/styles.css';
 import 'primeflex/primeflex.css';
@@ -14,7 +14,6 @@ import 'primeicons/primeicons.css'; // icons
 import 'primereact/resources/primereact.css'; // core css
 import 'primereact/resources/themes/lara-light-indigo/theme.css'; // theme
 import '@/styles/globals.css';
-import posthog from 'posthog-js';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -35,6 +34,13 @@ if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html>
+      <head>
+        <title>Arbitrum Orbit Deployment UI</title>
+        <meta
+          name="description"
+          content="Utilize the Orbit chain deployment portal to launch your own Arbitrum Orbit chain. By following these steps, you will have a local devnet chain that hosts EVM-compatible contracts."
+        />
+      </head>
       <body style={unica77.style}>
         <PostHogProvider client={posthog}>
           <WagmiConfig config={wagmiConfig}>
@@ -51,9 +57,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 },
               }}
             >
-              <Head>
-                <title>Arbitrum Orbit Deployment UI</title>
-              </Head>
               <header className="flex w-full justify-center">
                 <div className="flex w-[1024px] flex-col gap-2 py-4">
                   <div className="flex w-full items-center justify-between">
