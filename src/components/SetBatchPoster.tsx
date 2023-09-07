@@ -30,7 +30,7 @@ export const SetBatchPoster = () => {
     resolver: zodResolver(batchPosterSchema),
     defaultValues: {
       batchPosterAddress: batchPoster.address,
-      batchPosterPrivateKey: batchPoster.privateKey,
+      batchPosterPrivateKey: batchPoster.privateKey ?? '',
     },
   });
 
