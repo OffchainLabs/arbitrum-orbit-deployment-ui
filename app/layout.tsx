@@ -5,7 +5,6 @@ import { appInfo, chains, wagmiConfig } from '../src/setupWagmi';
 import { ConnectButton, RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 import Head from 'next/head';
 import { WagmiConfig } from 'wagmi';
-import { arbitrumGoerli } from 'wagmi/chains';
 import { PostHogProvider } from 'posthog-js/react';
 
 import '@rainbow-me/rainbowkit/styles.css';
@@ -41,7 +40,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <RainbowKitProvider
               chains={chains}
               appInfo={appInfo}
-              initialChain={arbitrumGoerli}
               theme={{
                 ...lightTheme({
                   accentColor: '#243145',
