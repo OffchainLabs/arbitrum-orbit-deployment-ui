@@ -207,6 +207,7 @@ export type BuildL3ConfigParams = {
   validators: Wallet[];
   batchPoster: Wallet;
   rollupContracts: RollupContracts;
+  parentChainId: number;
 };
 
 export const buildL3Config = async ({
@@ -215,17 +216,22 @@ export const buildL3Config = async ({
   validators,
   batchPoster,
   rollupContracts,
+  parentChainId,
 }: BuildL3ConfigParams): Promise<L3Config> => {
+  const parentChainRpcUrl = getRpcUrl(parentChainId);
+
   try {
     const l3Config: L3Config = {
-      networkFeeReceiver: address,
-      infrastructureFeeCollector: address,
-      staker: validators[0].address,
-      batchPoster: batchPoster.address,
-      chainOwner: rollupConfig.owner,
-      chainId: Number(rollupConfig.chainId),
-      chainName: rollupConfig.chainName,
-      minL2BaseFee: 100000000,
+      'networkFeeReceiver': address,
+      'infrastructureFeeCollector': address,
+      'staker': validators[0].address,
+      'batchPoster': batchPoster.address,
+      'chainOwner': rollupConfig.owner,
+      'chainId': Number(rollupConfig.chainId),
+      'chainName': rollupConfig.chainName,
+      'minL2BaseFee': 100000000,
+      'parentChainId': parentChainId,
+      'parent-chain-node-url': parentChainRpcUrl,
       ...rollupContracts,
     };
     return l3Config;

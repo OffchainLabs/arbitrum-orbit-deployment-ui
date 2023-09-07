@@ -140,6 +140,7 @@ export async function deployRollup({
       rollupContracts,
       validators,
       batchPoster,
+      parentChainId,
     });
 
     updateLocalStorage(rollupConfigData, l3Config);
