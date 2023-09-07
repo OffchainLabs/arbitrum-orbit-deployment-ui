@@ -36,7 +36,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html>
       <head>
         <title>Arbitrum Orbit Deployment UI</title>
-        <meta name="description" content="Utilize the Orbit chain deployment portal to launch your own Arbitrum Orbit chain. By following these steps, you will have a local devnet chain that hosts EVM-compatible contracts."/>
+        <meta
+          name="description"
+          content="Utilize the Orbit chain deployment portal to launch your own Arbitrum Orbit chain. By following these steps, you will have a local devnet chain that hosts EVM-compatible contracts."
+        />
       </head>
       <body style={unica77.style}>
         <PostHogProvider client={posthog}>
