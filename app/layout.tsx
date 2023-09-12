@@ -4,7 +4,6 @@ import { spaceGrotesk, unica77 } from '@/fonts';
 import { appInfo, chains, wagmiConfig } from '../src/setupWagmi';
 import { ConnectButton, RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 import { WagmiConfig } from 'wagmi';
-import { arbitrumGoerli } from 'wagmi/chains';
 import { PostHogProvider } from 'posthog-js/react';
 import posthog from 'posthog-js';
 
@@ -47,7 +46,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <RainbowKitProvider
               chains={chains}
               appInfo={appInfo}
-              initialChain={arbitrumGoerli}
               theme={{
                 ...lightTheme({
                   accentColor: '#243145',
