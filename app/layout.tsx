@@ -29,8 +29,9 @@ if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY 
 
 const metadataInfo = {
   title: 'Arbitrum Orbit Deployment UI',
-  description:
-    'Utilize the Orbit chain deployment portal to launch your own Arbitrum Orbit chain. By following these steps, you will have a local devnet chain that hosts EVM-compatible contracts.',
+  description: `Utilize the Orbit chain deployment portal to launch your own devnet Arbitrum Orbit chain. By following these steps, you will have a local devnet chain that hosts EVM-compatible contracts (you will not have a mainnet L2 chain)
+
+We are building the tech and docs that will help you move your project from "local devnet chain that settles to Arbitrum Goerli" to "public production-ready chain that settles to Arbitrum One or Arbitrum Nova". Stay tuned!`,
 };
 
 export const metadata: Metadata = {
