@@ -84,7 +84,7 @@ export type AnyTrustConfigData = RollupConfigData & {
 export type RollupConfig = {
   confirmPeriodBlocks: number;
   stakeToken: string;
-  baseStake: string;
+  baseStake: number;
   owner: string;
   extraChallengeTimeBlocks: number;
   wasmModuleRoot: string;

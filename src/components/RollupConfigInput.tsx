@@ -1,35 +1,44 @@
 import { useStep } from '@/hooks/useStep';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainType } from '@/types/ChainType';
-import { RollupConfig } from '@/types/rollupConfigDataType';
-import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
+import { TextInputWithInfoLink } from './TextInputWithInfoLink';
+import { AddressSchema } from '@/utils/schemas';
+
+const rollupConfigSchema = z.object({
+  chainId: z.number().gt(0),
+  chainName: z.string().nonempty(),
+  confirmPeriodBlocks: z.number().gt(0),
+  stakeToken: z.string(),
+  baseStake: z.number().gt(0),
+  owner: AddressSchema,
+});
+
+export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export const RollupConfigInput = () => {
   const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<z.infer<typeof rollupConfigSchema>>({
+    defaultValues: rollupConfig,
+    mode: 'onBlur',
+    resolver: zodResolver(rollupConfigSchema),
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-
-    const updatedRollupConfig: Partial<RollupConfig> = {};
-    for (const [key, defaultValue] of formData.entries()) {
-      //@ts-expect-error - key is a string
-      updatedRollupConfig[key] = defaultValue;
-    }
-
-    if (rollupConfig !== undefined) {
-      dispatch({
-        type: 'set_rollup_config',
-        payload: { ...rollupConfig, ...updatedRollupConfig },
-      });
-
-      nextStep();
-    }
+  const onSubmit = (updatedRollupConfig: RollupConfigFormValues) => {
+    dispatch({
+      type: 'set_rollup_config',
+      payload: { ...rollupConfig, ...updatedRollupConfig, stakeToken: rollupConfig.stakeToken },
+    });
+    nextStep();
   };
 
   const titleContent = chainType === ChainType.Rollup ? 'Configure Rollup' : 'Configure AnyTrust';
@@ -40,57 +49,78 @@ export const RollupConfigInput = () => {
     <>
       <StepTitle>{titleContent}</StepTitle>
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="mx-0 grid grid-cols-2 gap-4 py-4"
         ref={rollupConfigFormRef}
       >
         <TextInputWithInfoLink
           label="Chain ID"
           href={`${commonDocLink}#chain-id`}
-          name="chainId"
           type="number"
           placeholder="12345678"
           infoText="Read about Chain ID in the docs"
           defaultValue={rollupConfig?.chainId || ''}
+          register={() =>
+            register('chainId', {
+              setValueAs: (value) => Number(value),
+            })
+          }
+          error={errors.chainId?.message}
         />
         <TextInputWithInfoLink
           label="Chain Name"
           href={`${commonDocLink}#chain-name`}
-          name="chainName"
           infoText="Read about Chain Name in the docs"
           defaultValue={rollupConfig?.chainName || ''}
+          error={errors.chainName?.message}
+          register={() => register('chainName')}
         />
+
         <TextInputWithInfoLink
           label="Challenge Period Blocks"
           href={`${commonDocLink}#challenge-period-blocks`}
-          name="confirmPeriodBlocks"
           type="number"
           infoText="Read about Challenge Period Blocks in the docs"
+          error={errors.confirmPeriodBlocks?.message}
           defaultValue={rollupConfig?.confirmPeriodBlocks || ''}
+          register={() =>
+            register('confirmPeriodBlocks', {
+              setValueAs: (value) => Number(value),
+            })
+          }
         />
+
         <SelectInputWithInfoLink
           label="Stake Token"
           href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#stake-token`}
-          name="stakeToken"
           infoText="Read about Stake Token in the docs"
           options={['ETH', 'Custom']}
+          defaultValue={'ETH'}
           disabled
         />
+
         <TextInputWithInfoLink
           label="Base Stake (in Ether)"
           href={`${commonDocLink}#base-stake`}
-          name="baseStake"
           type="number"
           step="any"
           infoText="Read about Base Stake in the docs"
-          defaultValue={rollupConfig?.baseStake || ''}
+          defaultValue={rollupConfig?.baseStake || 0}
+          error={errors.baseStake?.message}
+          register={() =>
+            register('baseStake', {
+              setValueAs: (value) => Number(value),
+            })
+          }
         />
+
         <TextInputWithInfoLink
           label="Owner"
           href={`${commonDocLink}#owner`}
-          name="owner"
           infoText="Read about Owner in the docs"
           defaultValue={rollupConfig?.owner || ''}
+          register={() => register('owner')}
+          error={errors.owner?.message}
         />
       </form>
     </>

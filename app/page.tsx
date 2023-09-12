@@ -36,7 +36,7 @@ export default function Home() {
             <Link href="/deployment/step/1">
               <h2 className={`font-regular mb-2 text-2xl`}>Deploy Orbit Chain</h2>
               <p className={`font-regular m-0 max-w-[28ch] text-sm`}>
-                Configure your appchain here
+                Configure your Orbit chain here
               </p>
             </Link>
           </div>
@@ -47,7 +47,7 @@ export default function Home() {
             href="https://docs.google.com/forms/d/e/1FAIpQLSe5YWxFbJ8DgWcDNbIW2YYuTRmegtx2FHObym00_sOt0kq4wA/viewform"
             title="Get in Touch"
           >
-            Connect with us to learn if an appchain makes sense for you
+            Connect with us to learn if an Orbit chain makes sense for you
           </ExternalLinkTile>
           <ExternalLinkTile href="https://discord.gg/KsewXePB" title="Get Support">
             Join the <span className="font-bold">#orbit-support</span> channel in Discord if you run
