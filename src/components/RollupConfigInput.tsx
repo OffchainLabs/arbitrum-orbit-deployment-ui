@@ -7,15 +7,15 @@ import { ChainType } from '@/types/ChainType';
 import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
-import { Address } from 'abitype/zod';
+import { AddressSchema } from '@/utils/schemas';
 
 const rollupConfigSchema = z.object({
   chainId: z.number().gt(0),
   chainName: z.string().nonempty(),
   confirmPeriodBlocks: z.number().gt(0),
-  stakeToken: Address,
+  stakeToken: z.string(),
   baseStake: z.number().gt(0),
-  owner: Address,
+  owner: AddressSchema,
 });
 
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;

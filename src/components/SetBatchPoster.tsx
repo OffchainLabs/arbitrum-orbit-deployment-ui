@@ -7,20 +7,19 @@ import { StepTitle } from './StepTitle';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ConfigWallet } from '@/types/RollupContracts';
-import { assertIsHexString } from '@/utils/validators';
-import { Address } from 'abitype/zod';
+import { Wallet } from '@/types/RollupContracts';
+import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
 
-// Schema for Zod validation
 const batchPosterSchema = z.object({
-  batchPosterAddress: Address,
+  batchPosterAddress: AddressSchema,
+  batchPosterPrivateKey: PrivateKeySchema,
 });
 type BatchPosterFormValues = z.infer<typeof batchPosterSchema>;
 
 export const SetBatchPoster = () => {
   const [{ batchPoster: currentBatchPoster }, dispatch] = useDeploymentPageContext();
   const { nextStep, batchPosterFormRef } = useStep();
-  const [batchPoster] = useState<ConfigWallet>(currentBatchPoster || getRandomWallet());
+  const [batchPoster] = useState<Wallet>(currentBatchPoster ?? getRandomWallet());
 
   const {
     register,
@@ -28,18 +27,16 @@ export const SetBatchPoster = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(batchPosterSchema),
-    defaultValues: { batchPosterAddress: batchPoster.address },
+    defaultValues: {
+      batchPosterAddress: batchPoster.address,
+      batchPosterPrivateKey: batchPoster.privateKey ?? '',
+    },
   });
 
   const onSubmit = (data: BatchPosterFormValues) => {
-    assertIsHexString(data.batchPosterAddress);
     const payload = {
       address: data.batchPosterAddress,
-      privateKey:
-        // Remove the private key if the user entered a custom address
-        currentBatchPoster?.address === data.batchPosterAddress
-          ? currentBatchPoster.privateKey
-          : undefined,
+      privateKey: data.batchPosterPrivateKey,
     };
 
     dispatch({
@@ -61,10 +58,15 @@ export const SetBatchPoster = () => {
         href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-5-configure-your-chains-batch-poster`}
         placeholder="Enter address"
         infoText="Read about Batch Poster in the docs"
-        {...(register('batchPosterAddress'),
-        {
-          defaultValue: batchPoster.address,
-        })}
+        defaultValue={batchPoster.address}
+        disabled
+        register={() => register('batchPosterAddress')}
+      />
+      <input
+        type="hidden"
+        defaultValue={batchPoster.privateKey}
+        disabled
+        {...register('batchPosterPrivateKey')}
       />
       {errors.batchPosterAddress && (
         <p className="text-sm text-red-500">{String(errors.batchPosterAddress?.message)}</p>

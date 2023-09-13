@@ -1,14 +1,46 @@
 'use client';
 import { configureChains, createConfig } from 'wagmi';
-import { goerli, arbitrumGoerli } from '@wagmi/core/chains';
+import { goerli, arbitrumGoerli, sepolia } from '@wagmi/core/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { connectorsForWallets, getDefaultWallets } from '@rainbow-me/rainbowkit';
+
+import { ChainId } from '@/types/ChainId';
+import { getRpcUrl } from '@/utils/getRpcUrl';
+import { getBlockExplorerUrl } from '@/utils/getBlockExplorerUrl';
+
+const arbitrumSepolia = {
+  id: ChainId.ArbitrumSepolia,
+  name: 'Arbitrum Sepolia',
+  network: 'arbitrum-sepolia',
+  nativeCurrency: {
+    name: 'Ether',
+    symbol: 'ETH',
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: [getRpcUrl(ChainId.ArbitrumSepolia)],
+    },
+    public: {
+      http: [getRpcUrl(ChainId.ArbitrumSepolia)],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Blockscout',
+      url: getBlockExplorerUrl(ChainId.ArbitrumSepolia),
+    },
+  },
+  testnet: true,
+};
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     arbitrumGoerli,
-    // Ideally, we wouldn't need to regiter Goerli, but there's currently an issue with WalletConnect v2: https://github.com/wagmi-dev/references/issues/225
+    // Ideally, we wouldn't need to register the L1s, but there's currently an issue with WalletConnect v2: https://github.com/wagmi-dev/references/issues/225
     goerli,
+    arbitrumSepolia,
+    sepolia,
   ],
   [publicProvider()],
 );

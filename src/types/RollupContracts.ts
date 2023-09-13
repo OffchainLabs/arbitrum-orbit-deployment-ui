@@ -13,12 +13,12 @@ export type RollupContracts = {
   deployedAtBlockNumber: number;
 };
 
-export const ConfigWalletSchema = z.object({
+export const WalletSchema = z.object({
   address: Address,
   privateKey: Address.optional(),
 });
 
-export type ConfigWallet = z.infer<typeof ConfigWalletSchema>;
+export type Wallet = z.infer<typeof WalletSchema>;
 
 export type RollupCreatedEvent = {
   args: {

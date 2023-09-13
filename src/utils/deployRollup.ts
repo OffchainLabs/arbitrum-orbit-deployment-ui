@@ -2,12 +2,7 @@ import { PublicClient, WalletClient, decodeEventLog } from 'viem';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
 import { ChainType } from '@/types/ChainType';
-import {
-  ConfigWallet,
-  ConfigWalletSchema,
-  RollupContracts,
-  RollupCreatedEvent,
-} from '@/types/RollupContracts';
+import { Wallet, RollupContracts, RollupCreatedEvent, WalletSchema } from '@/types/RollupContracts';
 import { RollupConfig, RollupConfigPayloadSchema } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
@@ -18,15 +13,16 @@ import {
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
+import { ChainId } from '@/types/ChainId';
 import { z } from 'zod';
 
-// On Arbitrum Goerli, so need to change it for other networks
 const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
+const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
-  validators: ConfigWallet[];
-  batchPoster: ConfigWallet;
+  validators: Wallet[];
+  batchPoster: Wallet;
   publicClient: PublicClient;
   walletClient: WalletClient;
   chainType?: ChainType;
@@ -35,8 +31,8 @@ type DeployRollupProps = {
 
 const RollupCreateSchema = z.object({
   rollupConfigPayload: RollupConfigPayloadSchema,
-  batchPoster: ConfigWalletSchema,
-  validators: z.array(ConfigWalletSchema),
+  batchPoster: WalletSchema,
+  validators: z.array(WalletSchema),
 });
 const assertIsValidRollupCreatePayload = RollupCreateSchema.parse;
 
@@ -65,8 +61,15 @@ export async function deployRollup({
       validators,
     });
 
+    const parentChainId = await publicClient.getChainId();
+
+    const rollupCreatorContractAddress =
+      parentChainId === ChainId.ArbitrumGoerli
+        ? ARB_GOERLI_CREATOR_ADDRESS
+        : ARB_SEPOLIA_CREATOR_ADDRESS;
+
     const { request } = await publicClient.simulateContract({
-      address: ARB_GOERLI_CREATOR_ADDRESS,
+      address: rollupCreatorContractAddress,
       abi: RollupCreator.abi,
       functionName: 'createRollup',
       args: [rollupConfigPayload, batchPosterAddress, validatorAddresses],
@@ -134,12 +137,14 @@ export async function deployRollup({
       rollupContracts,
       validators,
       batchPoster,
+      parentChainId,
     });
 
     if (chainType === ChainType.AnyTrust) {
       rollupConfigData = buildAnyTrustNodeConfig(
         rollupConfigData,
         rollupCreatedEvent.args.sequencerInbox,
+        parentChainId,
       );
     }
 
@@ -150,6 +155,7 @@ export async function deployRollup({
       rollupContracts,
       validators,
       batchPoster,
+      parentChainId,
     });
 
     updateLocalStorage(rollupConfigData, l3Config);

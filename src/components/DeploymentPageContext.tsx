@@ -1,5 +1,5 @@
 'use client';
-import { ConfigWallet, RollupContracts } from '@/types/RollupContracts';
+import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { RollupStepMap } from '@/types/Steps';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
@@ -19,8 +19,8 @@ import { RollupConfigFormValues } from './RollupConfigInput';
 type DeploymentPageContextState = {
   rollupContracts?: RollupContracts;
   rollupConfig: RollupConfig;
-  validators?: ConfigWallet[];
-  batchPoster?: ConfigWallet;
+  validators?: Wallet[];
+  batchPoster?: Wallet;
   chainType?: ChainType;
   isLoading: boolean;
 };
@@ -77,9 +77,10 @@ function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState
 type DeploymentPageContextAction =
   | { type: 'set_rollup_contracts'; payload: RollupContracts }
   | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
+  | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
   | { type: 'set_chain_type'; payload: ChainType }
-  | { type: 'set_validators'; payload: ConfigWallet[] }
-  | { type: 'set_batch_poster'; payload: ConfigWallet }
+  | { type: 'set_validators'; payload: Wallet[] }
+  | { type: 'set_batch_poster'; payload: Wallet }
   | { type: 'set_is_loading'; payload: boolean }
   | { type: 'reset'; payload: `0x${string}` };
 
@@ -104,6 +105,7 @@ function reducer(
       return { ...state, rollupContracts: action.payload };
 
     case 'set_rollup_config':
+      return { ...state, rollupConfig: { ...state.rollupConfig, ...action.payload } };
       return { ...state, rollupConfig: { ...state.rollupConfig, ...action.payload } };
 
     case 'set_chain_type':
