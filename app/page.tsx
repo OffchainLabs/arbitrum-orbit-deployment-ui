@@ -42,7 +42,7 @@ export default function Home() {
           </div>
         </div>
         <div className="w-1/2 border border-zinc-300" />
-        <div className="-ml-2 flex items-start justify-start gap-16">
+        <div className="-ml-2 flex flex-wrap items-start justify-start gap-16">
           <ExternalLinkTile
             href="https://docs.google.com/forms/d/e/1FAIpQLSe5YWxFbJ8DgWcDNbIW2YYuTRmegtx2FHObym00_sOt0kq4wA/viewform"
             title="Get in Touch"
