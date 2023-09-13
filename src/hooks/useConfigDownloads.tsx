@@ -1,4 +1,4 @@
-import { L3Config } from '@/types/l3ConfigType';
+import { L3Config } from '@/types/L3Config';
 import { RollupConfigData } from '@/types/rollupConfigDataType';
 import { useEffect, useState } from 'react';
 
