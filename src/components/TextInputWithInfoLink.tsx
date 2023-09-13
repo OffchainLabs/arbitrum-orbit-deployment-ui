@@ -1,6 +1,7 @@
 import { UseFormRegisterReturn, InternalFieldName } from 'react-hook-form';
 import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 import { InputHTMLAttributes } from 'react';
+import { twJoin } from 'tailwind-merge';
 
 interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -33,10 +34,11 @@ export const TextInputWithInfoLink = ({
       </div>
       <input
         id={props.name}
-        className={
-          `w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input ` +
-          (error && 'border-red-500')
-        }
+        className={twJoin(
+          'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
+          error && 'border-red-500',
+          props.disabled && 'cursor-not-allowed bg-gray-200 opacity-50',
+        )}
         {...props}
         {...getRegister()}
       />
