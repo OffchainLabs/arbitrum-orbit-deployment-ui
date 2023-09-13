@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={unica77.style} className="mx-3 md:mx-0">
         <Providers>
           <header className="flex w-full justify-center">
-            <div className="py- flex w-[1024px] flex-col gap-2 py-4">
+            <div className="flex w-[1024px] flex-col gap-2 py-4">
               <div className="flex w-full flex-wrap items-center justify-between">
                 <h1 className="text-2xl font-normal">Arbitrum Orbit</h1>
                 <ConnectButton />
