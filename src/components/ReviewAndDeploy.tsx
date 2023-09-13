@@ -1,6 +1,5 @@
 import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from './DeploymentPageContext';
-import { ChainId } from '@/types/ChainId';
 import { deployRollup } from '@/utils/deployRollup';
 import { useAccount, useNetwork, usePublicClient, useWalletClient } from 'wagmi';
 import { StepTitle } from './StepTitle';
@@ -12,19 +11,11 @@ export const ReviewAndDeploy = () => {
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const { nextStep, reviewAndDeployFormRef } = useStep();
-
   const { chain } = useNetwork();
+
   if (!rollupConfig) return <div>No rollup config found</div>;
   if (!validators) return <div>No validators found</div>;
   if (!batchPoster) return <div>No batch poster found</div>;
-  if (chain?.id !== ChainId.ArbitrumGoerli) {
-    return (
-      <div>
-        <p>You are connected to the wrong network.</p>
-        <p>Please make sure you are connected to Arbitrum Goerli.</p>
-      </div>
-    );
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
