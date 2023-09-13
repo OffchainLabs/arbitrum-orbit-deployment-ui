@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { Address } from 'abitype/zod';
+
+import { AddressSchema } from '@/utils/schemas';
 
 export type RollupConfigData = {
   'chain': {
@@ -86,12 +87,12 @@ export type AnyTrustConfigData = RollupConfigData & {
 
 const RollupConfigSchema = z.object({
   confirmPeriodBlocks: z.number(),
-  stakeToken: Address,
+  stakeToken: AddressSchema,
   baseStake: z.number(),
-  owner: Address,
+  owner: AddressSchema,
   extraChallengeTimeBlocks: z.number(),
-  wasmModuleRoot: Address,
-  loserStakeEscrow: Address,
+  wasmModuleRoot: AddressSchema,
+  loserStakeEscrow: AddressSchema,
   chainId: z.number(),
   chainName: z.string(),
   genesisBlockNum: z.number(),

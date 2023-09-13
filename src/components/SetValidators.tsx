@@ -10,11 +10,10 @@ import { AddressSchema } from '@/utils/schemas';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
-import { Address } from 'abitype/zod';
 
 const validatorsSchema = z.object({
   numberOfValidators: z.number().min(1).max(16),
-  addresses: z.array(Address),
+  addresses: z.array(AddressSchema),
 });
 type ValidatorsFormValues = z.infer<typeof validatorsSchema>;
 

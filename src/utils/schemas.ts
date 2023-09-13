@@ -1,9 +1,7 @@
 import { z } from 'zod';
+import { Address } from 'abitype/zod';
 
-export const AddressSchema = z
-  .string()
-  .length(42)
-  .regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid address');
+export const AddressSchema = Address;
 
 export const PrivateKeySchema = z
   .string()
