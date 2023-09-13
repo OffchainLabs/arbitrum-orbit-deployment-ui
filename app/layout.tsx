@@ -4,13 +4,6 @@ import posthog from 'posthog-js';
 import { Providers } from '@/components/Providers';
 import { unica77 } from '@/fonts';
 
-import '@/styles/globals.css';
-import '@rainbow-me/rainbowkit/styles.css';
-import 'primeflex/primeflex.css';
-import 'primeicons/primeicons.css'; // icons
-import 'primereact/resources/primereact.css'; // core css
-import 'primereact/resources/themes/lara-light-indigo/theme.css'; // theme
-
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: 'https://app.posthog.com',
