@@ -1,4 +1,3 @@
-'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
@@ -11,9 +10,9 @@ interface ExternalLinkTileProps extends React.AnchorHTMLAttributes<HTMLAnchorEle
 }
 
 const cardClassNames = [
-  'block justify-start w-full h-full rounded-lg border border-transparent px-2 py-3 text-left transition-colors',
-  '[&>button]:text-left',
-  'hover:border-gray-300 hover:bg-gray-100 dark:lg:hover:border-neutral-700 dark:lg:hover:bg-neutral-800/30',
+  'block [&>button]:text-left min-h-[120px] justify-start w-full h-full rounded-lg border border-gray-300 bg-black/5 px-4 py-5 text-left transition-colors',
+  'lg:border-transparent lg:bg-transparent lg:min-h-[auto] lg:px-3 lg:py-4',
+  'lg:hover:border-gray-300 lg:hover:bg-black/5 dark:lg:hover:border-neutral-700 dark:lg:hover:bg-neutral-800/30',
 ];
 
 export default function Home() {
@@ -34,9 +33,9 @@ export default function Home() {
 
   return (
     <main className="flex w-full justify-center">
-      <div className="flex w-[1024px] flex-col items-start gap-16 pb-16 pl-4 pt-4 lg:mt-16 lg:pl-10">
+      <div className="flex w-[1024px] flex-col items-start gap-16 pb-16 pl-4 pt-4 lg:mt-16 lg:pl-0">
         <Image src="/logo.svg" alt="Logo" width={192} height={192} />
-        <div className="-ml-2 grid grid-flow-row gap-4 lg:max-w-[560px] lg:grid-cols-2 lg:grid-rows-[auto_1px_auto] lg:gap-16">
+        <div className="-ml-2 grid grid-flow-row gap-8 lg:max-w-[580px] lg:grid-cols-2 lg:grid-rows-[auto_1px_auto] lg:gap-16">
           <ExternalLinkTile
             href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-gentle-introduction`}
             title="Learn about Orbit"
