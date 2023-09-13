@@ -1,9 +1,18 @@
+import { useMemo } from 'react';
+import { useNetwork } from 'wagmi';
+
 import { useConfigDownloads } from '@/hooks/useConfigDownloads';
 import { ExternalLink } from './ExternalLink';
 import { StepTitle } from './StepTitle';
 
 export const DeployLocallyComponent = () => {
+  const { chain } = useNetwork();
   const { downloadRollupConfig, downloadL3Config } = useConfigDownloads();
+
+  const parentChainRpcUrl = useMemo(
+    () => chain?.rpcUrls?.default?.http[0] ?? 'https://goerli-rollup.arbitrum.io/rpc',
+    [chain],
+  );
 
   return (
     <div>
@@ -68,7 +77,7 @@ export const DeployLocallyComponent = () => {
           in the following command, and run it: <br />
           <br />
           <pre className="overflow-auto rounded-lg bg-gray-100 p-4 text-sm">
-            PRIVATE_KEY="0xYourPrivateKey" L2_RPC_URL="https://goerli-rollup.arbitrum.io/rpc"
+            PRIVATE_KEY="0xYourPrivateKey" L2_RPC_URL="{parentChainRpcUrl}"
             L3_RPC_URL="http://localhost:8449" yarn run setup
           </pre>
         </li>
