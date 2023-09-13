@@ -44,7 +44,7 @@
     "dotenv": "^16.0.3",
     "eslint": "8.39.0",
     "eslint-config-next": "13.4.13",
-    "postcss": "^8.4.29",
+    "postcss": "8.4.23",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
     "tailwind-merge": "^1.14.0",
