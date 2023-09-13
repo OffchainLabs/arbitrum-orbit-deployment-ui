@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ConnectButton />
               </div>
               <div className="w-full rounded-lg bg-[#FFEED3] px-2  md:w-fit">
-                <span className=" text-sm text-[#60461F]">
+                <span className="block p-1 text-sm text-[#60461F]">
                   This interface is currently intended for local devnet deployment.
                 </span>
               </div>
