@@ -1,8 +1,9 @@
 import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { deployRollup } from '@/utils/deployRollup';
-import { useAccount, useNetwork, usePublicClient, useWalletClient } from 'wagmi';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { StepTitle } from './StepTitle';
+import { ChainType } from '@/types/ChainType';
 
 export const ReviewAndDeploy = () => {
   const [{ rollupConfig, validators, batchPoster, chainType }, dispatch] =
@@ -11,7 +12,6 @@ export const ReviewAndDeploy = () => {
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const { nextStep, reviewAndDeployFormRef } = useStep();
-  const { chain } = useNetwork();
 
   if (!rollupConfig) return <div>No rollup config found</div>;
   if (!validators) return <div>No validators found</div>;
@@ -46,7 +46,9 @@ export const ReviewAndDeploy = () => {
       <StepTitle>Review & Deploy Config</StepTitle>
       <div className="mx-0 my-2 grid grid-cols-2 gap-4">
         <div>
-          <h3 className="font-bold">Rollup Config</h3>
+          <h3 className="font-bold">
+            {chainType === ChainType.Rollup ? 'Rollup' : 'AnyTrust'} Config
+          </h3>
           <div className="ml-4 flex flex-col gap-2">
             <div>
               <span className="font-bold">Chain ID</span>
