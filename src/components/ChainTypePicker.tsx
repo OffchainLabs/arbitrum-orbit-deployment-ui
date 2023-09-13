@@ -1,4 +1,5 @@
 import { ChainType } from '@/types/ChainType';
+import { twJoin } from 'tailwind-merge';
 
 type ChainTypePickerProps = {
   selectedChainType?: string;
@@ -17,10 +18,10 @@ export const ChainTypePicker: React.FC<ChainTypePickerProps> = ({
 }) => {
   return (
     <div
-      className={
-        ' grid cursor-pointer grid-cols-9 items-center justify-center rounded border border-[#243145] py-6 pr-6 accent-[#243145] hover:bg-[#f2f7ff]	' +
-        (selectedChainType === chainType ? ' bg-[#f2f7ff]' : '')
-      }
+      className={twJoin(
+        'm-0 grid cursor-pointer grid-cols-9 items-center justify-center rounded border border-[#243145] py-6 pr-6 accent-[#243145] hover:bg-[#f2f7ff]',
+        selectedChainType === chainType && 'bg-[#f2f7ff]',
+      )}
       onClick={() => {
         if (!chainType) return;
         onClick(chainType);
