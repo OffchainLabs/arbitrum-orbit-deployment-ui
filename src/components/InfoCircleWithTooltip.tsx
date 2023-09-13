@@ -21,7 +21,7 @@ export const InfoCircleWithTooltip: FC<InfoCircleWithTooltipProps> = ({ href, in
         <i className="pi pi-info-circle" />
       </a>
       {isTooltipVisible && (
-        <div className="absolute bottom-0 left-full z-10 ml-2 w-32 rounded-md bg-black px-2 py-1 text-xs text-white">
+        <div className="absolute bottom-0 left-full z-10 ml-2 w-max  rounded-md bg-black px-2 py-1 text-xs text-white">
           {infoText}
         </div>
       )}
