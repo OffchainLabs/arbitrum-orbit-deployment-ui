@@ -1,7 +1,7 @@
 export const rollupConfig = {
   confirmPeriodBlocks: 150,
   stakeToken: '0x0000000000000000000000000000000000000000',
-  baseStake: '0.1',
+  baseStake: 0.1,
   owner: '0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3',
   extraChallengeTimeBlocks: 0,
   wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21',

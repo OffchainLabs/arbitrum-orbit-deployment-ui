@@ -1,0 +1,23 @@
+name: unit-test
+
+on: [push]
+
+jobs:
+  unitTests:
+    name: 'unit tests'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install node_modules with Yarn
+        run: yarn install
+
+      - name: run unit tests
+        run: yarn test:ci
