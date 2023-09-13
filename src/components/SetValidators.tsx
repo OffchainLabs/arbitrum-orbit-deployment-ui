@@ -10,6 +10,7 @@ import { AddressSchema } from '@/utils/schemas';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
+import { twJoin } from 'tailwind-merge';
 
 const validatorsSchema = z.object({
   numberOfValidators: z.number().min(1).max(16),
@@ -107,10 +108,10 @@ export const SetValidators = () => {
               <input
                 type="text"
                 placeholder={`Validator Address ${index + 1}`}
-                className={
-                  'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input ' +
-                  (index === 0 && 'bg-gray-100')
-                }
+                className={twJoin(
+                  'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
+                  index === 0 && 'cursor-not-allowed bg-gray-200 opacity-50',
+                )}
                 readOnly={index === 0}
                 {...register(`addresses.${index}`, {
                   value: wallet.address,

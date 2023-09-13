@@ -13,7 +13,7 @@ const rollupConfigSchema = z.object({
   chainId: z.number().gt(0),
   chainName: z.string().nonempty(),
   confirmPeriodBlocks: z.number().gt(0),
-  stakeToken: z.string(),
+  stakeToken: AddressSchema,
   baseStake: z.number().gt(0),
   owner: AddressSchema,
 });
@@ -90,11 +90,10 @@ export const RollupConfigInput = () => {
           }
         />
 
-        <SelectInputWithInfoLink
+        <TextInputWithInfoLink
           label="Stake Token"
           href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#stake-token`}
           infoText="Read about Stake Token in the docs"
-          options={['ETH', 'Custom']}
           defaultValue={'ETH'}
           disabled
         />

@@ -27,7 +27,7 @@ type DeploymentPageContextState = {
 
 const DEFAULT_OWNER = '0x0000000' as `0x${string}`;
 
-const defaultRollupConfig: RollupConfig = {
+const generateDefaultRollupConfig: () => RollupConfig = () => ({
   confirmPeriodBlocks: 150,
   stakeToken: '0x0000000000000000000000000000000000000000',
   baseStake: 0.1,
@@ -45,14 +45,14 @@ const defaultRollupConfig: RollupConfig = {
     delaySeconds: 86400,
     futureSeconds: 3600,
   },
-};
+});
 
 function getDefaultRollupConfig(owner: `0x${string}` = DEFAULT_OWNER) {
-  return { ...defaultRollupConfig, owner };
+  return { ...generateDefaultRollupConfig(), owner };
 }
 
 const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
-  rollupConfig: defaultRollupConfig,
+  rollupConfig: generateDefaultRollupConfig(),
   rollupContracts: undefined,
   validators: undefined,
   batchPoster: undefined,
@@ -76,7 +76,6 @@ function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState
 
 type DeploymentPageContextAction =
   | { type: 'set_rollup_contracts'; payload: RollupContracts }
-  | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
   | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
   | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Wallet[] }
@@ -105,7 +104,6 @@ function reducer(
       return { ...state, rollupContracts: action.payload };
 
     case 'set_rollup_config':
-      return { ...state, rollupConfig: { ...state.rollupConfig, ...action.payload } };
       return { ...state, rollupConfig: { ...state.rollupConfig, ...action.payload } };
 
     case 'set_chain_type':
