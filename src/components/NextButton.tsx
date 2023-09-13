@@ -1,6 +1,7 @@
 import { useStep } from '@/hooks/useStep';
 import { ConfigureKeyset, ReviewAndDeployAnyTrust, ReviewAndDeployRollup } from '@/types/Steps';
 import { MouseEvent, FC, ButtonHTMLAttributes } from 'react';
+import { twJoin } from 'tailwind-merge';
 
 interface NextButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
@@ -35,9 +36,13 @@ export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading 
   };
   return (
     <button
-      className={`w-full rounded-lg bg-[#243145] px-3 py-2 text-white ${
-        (isLoading || isLastStep) && 'cursor-not-allowed bg-gray-400'
-      } ${isLastStep && 'invisible'} ${className}`}
+      className={twJoin(
+        `w-full rounded-lg bg-[#243145] px-3 py-2 text-white`,
+        (isLoading || isLastStep) && 'cursor-not-allowed bg-gray-400',
+        isLastStep && 'invisible',
+        'hover:bg-[#283C55]',
+        className,
+      )}
       onClick={onClick}
       disabled={isLoading || isLastStep}
     >
