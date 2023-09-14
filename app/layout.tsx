@@ -38,16 +38,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={unica77.style}>
+      <body style={unica77.style} className="mx-3 md:mx-0">
         <Providers>
           <header className="flex w-full justify-center">
             <div className="flex w-[1024px] flex-col gap-2 py-4">
-              <div className="flex w-full items-center justify-between">
+              <div className="flex w-full flex-wrap items-center justify-between">
                 <h1 className="text-2xl font-normal">Arbitrum Orbit</h1>
                 <ConnectButton />
               </div>
-              <div>
-                <span className="rounded-lg bg-[#FFEED3] px-3 py-2 text-sm text-[#60461F]">
+              <div className="w-full rounded-lg bg-[#FFEED3] px-2  md:w-fit">
+                <span className="block p-1 text-sm text-[#60461F]">
                   This interface is currently intended for local devnet deployment.
                 </span>
               </div>
