@@ -17,6 +17,7 @@ export const rollupConfig = {
     futureSeconds: 3600,
   },
 };
+export const parentChainId = 421613;
 
 export const rollupContracts = {
   rollup: '0x389a3eA93AcF8D3d9cE09008Db3b19b15D3698f0',

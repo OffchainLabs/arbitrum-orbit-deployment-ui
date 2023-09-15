@@ -162,6 +162,8 @@ exports[`Configuration Builders buildL3Config Function builds correctly 1`] = `
   "minL2BaseFee": 100000000,
   "networkFeeReceiver": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",
   "outbox": "0x5B8674639103E827d124a70CD1d48d3E59F41188",
+  "parent-chain-node-url": "https://goerli-rollup.arbitrum.io/rpc",
+  "parentChainId": 421613,
   "rollup": "0x389a3eA93AcF8D3d9cE09008Db3b19b15D3698f0",
   "sequencerInbox": "0x3d8d87d6280cA15f54dBF18151582E67F421576A",
   "staker": "0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3",

@@ -5,7 +5,7 @@ import {
   buildAnyTrustNodeConfig,
   buildL3Config,
 } from '../configBuilders';
-import { rollupConfig, rollupContracts, validators, batchPoster } from './__mocks__';
+import { rollupConfig, rollupContracts, validators, batchPoster, parentChainId } from './__mocks__';
 
 describe('Configuration Builders', () => {
   describe('buildChainConfig Function', () => {
@@ -22,6 +22,7 @@ describe('Configuration Builders', () => {
         rollupContracts,
         validators,
         batchPoster,
+        parentChainId,
       });
       expect(result).toMatchSnapshot();
     });
@@ -44,10 +45,12 @@ describe('Configuration Builders', () => {
         rollupContracts,
         validators,
         batchPoster,
+        parentChainId,
       });
       const result = buildAnyTrustNodeConfig(
         rollupConfigData,
         '0xF27c2fEfe6a39aa08763e504b44133CD992dd0f3',
+        parentChainId,
       );
       expect(result).toMatchSnapshot();
     });
@@ -61,6 +64,7 @@ describe('Configuration Builders', () => {
         validators,
         batchPoster,
         rollupContracts,
+        parentChainId,
       };
       const result = await buildL3Config(buildL3ConfigParams);
       expect(result).toMatchSnapshot();

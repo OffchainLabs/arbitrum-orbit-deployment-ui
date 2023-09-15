@@ -1,14 +1,12 @@
-import { goerli, sepolia } from 'wagmi/chains';
-
 import { ChainId } from '@/types/ChainId';
 
 export function getRpcUrl(chainId: number) {
   switch (chainId) {
-    case goerli.id:
-      return goerli.rpcUrls.default.http[0];
+    case 5:
+      return 'https://rpc.ankr.com/eth_goerli';
 
-    case sepolia.id:
-      return sepolia.rpcUrls.default.http[0];
+    case 11155111:
+      return 'https://rpc.sepolia.org';
 
     case ChainId.ArbitrumGoerli:
       return 'https://goerli-rollup.arbitrum.io/rpc';
