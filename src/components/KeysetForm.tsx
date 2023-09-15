@@ -1,8 +1,7 @@
 import { useStep } from '@/hooks/useStep';
 import { DeploymentSummary } from './DeploymentSummary';
-import { ChainId } from '@/types/ChainId';
 import { setValidKeyset } from '@/utils/setValidKeyset';
-import { useAccount, useNetwork, usePublicClient, useWalletClient } from 'wagmi';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 import { StepTitle } from './StepTitle';
 import { useDeploymentPageContext } from './DeploymentPageContext';
@@ -11,21 +10,11 @@ const DEFAULT_KEYSET_STRING =
   '0x00000000000000010000000000000001012160000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 export const KeysetForm = () => {
-  const { chain } = useNetwork();
   const { nextStep, keysetFormRef } = useStep();
   const [, dispatch] = useDeploymentPageContext();
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
-
-  if (chain?.id !== ChainId.ArbitrumGoerli) {
-    return (
-      <div>
-        <p>You are connected to the wrong network.</p>
-        <p>Please make sure you are connected to Arbitrum Goerli.</p>
-      </div>
-    );
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

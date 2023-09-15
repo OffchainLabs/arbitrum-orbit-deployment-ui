@@ -1,12 +1,13 @@
 import { parseEther } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
-import { L3Config } from '@/types/l3ConfigType';
+import { L3Config } from '@/types/L3Config';
 import {
   AnyTrustConfigData,
   RollupConfig,
   RollupConfigData,
   RollupConfigPayload,
 } from '@/types/rollupConfigDataType';
+import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsHexString } from './validators';
 
 export const buildChainConfig = (chainConfig: { chainId: number; owner: string }) => ({
@@ -44,18 +45,22 @@ export function buildRollupConfigData({
   rollupContracts,
   validators,
   batchPoster,
+  parentChainId,
 }: {
   rollupConfig: RollupConfig;
   rollupContracts: RollupContracts;
   validators: Wallet[];
   batchPoster: Wallet;
+  parentChainId: number;
 }): RollupConfigData {
+  const parentChainRpcUrl = getRpcUrl(parentChainId);
+
   return {
     'chain': {
       'info-json': [
         {
           'chain-id': Number(rollupConfig.chainId),
-          'parent-chain-id': 421613,
+          'parent-chain-id': parentChainId,
           'chain-name': rollupConfig.chainName,
           'chain-config': {
             chainId: Number(rollupConfig.chainId),
@@ -101,7 +106,7 @@ export function buildRollupConfigData({
     },
     'parent-chain': {
       connection: {
-        url: 'https://goerli-rollup.arbitrum.io/rpc',
+        url: parentChainRpcUrl,
       },
     },
     'http': {
@@ -167,8 +172,11 @@ export const buildRollupConfigPayload = ({
 export function buildAnyTrustNodeConfig(
   rollupConfig: RollupConfigData,
   sequencerInboxAddress: string,
+  parentChainId: number,
 ): AnyTrustConfigData {
   assertIsHexString(sequencerInboxAddress);
+
+  const parentChainRpcUrl = getRpcUrl(parentChainId);
 
   return {
     ...rollupConfig,
@@ -177,7 +185,7 @@ export function buildAnyTrustNodeConfig(
       'data-availability': {
         'enable': true,
         'sequencer-inbox-address': sequencerInboxAddress,
-        'parent-chain-node-url': 'https://goerli-rollup.arbitrum.io/rpc',
+        'parent-chain-node-url': parentChainRpcUrl,
         'rest-aggregator': {
           enable: true,
           urls: 'http://localhost:9876',
@@ -199,6 +207,7 @@ export type BuildL3ConfigParams = {
   validators: Wallet[];
   batchPoster: Wallet;
   rollupContracts: RollupContracts;
+  parentChainId: number;
 };
 
 export const buildL3Config = async ({
@@ -207,17 +216,22 @@ export const buildL3Config = async ({
   validators,
   batchPoster,
   rollupContracts,
+  parentChainId,
 }: BuildL3ConfigParams): Promise<L3Config> => {
+  const parentChainRpcUrl = getRpcUrl(parentChainId);
+
   try {
     const l3Config: L3Config = {
-      networkFeeReceiver: address,
-      infrastructureFeeCollector: address,
-      staker: validators[0].address,
-      batchPoster: batchPoster.address,
-      chainOwner: rollupConfig.owner,
-      chainId: Number(rollupConfig.chainId),
-      chainName: rollupConfig.chainName,
-      minL2BaseFee: 100000000,
+      'networkFeeReceiver': address,
+      'infrastructureFeeCollector': address,
+      'staker': validators[0].address,
+      'batchPoster': batchPoster.address,
+      'chainOwner': rollupConfig.owner,
+      'chainId': Number(rollupConfig.chainId),
+      'chainName': rollupConfig.chainName,
+      'minL2BaseFee': 100000000,
+      'parentChainId': parentChainId,
+      'parent-chain-node-url': parentChainRpcUrl,
       ...rollupContracts,
     };
     return l3Config;

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Steps } from 'primereact/steps';
-import { useAccount } from 'wagmi';
+import { useAccount, useNetwork } from 'wagmi';
 import { BackButton } from '@/components/BackButton';
 import {
   useDeploymentPageContext,
@@ -12,6 +12,8 @@ import { NextButton } from '@/components/NextButton';
 import { ResetButton } from '@/components/ResetButton';
 import { useStep } from '@/hooks/useStep';
 import { spaceGrotesk } from '@/fonts';
+import { ChainId } from '@/types/ChainId';
+import { WrongChainAlert } from '@/components/WrongChainAlert';
 
 const stepsStyleProps = {
   pt: {
@@ -55,7 +57,7 @@ function DeploymentLayout({ children }: any) {
         <br />
       </p>
       <p className="text-left text-sm">
-        Please ensure you have at least 1.5 Goerli ETH before getting started.
+        Please ensure you have at least 1.5 testnet ETH before getting started.
       </p>
       <div className="flex w-full items-baseline justify-between">
         <ExternalLink
@@ -100,6 +102,10 @@ export default function DeploymentPageWithContext({ children }: { children: any 
   const { address } = useAccount();
   const { isConnected } = useAccount();
   const isMounted = useIsMounted();
+  const { chain } = useNetwork();
+
+  const isWrongChain =
+    chain?.id !== ChainId.ArbitrumGoerli && chain?.id !== ChainId.ArbitrumSepolia;
 
   if (!isMounted || !isConnected || !address) {
     return (
@@ -112,6 +118,8 @@ export default function DeploymentPageWithContext({ children }: { children: any 
       </div>
     );
   }
+
+  if (isWrongChain) return <WrongChainAlert />;
 
   return (
     <DeploymentPageContextProvider>
