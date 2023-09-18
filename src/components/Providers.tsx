@@ -37,7 +37,6 @@ export const Providers = ({ children }: any) => {
         <RainbowKitProvider
           chains={chains}
           appInfo={appInfo}
-          initialChain={arbitrumGoerli}
           theme={{
             ...lightTheme({
               accentColor: '#243145',
@@ -47,7 +46,7 @@ export const Providers = ({ children }: any) => {
             },
           }}
         >
-          {children}{' '}
+          {children}
         </RainbowKitProvider>
       </WagmiConfig>
     </PostHogProvider>
