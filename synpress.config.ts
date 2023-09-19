@@ -1,12 +1,13 @@
-import { defineConfig } from "cypress";
+import { defineConfig } from 'cypress';
+const synpressPlugins = require('@synthetixio/synpress/plugins');
 
 export default defineConfig({
-  userAgent: "synpress",
+  userAgent: 'synpress',
   retries: 2,
-  screenshotsFolder: "cypress/screenshots",
-  videosFolder: "cypress/videos",
+  screenshotsFolder: 'cypress/screenshots',
+  videosFolder: 'cypress/videos',
   video: false,
-  screenshotOnRunFailure: true,
+  screenshotOnRunFailure: false,
   chromeWebSecurity: true,
   modifyObstructiveCode: false,
   scrollBehavior: false,
@@ -22,8 +23,10 @@ export default defineConfig({
   requestTimeout: 30000,
 
   e2e: {
+    testIsolation: true,
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      synpressPlugins(on, config);
     },
+    baseUrl: 'http://localhost:3000',
   },
 });
