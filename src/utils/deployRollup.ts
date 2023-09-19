@@ -46,7 +46,6 @@ export async function deployRollup({
   chainType = ChainType.Rollup,
 }: DeployRollupProps): Promise<RollupContracts> {
   try {
-    // todo: run the runtime validation over the schema
     const chainConfig: string = JSON.stringify(buildChainConfig(rollupConfig));
 
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
