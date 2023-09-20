@@ -25,3 +25,13 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 import '@testing-library/cypress/add-commands';
+
+export const acceptMetamaskAccess = () => {
+  cy.acceptMetamaskAccess().then(() => {
+    cy.isCypressWindowActive().then((cyWindowIsActive) => {
+      if (!cyWindowIsActive) {
+        cy.switchToCypressWindow().should('be.true');
+      }
+    });
+  });
+};
