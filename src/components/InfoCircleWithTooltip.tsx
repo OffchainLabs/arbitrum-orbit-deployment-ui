@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 
 interface InfoCircleWithTooltipProps {
   href: string;
-  infoText: string;
+  infoText: string | JSX.Element;
 }
 
 export const InfoCircleWithTooltip: FC<InfoCircleWithTooltipProps> = ({ href, infoText }) => {

@@ -5,7 +5,7 @@ import { InputHTMLAttributes } from 'react';
 interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   href: string;
-  infoText: string;
+  infoText: string | JSX.Element;
   error?: string;
   register?: () => UseFormRegisterReturn<InternalFieldName>;
 }
