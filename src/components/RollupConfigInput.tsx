@@ -91,11 +91,10 @@ export const RollupConfigInput = () => {
           }
         />
 
-        <SelectInputWithInfoLink
+        <TextInputWithInfoLink
           label="Stake Token"
           href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#stake-token`}
           infoText="Read about Stake Token in the docs"
-          options={['ETH', 'Custom']}
           defaultValue={'ETH'}
           disabled
         />

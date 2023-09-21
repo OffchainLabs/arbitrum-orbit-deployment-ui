@@ -7,11 +7,13 @@ import { connectorsForWallets, getDefaultWallets } from '@rainbow-me/rainbowkit'
 import { ChainId } from '@/types/ChainId';
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { getBlockExplorerUrl } from '@/utils/getBlockExplorerUrl';
+import { ARBITRUM_SEPOLIA_ICON_URL } from './utils/constants';
 
 const arbitrumSepolia = {
   id: ChainId.ArbitrumSepolia,
   name: 'Arbitrum Sepolia',
   network: 'arbitrum-sepolia',
+  iconUrl: ARBITRUM_SEPOLIA_ICON_URL,
   nativeCurrency: {
     name: 'Ether',
     symbol: 'ETH',

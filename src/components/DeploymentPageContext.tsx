@@ -25,7 +25,7 @@ type DeploymentPageContextState = {
   isLoading: boolean;
 };
 
-const defaultRollupConfig: RollupConfig = {
+const generateDefaultRollupConfig: () => RollupConfig = () => ({
   confirmPeriodBlocks: 150,
   stakeToken: '0x0000000000000000000000000000000000000000',
   baseStake: 0.1,
@@ -45,14 +45,14 @@ const defaultRollupConfig: RollupConfig = {
     delaySeconds: 86400,
     futureSeconds: 3600,
   },
-};
+});
 
 function getDefaultRollupConfig(owner: string = '') {
-  return { ...defaultRollupConfig, owner };
+  return { ...generateDefaultRollupConfig(), owner };
 }
 
 const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
-  rollupConfig: defaultRollupConfig,
+  rollupConfig: generateDefaultRollupConfig(),
   rollupContracts: undefined,
   validators: undefined,
   batchPoster: undefined,

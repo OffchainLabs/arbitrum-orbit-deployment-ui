@@ -1,4 +1,4 @@
-import { L3Config } from '@/types/l3ConfigType';
+import { L3Config } from '@/types/L3Config';
 import { RollupConfigData } from '@/types/rollupConfigDataType';
 
 // Function to update local storage with new rollup data and l3 data

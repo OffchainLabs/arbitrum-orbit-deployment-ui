@@ -36,7 +36,7 @@ export const ReviewAndDeployRollup = {
 export const DownloadConfig = {
   id: 7,
   next: 8,
-  previous: 5,
+  previous: null,
   label: 'Download',
 } as const;
 
@@ -49,7 +49,7 @@ export const ReviewAndDeployAnyTrust = {
 export const ConfigureKeyset = {
   id: 6,
   next: 7,
-  previous: 5,
+  previous: null,
   label: 'Keyset',
 } as const;
 
