@@ -131,14 +131,7 @@ export const RollupConfigInput = () => {
               : ''
           }
           href={`${commonDocLink}#owner`} // todo: update link
-          infoText={
-            <>
-              <p>Read about Native Token in the docs.</p> <br />
-              <p>
-                <strong>Only</strong> AnyTrust chains support custom Native Tokens.
-              </p>
-            </>
-          }
+          infoText="Read about Native Token in the docs"
           defaultValue={rollupConfig?.nativeToken || ''}
           register={() => register('nativeToken')}
           disabled={chainType === ChainType.Rollup}
