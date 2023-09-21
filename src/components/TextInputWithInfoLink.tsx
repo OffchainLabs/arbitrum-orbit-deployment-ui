@@ -5,6 +5,7 @@ import { twJoin } from 'tailwind-merge';
 
 interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
+  explainerText?: string;
   href: string;
   infoText: string | JSX.Element;
   error?: string;
@@ -13,6 +14,7 @@ interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElemen
 
 export const TextInputWithInfoLink = ({
   label,
+  explainerText,
   href,
   infoText,
   error,
@@ -42,6 +44,7 @@ export const TextInputWithInfoLink = ({
         {...props}
         {...getRegister()}
       />
+      {explainerText && <span className="text-sm text-zinc-500">{explainerText}</span>}
       {error && <span className="text-red-500">{error}</span>}
     </div>
   );
