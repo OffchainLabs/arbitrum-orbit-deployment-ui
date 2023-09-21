@@ -44,7 +44,7 @@ export const KeysetForm = () => {
   };
 
   return (
-    <div className="mx-0 grid grid-cols-2 gap-4">
+    <>
       <div className="flex flex-col gap-4">
         <div className="flex items-baseline gap-2">
           <StepTitle>Configure Keyset</StepTitle>
@@ -67,10 +67,6 @@ export const KeysetForm = () => {
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={keysetFormRef}></form>
       </div>
-      <div>
-        <StepTitle>Deployment Summary</StepTitle>
-        <DeploymentSummary />
-      </div>
-    </div>
+    </>
   );
 };
