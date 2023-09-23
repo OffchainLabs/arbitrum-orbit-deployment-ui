@@ -14,6 +14,8 @@ import { useStep } from '@/hooks/useStep';
 import { spaceGrotesk } from '@/fonts';
 import { ChainId } from '@/types/ChainId';
 import { WrongChainAlert } from '@/components/WrongChainAlert';
+import { useMediaQuery } from 'react-responsive';
+import { PopupModal } from '@/components/PopupModal';
 
 const stepsStyleProps = {
   pt: {
@@ -104,6 +106,8 @@ export default function DeploymentPageWithContext({ children }: { children: any 
   const isMounted = useIsMounted();
   const { chain } = useNetwork();
 
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
+
   const isWrongChain =
     chain?.id !== ChainId.ArbitrumGoerli && chain?.id !== ChainId.ArbitrumSepolia;
 
@@ -123,7 +127,7 @@ export default function DeploymentPageWithContext({ children }: { children: any 
 
   return (
     <DeploymentPageContextProvider>
-      <DeploymentLayout children={children} />
+      {isTabletOrMobile ? <PopupModal /> : <DeploymentLayout children={children} />}
     </DeploymentPageContextProvider>
   );
 }
