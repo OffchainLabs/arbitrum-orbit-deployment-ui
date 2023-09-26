@@ -31,8 +31,7 @@ const generateDefaultRollupConfig: () => RollupConfig = () => ({
   baseStake: 0.1,
   owner: '',
   extraChallengeTimeBlocks: 0,
-  // Needs to be changed after PR by Lee about new Wasm root
-  wasmModuleRoot: '0xda4e3ad5e7feacb817c21c8d0220da7650fe9051ece68a3f0b1c5d38bbb27b21',
+  wasmModuleRoot: '0x0754e09320c381566cc0449904c377a52bd34a6b9404432e80afd573b67f7b17',
   loserStakeEscrow: '0x0000000000000000000000000000000000000000',
   chainId: Math.floor(Math.random() * 100000000000) + 1,
   chainName: 'My Arbitrum L3 Chain',
