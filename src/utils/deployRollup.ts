@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient, decodeEventLog } from 'viem';
+import { PublicClient, WalletClient, decodeEventLog, parseGwei } from 'viem';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
 import { ChainType } from '@/types/ChainType';
@@ -15,8 +15,9 @@ import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
 import { ChainId } from '@/types/ChainId';
 
-const ARB_GOERLI_CREATOR_ADDRESS = '0x04024711BaD29b6C543b41A8e95fe75cA1c6cB59';
-const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
+export const ARB_GOERLI_CREATOR_ADDRESS = '0x9701CE350d8D2b6eEE62384a8de0774d01F69662';
+// todo: update arb sepolia with a contract that supports custom fee token
+export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -59,7 +60,14 @@ export async function deployRollup({
       address: rollupCreatorContractAddress,
       abi: RollupCreator.abi,
       functionName: 'createRollup',
-      args: [rollupConfigPayload, batchPosterAddress, validatorAddresses, nativeToken],
+      args: [
+        rollupConfigPayload,
+        batchPosterAddress,
+        validatorAddresses,
+        nativeToken,
+        true,
+        parseGwei('0.1'),
+      ],
       account,
     });
 

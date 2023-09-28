@@ -1,9 +1,16 @@
 import { useStep } from '@/hooks/useStep';
 import { useDeploymentPageContext } from './DeploymentPageContext';
-import { deployRollup } from '@/utils/deployRollup';
+import {
+  deployRollup,
+  ARB_GOERLI_CREATOR_ADDRESS,
+  ARB_SEPOLIA_CREATOR_ADDRESS,
+} from '@/utils/deployRollup';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { StepTitle } from './StepTitle';
 import { ChainType } from '@/types/ChainType';
+import { approve, fetchAllowance } from '@/utils/erc20';
+import { maxInt32, zeroAddress } from 'viem';
+import { ChainId } from '@/types/ChainId';
 
 export const ReviewAndDeploy = () => {
   const [{ rollupConfig, validators, batchPoster, chainType }, dispatch] =
@@ -23,6 +30,37 @@ export const ReviewAndDeploy = () => {
     try {
       dispatch({ type: 'set_is_loading', payload: true });
       if (!walletClient || !address) return;
+
+      const parentChainId = await publicClient.getChainId();
+
+      const rollupCreatorContractAddress =
+        parentChainId === ChainId.ArbitrumGoerli
+          ? ARB_GOERLI_CREATOR_ADDRESS
+          : ARB_SEPOLIA_CREATOR_ADDRESS;
+
+      if (rollupConfig.nativeToken !== zeroAddress) {
+        const customFeeTokenContractAddress = rollupConfig.nativeToken as `0x${string}`;
+
+        const allowance = await fetchAllowance({
+          erc20ContractAddress: customFeeTokenContractAddress,
+          owner: address,
+          spender: rollupCreatorContractAddress,
+          publicClient,
+        });
+
+        // todo: set proper cap for threshold
+        // todo: set proper allowance instead of maxInt32
+        if (allowance < maxInt32) {
+          await approve({
+            erc20ContractAddress: customFeeTokenContractAddress,
+            spender: rollupCreatorContractAddress,
+            publicClient,
+            walletClient,
+            account: address,
+          });
+        }
+      }
+
       const rollupContracts = await deployRollup({
         rollupConfig,
         validators,
