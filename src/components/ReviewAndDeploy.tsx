@@ -45,7 +45,6 @@ export const ReviewAndDeploy = () => {
       if (rollupConfig.nativeToken !== zeroAddress && deterministicFactoriesDeploymentEnabled) {
         const customFeeTokenContractAddress = rollupConfig.nativeToken as `0x${string}`;
 
-        // todo: uncomment this if we want to deploy deterministic factories
         const allowance = await fetchAllowance({
           erc20ContractAddress: customFeeTokenContractAddress,
           owner: address,
@@ -57,8 +56,7 @@ export const ReviewAndDeploy = () => {
           await approve({
             erc20ContractAddress: customFeeTokenContractAddress,
             spender: rollupCreatorContractAddress,
-            // todo: don't set max allowance
-            amount: maxInt256,
+            amount: deterministicFactoriesDeploymentEnabled,
             publicClient,
             walletClient,
           });
