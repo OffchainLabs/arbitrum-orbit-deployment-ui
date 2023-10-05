@@ -13,12 +13,8 @@ import {
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
-import { ChainId } from '@/types/ChainId';
 import { deterministicFactoriesDeploymentEnabled } from './constants';
-
-export const ARB_GOERLI_CREATOR_ADDRESS = '0x5Bbc71b2C7E5B01dc4D8b337059f0F6dEF0FDF3F';
-// todo: update arb sepolia address to latest version
-export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
+import { getRollupCreator } from './getRollupCreator';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -51,11 +47,7 @@ export async function deployRollup({
     console.log('Going for deployment');
 
     const parentChainId = await publicClient.getChainId();
-
-    const rollupCreatorContractAddress =
-      parentChainId === ChainId.ArbitrumGoerli
-        ? ARB_GOERLI_CREATOR_ADDRESS
-        : ARB_SEPOLIA_CREATOR_ADDRESS;
+    const rollupCreatorContractAddress = getRollupCreator(parentChainId);
 
     const { request } = await publicClient.simulateContract({
       address: rollupCreatorContractAddress,

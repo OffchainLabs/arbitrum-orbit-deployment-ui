@@ -4,6 +4,13 @@ import { deployRollup } from '@/utils/deployRollup';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { StepTitle } from './StepTitle';
 import { ChainType } from '@/types/ChainType';
+import { zeroAddress } from 'viem';
+import { approve, fetchAllowance } from '@/utils/erc20';
+import {
+  deterministicFactoriesDeploymentEnabled,
+  deterministicFactoriesDeploymentEstimatedFees,
+} from '@/utils/constants';
+import { getRollupCreator } from '@/utils/getRollupCreator';
 
 export const ReviewAndDeploy = () => {
   const [{ rollupConfig, validators, batchPoster, chainType }, dispatch] =
@@ -23,6 +30,33 @@ export const ReviewAndDeploy = () => {
     try {
       dispatch({ type: 'set_is_loading', payload: true });
       if (!walletClient || !address) return;
+
+      const parentChainId = await publicClient.getChainId();
+      const rollupCreatorContractAddress = getRollupCreator(parentChainId);
+
+      // In the case of a custom fee token, deployment of deterministic factories will be paid in the custom fee token.
+      // This means we have to approve the RollupCreator to take some and use it to pay for the retryable fees.
+      if (rollupConfig.nativeToken !== zeroAddress && deterministicFactoriesDeploymentEnabled) {
+        const customFeeTokenContractAddress = rollupConfig.nativeToken as `0x${string}`;
+
+        const allowance = await fetchAllowance({
+          erc20ContractAddress: customFeeTokenContractAddress,
+          owner: address,
+          spender: rollupCreatorContractAddress,
+          publicClient,
+        });
+
+        if (allowance < deterministicFactoriesDeploymentEstimatedFees) {
+          await approve({
+            erc20ContractAddress: customFeeTokenContractAddress,
+            spender: rollupCreatorContractAddress,
+            amount: deterministicFactoriesDeploymentEnabled,
+            publicClient,
+            walletClient,
+          });
+        }
+      }
+
       const rollupContracts = await deployRollup({
         rollupConfig,
         validators,
