@@ -23,7 +23,6 @@ export const ReviewAndDeploy = () => {
     try {
       dispatch({ type: 'set_is_loading', payload: true });
       if (!walletClient || !address) return;
-
       const rollupContracts = await deployRollup({
         rollupConfig,
         validators,
