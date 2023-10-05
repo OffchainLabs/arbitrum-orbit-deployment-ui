@@ -7,7 +7,6 @@ export type ApproveProps = {
   amount?: bigint;
   publicClient: PublicClient;
   walletClient: WalletClient;
-  account: `0x${string}`;
 };
 
 export async function approve({
@@ -16,8 +15,14 @@ export async function approve({
   amount = maxInt256,
   publicClient,
   walletClient,
-  account,
 }: ApproveProps) {
+  const account = walletClient.account?.address;
+
+  if (typeof account === 'undefined') {
+    throw new Error('[utils/erc20::approve] account is undefined');
+  }
+
+  walletClient.account?.address;
   const { request } = await publicClient.simulateContract({
     address: erc20ContractAddress,
     abi: erc20ABI,

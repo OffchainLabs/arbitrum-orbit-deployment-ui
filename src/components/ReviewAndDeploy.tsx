@@ -56,7 +56,6 @@ export const ReviewAndDeploy = () => {
             spender: rollupCreatorContractAddress,
             publicClient,
             walletClient,
-            account: address,
           });
         }
       }
