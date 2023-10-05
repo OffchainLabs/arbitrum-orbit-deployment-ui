@@ -14,8 +14,9 @@ import {
 import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
 import { ChainId } from '@/types/ChainId';
+import { deterministicFactoriesDeploymentEnabled } from './constants';
 
-export const ARB_GOERLI_CREATOR_ADDRESS = '0x92907C89EDf8455600293EA2b00EdBC6E26936DB';
+export const ARB_GOERLI_CREATOR_ADDRESS = '0x5Bbc71b2C7E5B01dc4D8b337059f0F6dEF0FDF3F';
 // todo: update arb sepolia address to latest version
 export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
 
@@ -65,8 +66,8 @@ export async function deployRollup({
         batchPosterAddress,
         validatorAddresses,
         nativeToken,
-        false, // don't deploy deterministic factories
-        parseGwei('0.1'), // this will be ignored because the above is false
+        deterministicFactoriesDeploymentEnabled,
+        parseGwei('0.1'), // this will be ignored because the above is currently set to false
       ],
       account,
     });

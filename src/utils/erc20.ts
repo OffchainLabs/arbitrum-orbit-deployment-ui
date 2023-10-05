@@ -1,10 +1,10 @@
-import { PublicClient, WalletClient, maxInt256 } from 'viem';
+import { PublicClient, WalletClient } from 'viem';
 import { erc20ABI } from 'wagmi';
 
 export type ApproveProps = {
   erc20ContractAddress: `0x${string}`;
   spender: `0x${string}`;
-  amount?: bigint;
+  amount: bigint;
   publicClient: PublicClient;
   walletClient: WalletClient;
 };
@@ -12,7 +12,7 @@ export type ApproveProps = {
 export async function approve({
   erc20ContractAddress,
   spender,
-  amount = maxInt256,
+  amount,
   publicClient,
   walletClient,
 }: ApproveProps) {

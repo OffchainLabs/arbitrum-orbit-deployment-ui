@@ -9,8 +9,12 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { StepTitle } from './StepTitle';
 import { ChainType } from '@/types/ChainType';
 import { approve, fetchAllowance } from '@/utils/erc20';
-import { maxInt32, zeroAddress } from 'viem';
+import { maxInt256, zeroAddress } from 'viem';
 import { ChainId } from '@/types/ChainId';
+import {
+  deterministicFactoriesDeploymentEnabled,
+  deterministicFactoriesDeploymentEstimatedFees,
+} from '@/utils/constants';
 
 export const ReviewAndDeploy = () => {
   const [{ rollupConfig, validators, batchPoster, chainType }, dispatch] =
@@ -38,9 +42,10 @@ export const ReviewAndDeploy = () => {
           ? ARB_GOERLI_CREATOR_ADDRESS
           : ARB_SEPOLIA_CREATOR_ADDRESS;
 
-      if (rollupConfig.nativeToken !== zeroAddress) {
+      if (rollupConfig.nativeToken !== zeroAddress && deterministicFactoriesDeploymentEnabled) {
         const customFeeTokenContractAddress = rollupConfig.nativeToken as `0x${string}`;
 
+        // todo: uncomment this if we want to deploy deterministic factories
         const allowance = await fetchAllowance({
           erc20ContractAddress: customFeeTokenContractAddress,
           owner: address,
@@ -48,12 +53,12 @@ export const ReviewAndDeploy = () => {
           publicClient,
         });
 
-        // todo: set proper cap for threshold
-        // todo: set proper allowance instead of maxInt32
-        if (allowance < maxInt32) {
+        if (allowance < deterministicFactoriesDeploymentEstimatedFees) {
           await approve({
             erc20ContractAddress: customFeeTokenContractAddress,
             spender: rollupCreatorContractAddress,
+            // todo: don't set max allowance
+            amount: maxInt256,
             publicClient,
             walletClient,
           });
