@@ -1,11 +1,8 @@
-import { PublicClient, WalletClient, encodeFunctionData } from 'viem';
+import { PublicClient, WalletClient, encodeFunctionData, parseAbi } from 'viem';
 
-import SequencerInbox from '@/ethereum/SequencerInbox.json';
-import UpgradeExecutor from '@/ethereum/UpgradeExecutor.json';
-
-function getEncodedCallData(keyset: string) {
+function getEncodedCallData(keyset: `0x${string}`) {
   return encodeFunctionData({
-    abi: SequencerInbox.abi,
+    abi: parseAbi(['function setValidKeyset(bytes keysetBytes)']),
     functionName: 'setValidKeyset',
     args: [keyset],
   });
@@ -20,7 +17,7 @@ export const setValidKeyset = async ({
 }: {
   upgradeExecutorAddress: string;
   sequencerInboxAddress: string;
-  keyset: string;
+  keyset: `0x${string}`;
   publicClient: PublicClient;
   walletClient: WalletClient;
 }) => {
@@ -33,10 +30,10 @@ export const setValidKeyset = async ({
   try {
     const { request } = await publicClient.simulateContract({
       address: upgradeExecutorAddress as `0x${string}`,
-      abi: UpgradeExecutor.abi,
+      abi: parseAbi(['function executeCall(address target, bytes targetCallData)']),
       functionName: 'executeCall',
       args: [
-        sequencerInboxAddress, // target
+        sequencerInboxAddress as `0x${string}`, // target
         getEncodedCallData(keyset), // targetCallData
       ],
       account,
