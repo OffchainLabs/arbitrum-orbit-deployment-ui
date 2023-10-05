@@ -88,6 +88,14 @@ export function DeploymentSummary() {
               </BlockExplorerLink>
             </li>
             <li className="flex flex-col">
+              <span className="font-bold">Upgrade Executor address:</span>
+              <BlockExplorerLink
+                href={`${blockExplorerUrl}/address/${rollupContracts.upgradeExecutor}`}
+              >
+                {rollupContracts.upgradeExecutor}
+              </BlockExplorerLink>
+            </li>
+            <li className="flex flex-col">
               <span className="font-bold">Deployed at block number:</span>
               <BlockExplorerLink
                 href={`${blockExplorerUrl}/block/${rollupContracts.deployedAtBlockNumber}`}
