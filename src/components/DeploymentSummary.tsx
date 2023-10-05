@@ -35,31 +35,37 @@ export function DeploymentSummary() {
             <p className="text-xl font-bold">Rollup Contracts</p>
           </div>
           <ul className="flex flex-col gap-2 rounded-lg border border-black p-3">
-            <li className="flex flex-col">
+            <li className="flex flex-col" key={rollupContracts.rollup}>
               <span className="font-bold">Rollup address:</span>
               <BlockExplorerLink href={`${blockExplorerUrl}/address/${rollupContracts.rollup}`}>
                 {rollupContracts.rollup}
               </BlockExplorerLink>
             </li>
             <li className="flex flex-col">
-              <span className="font-bold">Inbox address:</span>
+              <span className="font-bold" key={rollupContracts.inbox}>
+                Inbox address:
+              </span>
               <BlockExplorerLink href={`${blockExplorerUrl}/address/${rollupContracts.inbox}`}>
                 {rollupContracts.inbox}
               </BlockExplorerLink>
             </li>
             <li className="flex flex-col">
-              <span className="font-bold">Outbox address:</span>
+              <span className="font-bold" key={rollupContracts.outbox}>
+                Outbox address:
+              </span>
               <BlockExplorerLink href={`${blockExplorerUrl}/address/${rollupContracts.outbox}`}>
                 {rollupContracts.outbox}
               </BlockExplorerLink>
             </li>
             <li className="flex flex-col">
-              <span className="font-bold">Admin Proxy address: </span>
+              <span className="font-bold" key={rollupContracts.adminProxy}>
+                Admin Proxy address:{' '}
+              </span>
               <BlockExplorerLink href={`${blockExplorerUrl}/address/${rollupContracts.adminProxy}`}>
                 {rollupContracts.adminProxy}
               </BlockExplorerLink>
             </li>
-            <li className="flex flex-col">
+            <li className="flex flex-col" key={rollupContracts.sequencerInbox}>
               <span className="font-bold">Sequencer Inbox address:</span>
               <BlockExplorerLink
                 href={`${blockExplorerUrl}/address/${rollupContracts.sequencerInbox}`}
@@ -67,19 +73,19 @@ export function DeploymentSummary() {
                 {rollupContracts.sequencerInbox}
               </BlockExplorerLink>
             </li>
-            <li className="flex flex-col">
+            <li className="flex flex-col" key={rollupContracts.bridge}>
               <span className="font-bold">Bridge address:</span>
               <BlockExplorerLink href={`${blockExplorerUrl}/address/${rollupContracts.bridge}`}>
                 {rollupContracts.bridge}
               </BlockExplorerLink>
             </li>
-            <li className="flex flex-col">
+            <li className="flex flex-col" key={rollupContracts.utils}>
               <span className="font-bold">Utils address:</span>
               <BlockExplorerLink href={`${blockExplorerUrl}/address/${rollupContracts.utils}`}>
                 {rollupContracts.utils}
               </BlockExplorerLink>
             </li>
-            <li className="flex flex-col">
+            <li className="flex flex-col" key={rollupContracts.validatorWalletCreator}>
               <span className="font-bold">Validator Wallet Creator address:</span>
               <BlockExplorerLink
                 href={`${blockExplorerUrl}/address/${rollupContracts.validatorWalletCreator}`}
@@ -87,7 +93,7 @@ export function DeploymentSummary() {
                 {rollupContracts.validatorWalletCreator}
               </BlockExplorerLink>
             </li>
-            <li className="flex flex-col">
+            <li className="flex flex-col" key={rollupContracts.upgradeExecutor}>
               <span className="font-bold">Upgrade Executor address:</span>
               <BlockExplorerLink
                 href={`${blockExplorerUrl}/address/${rollupContracts.upgradeExecutor}`}
@@ -95,7 +101,7 @@ export function DeploymentSummary() {
                 {rollupContracts.upgradeExecutor}
               </BlockExplorerLink>
             </li>
-            <li className="flex flex-col">
+            <li className="flex flex-col" key={rollupContracts.deployedAtBlockNumber}>
               <span className="font-bold">Deployed at block number:</span>
               <BlockExplorerLink
                 href={`${blockExplorerUrl}/block/${rollupContracts.deployedAtBlockNumber}`}
@@ -113,7 +119,7 @@ export function DeploymentSummary() {
           </div>
           <ul className="flex flex-col gap-2 rounded-lg border border-black p-3">
             {validators.map((validator, index) => (
-              <li className="flex flex-col">
+              <li className="flex flex-col" key={validator.address}>
                 <span className="font-bold">Validator #{index + 1} address:</span>
                 <BlockExplorerLink href={`${blockExplorerUrl}/address/${validator.address}`}>
                   {validator.address}
@@ -129,7 +135,7 @@ export function DeploymentSummary() {
             <p className="text-xl font-bold">Batch Poster</p>
           </div>
           <ul className="flex flex-col gap-2 rounded-lg border border-black p-3">
-            <li className="flex flex-col">
+            <li className="flex flex-col" key={batchPoster.address}>
               <span className="font-bold">Batch Poster address:</span>
               <BlockExplorerLink href={`${blockExplorerUrl}/address/${batchPoster.address}`}>
                 {batchPoster.address}
