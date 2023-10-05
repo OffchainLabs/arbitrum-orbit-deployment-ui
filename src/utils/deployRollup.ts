@@ -15,8 +15,8 @@ import { updateLocalStorage } from './localStorageHandler';
 import { assertIsHexString } from './validators';
 import { ChainId } from '@/types/ChainId';
 
-export const ARB_GOERLI_CREATOR_ADDRESS = '0x9701CE350d8D2b6eEE62384a8de0774d01F69662';
-// todo: update arb sepolia with a contract that supports custom fee token
+export const ARB_GOERLI_CREATOR_ADDRESS = '0x92907C89EDf8455600293EA2b00EdBC6E26936DB';
+// todo: update arb sepolia address to latest version
 export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
 
 type DeployRollupProps = {
@@ -65,8 +65,8 @@ export async function deployRollup({
         batchPosterAddress,
         validatorAddresses,
         nativeToken,
-        true,
-        parseGwei('0.1'),
+        false, // don't deploy deterministic factories
+        parseGwei('0.1'), // this will be ignored because the above is false
       ],
       account,
     });
