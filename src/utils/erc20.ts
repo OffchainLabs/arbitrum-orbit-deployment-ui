@@ -22,7 +22,6 @@ export async function approve({
     throw new Error('[utils/erc20::approve] account is undefined');
   }
 
-  walletClient.account?.address;
   const { request } = await publicClient.simulateContract({
     address: erc20ContractAddress,
     abi: erc20ABI,
