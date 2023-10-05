@@ -9,6 +9,7 @@ export type RollupContracts = {
   validatorWalletCreator: string;
   deployedAtBlockNumber: number;
   nativeToken: string;
+  upgradeExecutor: string;
 };
 
 export type Wallet = {
@@ -24,5 +25,6 @@ export type RollupCreatedEvent = {
     sequencerInbox: `0x${string}`;
     bridge: `0x${string}`;
     nativeToken: `0x${string}`;
+    upgradeExecutor: `0x${string}`;
   };
 };

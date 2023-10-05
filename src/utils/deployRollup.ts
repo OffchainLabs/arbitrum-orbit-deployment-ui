@@ -127,6 +127,7 @@ export async function deployRollup({
       validatorWalletCreator: validatorWalletCreator,
       deployedAtBlockNumber: Number(createRollupTxReceipt.blockNumber),
       nativeToken: rollupCreatedEvent.args.nativeToken,
+      upgradeExecutor: rollupCreatedEvent.args.upgradeExecutor,
     };
 
     let rollupConfigData = buildRollupConfigData({
