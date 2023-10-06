@@ -15,8 +15,8 @@ export const setValidKeyset = async ({
   walletClient,
   keyset,
 }: {
-  upgradeExecutorAddress: string;
-  sequencerInboxAddress: string;
+  upgradeExecutorAddress: `0x${string}`;
+  sequencerInboxAddress: `0x${string}`;
   keyset: `0x${string}`;
   publicClient: PublicClient;
   walletClient: WalletClient;
@@ -29,11 +29,11 @@ export const setValidKeyset = async ({
 
   try {
     const { request } = await publicClient.simulateContract({
-      address: upgradeExecutorAddress as `0x${string}`,
+      address: upgradeExecutorAddress,
       abi: parseAbi(['function executeCall(address target, bytes targetCallData)']),
       functionName: 'executeCall',
       args: [
-        sequencerInboxAddress as `0x${string}`, // target
+        sequencerInboxAddress, // target
         getEncodedCallData(keyset), // targetCallData
       ],
       account,

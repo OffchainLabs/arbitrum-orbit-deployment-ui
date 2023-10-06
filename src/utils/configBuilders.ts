@@ -8,7 +8,7 @@ import {
   RollupConfigPayload,
 } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
-import { assertIsHexString } from './validators';
+import { assertIsAddress } from './validators';
 
 export const buildChainConfig = (chainConfig: { chainId: number; owner: string }) => ({
   chainId: Number(chainConfig.chainId),
@@ -174,7 +174,7 @@ export function buildAnyTrustNodeConfig(
   sequencerInboxAddress: string,
   parentChainId: number,
 ): AnyTrustConfigData {
-  assertIsHexString(sequencerInboxAddress);
+  assertIsAddress(sequencerInboxAddress);
 
   const parentChainRpcUrl = getRpcUrl(parentChainId);
 

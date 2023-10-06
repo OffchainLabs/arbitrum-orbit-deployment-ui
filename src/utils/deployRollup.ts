@@ -12,7 +12,7 @@ import {
   buildRollupConfigPayload,
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
-import { assertIsHexString } from './validators';
+import { assertIsAddress } from './validators';
 import { ChainId } from '@/types/ChainId';
 import { deterministicFactoriesDeploymentEnabled } from './constants';
 
@@ -100,21 +100,21 @@ export async function deployRollup({
       abi: RollupCore.abi,
       functionName: 'outbox',
     });
-    assertIsHexString(outbox);
+    assertIsAddress(outbox);
 
     const validatorUtils = await publicClient.readContract({
       address: rollupCreatedEvent.args.rollupAddress,
       abi: RollupCore.abi,
       functionName: 'validatorUtils',
     });
-    assertIsHexString(validatorUtils);
+    assertIsAddress(validatorUtils);
 
     const validatorWalletCreator = await publicClient.readContract({
       address: rollupCreatedEvent.args.rollupAddress,
       abi: RollupCore.abi,
       functionName: 'validatorWalletCreator',
     });
-    assertIsHexString(validatorWalletCreator);
+    assertIsAddress(validatorWalletCreator);
 
     const rollupContracts: RollupContracts = {
       rollup: rollupCreatedEvent.args.rollupAddress,

@@ -4,6 +4,7 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 import { StepTitle } from './StepTitle';
 import { useDeploymentPageContext } from './DeploymentPageContext';
+import { assertIsAddress } from '@/utils/validators';
 
 const DEFAULT_KEYSET_STRING =
   '0x00000000000000010000000000000001012160000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
@@ -25,13 +26,8 @@ export const KeysetForm = () => {
       const upgradeExecutorAddress = rollupContracts?.upgradeExecutor;
       const sequencerInboxAddress = rollupContracts?.sequencerInbox;
 
-      if (typeof upgradeExecutorAddress === 'undefined') {
-        throw new Error('upgradeExecutorAddress is undefined');
-      }
-
-      if (typeof sequencerInboxAddress === 'undefined') {
-        throw new Error('sequencerInboxAddress is undefined');
-      }
+      assertIsAddress(upgradeExecutorAddress);
+      assertIsAddress(sequencerInboxAddress);
 
       await setValidKeyset({
         upgradeExecutorAddress,
