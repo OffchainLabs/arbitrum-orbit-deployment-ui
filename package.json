@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier:format": "prettier --config-precedence file-override --write \"src/**/*.{tsx,ts,scss,md,json}\""
+    "prettier:format": "prettier --config-precedence file-override --write \"src/**/*.{tsx,ts,scss,md,json}\"",
+    "e2e:open": "env-cmd -f .e2e.env yarn synpress open --configFile synpress.config.ts",
+    "e2e:run": "env-cmd -f .e2e.env yarn synpress run --configFile synpress.config.ts",
+    "e2e:install": "cypress install"
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
@@ -35,6 +38,7 @@
   },
   "devDependencies": {
     "@offchainlabs/prettier-config": "^0.2.1",
+    "@synthetixio/synpress": "^3.7.2-beta.7",
     "@types/dotenv": "^8.2.0",
     "@types/node": "18.16.3",
     "@types/react": "18.2.2",
@@ -42,6 +46,7 @@
     "@types/react-syntax-highlighter": "^15.5.7",
     "autoprefixer": "10.4.14",
     "dotenv": "^16.0.3",
+    "env-cmd": "^10.1.0",
     "eslint": "8.39.0",
     "eslint-config-next": "13.4.13",
     "postcss": "8.4.23",
