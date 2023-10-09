@@ -1,17 +1,17 @@
 import { useStep } from '@/hooks/useStep';
-import { DeploymentSummary } from './DeploymentSummary';
 import { setValidKeyset } from '@/utils/setValidKeyset';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 import { StepTitle } from './StepTitle';
 import { useDeploymentPageContext } from './DeploymentPageContext';
+import { assertIsAddress } from '@/utils/validators';
 
 const DEFAULT_KEYSET_STRING =
   '0x00000000000000010000000000000001012160000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 export const KeysetForm = () => {
   const { nextStep, keysetFormRef } = useStep();
-  const [, dispatch] = useDeploymentPageContext();
+  const [{ rollupContracts }, dispatch] = useDeploymentPageContext();
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
@@ -23,17 +23,18 @@ export const KeysetForm = () => {
       dispatch({ type: 'set_is_loading', payload: true });
       if (!walletClient || !address) return;
 
-      const anyTrustConfigDataString = window.localStorage.getItem('rollupData');
-      const anyTrustConfigData = anyTrustConfigDataString
-        ? JSON.parse(anyTrustConfigDataString)
-        : '';
+      const upgradeExecutorAddress = rollupContracts?.upgradeExecutor;
+      const sequencerInboxAddress = rollupContracts?.sequencerInbox;
+
+      assertIsAddress(upgradeExecutorAddress);
+      assertIsAddress(sequencerInboxAddress);
 
       await setValidKeyset({
-        anyTrustConfigData,
+        upgradeExecutorAddress,
+        sequencerInboxAddress,
         keyset: DEFAULT_KEYSET_STRING,
         walletClient,
         publicClient,
-        account: address,
       });
       nextStep();
     } catch (e) {
