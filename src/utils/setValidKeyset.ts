@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient, encodeFunctionData, parseAbi } from 'viem';
+import { PublicClient, WalletClient, encodeFunctionData, parseAbi, Address } from 'viem';
 
 function getEncodedCallData(keyset: `0x${string}`) {
   return encodeFunctionData({
@@ -15,8 +15,8 @@ export const setValidKeyset = async ({
   walletClient,
   keyset,
 }: {
-  upgradeExecutorAddress: `0x${string}`;
-  sequencerInboxAddress: `0x${string}`;
+  upgradeExecutorAddress: Address;
+  sequencerInboxAddress: Address;
   keyset: `0x${string}`;
   publicClient: PublicClient;
   walletClient: WalletClient;

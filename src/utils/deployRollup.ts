@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient, decodeEventLog, parseGwei } from 'viem';
+import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address } from 'viem';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
 import { ChainType } from '@/types/ChainType';
@@ -27,7 +27,7 @@ type DeployRollupProps = {
   publicClient: PublicClient;
   walletClient: WalletClient;
   chainType?: ChainType;
-  account: `0x${string}`;
+  account: Address;
 };
 
 export async function deployRollup({
