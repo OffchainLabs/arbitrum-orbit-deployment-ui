@@ -1,3 +1,5 @@
+import { Address } from 'viem';
+
 export type RollupContracts = {
   rollup: string;
   inbox: string;
@@ -9,6 +11,7 @@ export type RollupContracts = {
   validatorWalletCreator: string;
   deployedAtBlockNumber: number;
   nativeToken: string;
+  upgradeExecutor: string;
 };
 
 export type Wallet = {
@@ -18,11 +21,12 @@ export type Wallet = {
 
 export type RollupCreatedEvent = {
   args: {
-    rollupAddress: `0x${string}`;
-    inboxAddress: `0x${string}`;
-    adminProxy: `0x${string}`;
-    sequencerInbox: `0x${string}`;
-    bridge: `0x${string}`;
-    nativeToken: `0x${string}`;
+    rollupAddress: Address;
+    inboxAddress: Address;
+    adminProxy: Address;
+    sequencerInbox: Address;
+    bridge: Address;
+    nativeToken: Address;
+    upgradeExecutor: Address;
   };
 };

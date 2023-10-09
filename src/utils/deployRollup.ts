@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient, decodeEventLog } from 'viem';
+import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address } from 'viem';
 import RollupCore from '@/ethereum/RollupCore.json';
 import RollupCreator from '@/ethereum/RollupCreator.json';
 import { ChainType } from '@/types/ChainType';
@@ -12,11 +12,13 @@ import {
   buildRollupConfigPayload,
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
-import { assertIsHexString } from './validators';
+import { assertIsAddress } from './validators';
 import { ChainId } from '@/types/ChainId';
+import { deterministicFactoriesDeploymentEnabled } from './constants';
 
-const ARB_GOERLI_CREATOR_ADDRESS = '0x1E5C87A1fC0009a00008D196711238A1042580ff';
-const ARB_SEPOLIA_CREATOR_ADDRESS = '0x2fE703A9cA9da93526086bFB1d5Fc1286622da79';
+export const ARB_GOERLI_CREATOR_ADDRESS = '0x5Bbc71b2C7E5B01dc4D8b337059f0F6dEF0FDF3F';
+// todo: update arb sepolia address to latest version
+export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -25,7 +27,7 @@ type DeployRollupProps = {
   publicClient: PublicClient;
   walletClient: WalletClient;
   chainType?: ChainType;
-  account: `0x${string}`;
+  account: Address;
 };
 
 export async function deployRollup({
@@ -59,7 +61,14 @@ export async function deployRollup({
       address: rollupCreatorContractAddress,
       abi: RollupCreator.abi,
       functionName: 'createRollup',
-      args: [rollupConfigPayload, batchPosterAddress, validatorAddresses, nativeToken],
+      args: [
+        rollupConfigPayload,
+        batchPosterAddress,
+        validatorAddresses,
+        nativeToken,
+        deterministicFactoriesDeploymentEnabled,
+        parseGwei('0.1'), // this will be ignored because the above is currently set to false
+      ],
       account,
     });
 
@@ -91,21 +100,21 @@ export async function deployRollup({
       abi: RollupCore.abi,
       functionName: 'outbox',
     });
-    assertIsHexString(outbox);
+    assertIsAddress(outbox);
 
     const validatorUtils = await publicClient.readContract({
       address: rollupCreatedEvent.args.rollupAddress,
       abi: RollupCore.abi,
       functionName: 'validatorUtils',
     });
-    assertIsHexString(validatorUtils);
+    assertIsAddress(validatorUtils);
 
     const validatorWalletCreator = await publicClient.readContract({
       address: rollupCreatedEvent.args.rollupAddress,
       abi: RollupCore.abi,
       functionName: 'validatorWalletCreator',
     });
-    assertIsHexString(validatorWalletCreator);
+    assertIsAddress(validatorWalletCreator);
 
     const rollupContracts: RollupContracts = {
       rollup: rollupCreatedEvent.args.rollupAddress,
@@ -118,6 +127,7 @@ export async function deployRollup({
       validatorWalletCreator: validatorWalletCreator,
       deployedAtBlockNumber: Number(createRollupTxReceipt.blockNumber),
       nativeToken: rollupCreatedEvent.args.nativeToken,
+      upgradeExecutor: rollupCreatedEvent.args.upgradeExecutor,
     };
 
     let rollupConfigData = buildRollupConfigData({
