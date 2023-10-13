@@ -28,6 +28,14 @@ type DeployRollupProps = {
   account: `0x${string}`;
 };
 
+function buildRollupOrAnyTrustChainConfig(rollupConfig: RollupConfig, chainType: ChainType) {
+  const chainConfig = buildChainConfig(rollupConfig);
+  if (chainType === ChainType.AnyTrust) {
+    chainConfig.arbitrum.DataAvailabilityCommittee = true;
+  }
+  return chainConfig;
+}
+
 export async function deployRollup({
   rollupConfig,
   validators,
@@ -38,8 +46,9 @@ export async function deployRollup({
   chainType = ChainType.Rollup,
 }: DeployRollupProps): Promise<RollupContracts> {
   try {
-    const chainConfig: string = JSON.stringify(buildChainConfig(rollupConfig));
-
+    const chainConfig: string = JSON.stringify(
+      buildRollupOrAnyTrustChainConfig(rollupConfig, chainType),
+    );
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
