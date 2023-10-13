@@ -1,5 +1,5 @@
-import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address } from 'viem';
-import { DecodeEventLogReturnType } from 'viem/utils';
+import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, Log } from 'viem';
+import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
 
 import { RollupCreatorAbi } from '@/abis/RollupCreatorAbi';
 import { ChainType } from '@/types/ChainType';
@@ -38,10 +38,25 @@ type RollupCreatorDecodedEventLog<
   TEventName extends RollupCreatorEventName | undefined = undefined,
 > = DecodeEventLogReturnType<typeof RollupCreatorAbi, TEventName>;
 
-function isRollupCreatedEvent(
-  decodedEventLog: RollupCreatorDecodedEventLog,
-): decodedEventLog is RollupCreatorDecodedEventLog<'RollupCreated'> {
-  return decodedEventLog.eventName === 'RollupCreated';
+function getEventSignature(eventName: RollupCreatorEventName): string {
+  const [eventSignature] = encodeEventTopics({
+    abi: RollupCreatorAbi,
+    eventName,
+  });
+
+  return eventSignature;
+}
+
+function decodeRollupCreatedEventLog(
+  log: Log<bigint, number>,
+): RollupCreatorDecodedEventLog<'RollupCreated'> {
+  const decodedEventLog = decodeEventLog({ ...log, abi: RollupCreatorAbi });
+
+  if (decodedEventLog.eventName !== 'RollupCreated') {
+    throw new Error(`[decodeRollupCreatedEventLog] unexpected event: ${decodedEventLog.eventName}`);
+  }
+
+  return decodedEventLog;
 }
 
 type RollupConfigPayloadSanitized = Omit<
@@ -144,19 +159,15 @@ export async function deployRollup({
       hash: hash,
     });
 
-    const rollupCreatedEvent = createRollupTxReceipt.logs
-      // omit try/catch here because we want to surface an error if the event cannot be decoded
-      .map((log) =>
-        decodeEventLog({
-          ...log,
-          abi: RollupCreatorAbi,
-        }),
-      )
-      .find(isRollupCreatedEvent);
+    const log = createRollupTxReceipt.logs
+      // find the event log that matches the RollupCreated event signature
+      .find((log) => log.topics[0] === getEventSignature('RollupCreated'));
 
-    if (typeof rollupCreatedEvent === 'undefined') {
-      throw new Error('RollupCreated event not found');
+    if (typeof log === 'undefined') {
+      throw new Error('RollupCreated event log not found');
     }
+
+    const rollupCreatedEvent = decodeRollupCreatedEventLog(log);
 
     const rollupContracts: RollupContracts = {
       rollup: rollupCreatedEvent.args.rollupAddress,
