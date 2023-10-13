@@ -59,7 +59,7 @@ function decodeRollupCreatedEventLog(
   return decodedEventLog;
 }
 
-type RollupConfigPayloadSanitized = Omit<
+type RollupConfigPayloadWriteable = Omit<
   RollupConfigPayload,
   | 'chainId'
   | 'genesisBlockNum'
@@ -85,7 +85,7 @@ type RollupConfigPayloadSanitized = Omit<
 
 function prepareRollupConfigPayloadForWrite(
   payload: RollupConfigPayload,
-): RollupConfigPayloadSanitized {
+): RollupConfigPayloadWriteable {
   assertIsAddress(payload.owner);
   assertIsAddress(payload.stakeToken);
 
