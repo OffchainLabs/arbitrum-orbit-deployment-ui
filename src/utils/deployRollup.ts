@@ -1,10 +1,10 @@
-import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, parseAbi } from 'viem';
+import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address } from 'viem';
 import { DecodeEventLogReturnType } from 'viem/utils';
 
 import { RollupCreatorAbi } from '@/abis/RollupCreatorAbi';
 import { ChainType } from '@/types/ChainType';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
-import { RollupConfig } from '@/types/rollupConfigDataType';
+import { RollupConfig, RollupConfigPayload } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
   buildChainConfig,
@@ -44,6 +44,53 @@ function isRollupCreatedEvent(
   return decodedEventLog.eventName === 'RollupCreated';
 }
 
+type RollupConfigPayloadSanitized = Omit<
+  RollupConfigPayload,
+  | 'chainId'
+  | 'genesisBlockNum'
+  | 'confirmPeriodBlocks'
+  | 'extraChallengeTimeBlocks'
+  | 'sequencerInboxMaxTimeVariation'
+  | 'owner'
+  | 'stakeToken'
+> & {
+  chainId: bigint;
+  genesisBlockNum: bigint;
+  confirmPeriodBlocks: bigint;
+  extraChallengeTimeBlocks: bigint;
+  sequencerInboxMaxTimeVariation: {
+    delayBlocks: bigint;
+    futureBlocks: bigint;
+    delaySeconds: bigint;
+    futureSeconds: bigint;
+  };
+  owner: Address;
+  stakeToken: Address;
+};
+
+function prepareRollupConfigPayloadForWrite(
+  payload: RollupConfigPayload,
+): RollupConfigPayloadSanitized {
+  assertIsAddress(payload.owner);
+  assertIsAddress(payload.stakeToken);
+
+  return {
+    ...payload,
+    chainId: BigInt(payload.chainId),
+    genesisBlockNum: BigInt(payload.genesisBlockNum),
+    confirmPeriodBlocks: BigInt(payload.confirmPeriodBlocks),
+    extraChallengeTimeBlocks: BigInt(payload.extraChallengeTimeBlocks),
+    sequencerInboxMaxTimeVariation: {
+      delayBlocks: BigInt(payload.sequencerInboxMaxTimeVariation.delayBlocks),
+      futureBlocks: BigInt(payload.sequencerInboxMaxTimeVariation.futureBlocks),
+      delaySeconds: BigInt(payload.sequencerInboxMaxTimeVariation.delaySeconds),
+      futureSeconds: BigInt(payload.sequencerInboxMaxTimeVariation.futureSeconds),
+    },
+    owner: payload.owner,
+    stakeToken: payload.stakeToken,
+  };
+}
+
 export async function deployRollup({
   rollupConfig,
   validators,
@@ -80,7 +127,7 @@ export async function deployRollup({
       abi: RollupCreatorAbi,
       functionName: 'createRollup',
       args: [
-        rollupConfigPayload,
+        prepareRollupConfigPayloadForWrite(rollupConfigPayload),
         batchPosterAddress,
         validatorAddresses,
         maxDataSize,
@@ -88,6 +135,7 @@ export async function deployRollup({
         deterministicFactoriesDeploymentEnabled,
         parseGwei('0.1'), // this will be ignored because the above is currently set to false
       ],
+      value: BigInt(0),
       account,
     });
 

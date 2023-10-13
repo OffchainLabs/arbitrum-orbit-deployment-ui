@@ -87,8 +87,8 @@ export type RollupConfig = {
   baseStake: number;
   owner: string;
   extraChallengeTimeBlocks: number;
-  wasmModuleRoot: string;
-  loserStakeEscrow: string;
+  wasmModuleRoot: `0x${string}`;
+  loserStakeEscrow: `0x${string}`;
   chainId: number;
   chainName: string;
   chainConfig: string;
@@ -101,6 +101,7 @@ export type RollupConfig = {
     futureSeconds: number;
   };
 };
+
 export type RollupConfigPayload = Omit<RollupConfig, 'baseStake'> & { baseStake: bigint };
 
 export type AnyTrustConfig = RollupConfig & {
