@@ -1,8 +1,9 @@
-import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address } from 'viem';
-import RollupCore from '@/ethereum/RollupCore.json';
-import RollupCreator from '@/ethereum/RollupCreator.json';
+import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, parseAbi } from 'viem';
+import { DecodeEventLogReturnType } from 'viem/utils';
+
+import { RollupCreatorAbi } from '@/abis/RollupCreatorAbi';
 import { ChainType } from '@/types/ChainType';
-import { Wallet, RollupContracts, RollupCreatedEvent } from '@/types/RollupContracts';
+import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
@@ -15,10 +16,10 @@ import { updateLocalStorage } from './localStorageHandler';
 import { assertIsAddress } from './validators';
 import { ChainId } from '@/types/ChainId';
 import { deterministicFactoriesDeploymentEnabled } from './constants';
+import { maxDataSize } from './defaults';
 
-export const ARB_GOERLI_CREATOR_ADDRESS = '0x5Bbc71b2C7E5B01dc4D8b337059f0F6dEF0FDF3F';
-// todo: update arb sepolia address to latest version
-export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x5e136cdb8d442EB3BB61f04Cb64ab5D3CE01c564';
+export const ARB_GOERLI_CREATOR_ADDRESS = '0xB3f62C1c92D5224d0EC3A8d1efc8a44495B12BEc';
+export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x8f6C1B4d75fA3a0D43ca750F308b1F3DDA8d92F7';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -29,6 +30,19 @@ type DeployRollupProps = {
   chainType?: ChainType;
   account: Address;
 };
+
+type RollupCreatorEvent = Extract<(typeof RollupCreatorAbi)[number], { type: 'event' }>;
+type RollupCreatorEventName = RollupCreatorEvent['name'];
+
+type RollupCreatorDecodedEventLog<
+  TEventName extends RollupCreatorEventName | undefined = undefined,
+> = DecodeEventLogReturnType<typeof RollupCreatorAbi, TEventName>;
+
+function isRollupCreatedEvent(
+  decodedEventLog: RollupCreatorDecodedEventLog,
+): decodedEventLog is RollupCreatorDecodedEventLog<'RollupCreated'> {
+  return decodedEventLog.eventName === 'RollupCreated';
+}
 
 export async function deployRollup({
   rollupConfig,
@@ -57,14 +71,18 @@ export async function deployRollup({
         ? ARB_GOERLI_CREATOR_ADDRESS
         : ARB_SEPOLIA_CREATOR_ADDRESS;
 
+    assertIsAddress(batchPosterAddress);
+    assertIsAddress(nativeToken);
+
     const { request } = await publicClient.simulateContract({
       address: rollupCreatorContractAddress,
-      abi: RollupCreator.abi,
+      abi: RollupCreatorAbi,
       functionName: 'createRollup',
       args: [
         rollupConfigPayload,
         batchPosterAddress,
         validatorAddresses,
+        maxDataSize,
         nativeToken,
         deterministicFactoriesDeploymentEnabled,
         parseGwei('0.1'), // this will be ignored because the above is currently set to false
@@ -78,53 +96,28 @@ export async function deployRollup({
     });
 
     const rollupCreatedEvent = createRollupTxReceipt.logs
-      .map((log) => {
-        try {
-          return decodeEventLog({
-            ...log,
-            abi: RollupCreator.abi as any,
-          });
-        } catch (e) {}
-      })
-      .filter((event) => !!event)
-      .find((event) => event && event.eventName === 'RollupCreated') as
-      | RollupCreatedEvent
-      | undefined;
+      // omit try/catch here because we want to surface an error if the event cannot be decoded
+      .map((log) =>
+        decodeEventLog({
+          ...log,
+          abi: RollupCreatorAbi,
+        }),
+      )
+      .find(isRollupCreatedEvent);
 
-    if (!rollupCreatedEvent || !('args' in rollupCreatedEvent)) {
+    if (typeof rollupCreatedEvent === 'undefined') {
       throw new Error('RollupCreated event not found');
     }
-
-    const outbox = await publicClient.readContract({
-      address: rollupCreatedEvent.args.rollupAddress,
-      abi: RollupCore.abi,
-      functionName: 'outbox',
-    });
-    assertIsAddress(outbox);
-
-    const validatorUtils = await publicClient.readContract({
-      address: rollupCreatedEvent.args.rollupAddress,
-      abi: RollupCore.abi,
-      functionName: 'validatorUtils',
-    });
-    assertIsAddress(validatorUtils);
-
-    const validatorWalletCreator = await publicClient.readContract({
-      address: rollupCreatedEvent.args.rollupAddress,
-      abi: RollupCore.abi,
-      functionName: 'validatorWalletCreator',
-    });
-    assertIsAddress(validatorWalletCreator);
 
     const rollupContracts: RollupContracts = {
       rollup: rollupCreatedEvent.args.rollupAddress,
       inbox: rollupCreatedEvent.args.inboxAddress,
-      outbox: outbox,
+      outbox: rollupCreatedEvent.args.outbox,
       adminProxy: rollupCreatedEvent.args.adminProxy,
       sequencerInbox: rollupCreatedEvent.args.sequencerInbox,
       bridge: rollupCreatedEvent.args.bridge,
-      utils: validatorUtils,
-      validatorWalletCreator: validatorWalletCreator,
+      utils: rollupCreatedEvent.args.validatorUtils,
+      validatorWalletCreator: rollupCreatedEvent.args.validatorWalletCreator,
       deployedAtBlockNumber: Number(createRollupTxReceipt.blockNumber),
       nativeToken: rollupCreatedEvent.args.nativeToken,
       upgradeExecutor: rollupCreatedEvent.args.upgradeExecutor,
