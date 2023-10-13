@@ -177,6 +177,7 @@ export function buildAnyTrustNodeConfig(
   assertIsHexString(sequencerInboxAddress);
 
   const parentChainRpcUrl = getRpcUrl(parentChainId);
+  rollupConfig.chain['info-json'][0]['chain-config'].arbitrum.DataAvailabilityCommittee = true;
 
   return {
     ...rollupConfig,
