@@ -5,3 +5,7 @@ export function assertIsAddress(value: any): asserts value is Address {
     throw new Error(`${value} is not a valid address`);
   }
 }
+
+export function assertIsAddressArray(values: any[]): asserts values is Address[] {
+  values.forEach(assertIsAddress);
+}

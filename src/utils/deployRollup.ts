@@ -13,7 +13,7 @@ import {
   buildRollupConfigPayload,
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
-import { assertIsAddress } from './validators';
+import { assertIsAddress, assertIsAddressArray } from './validators';
 import { ChainId } from '@/types/ChainId';
 import { deterministicFactoriesDeploymentEnabled } from './constants';
 import { maxDataSize } from './defaults';
@@ -73,6 +73,7 @@ export async function deployRollup({
 
     assertIsAddress(batchPosterAddress);
     assertIsAddress(nativeToken);
+    assertIsAddressArray(validatorAddresses);
 
     const { request } = await publicClient.simulateContract({
       address: rollupCreatorContractAddress,
