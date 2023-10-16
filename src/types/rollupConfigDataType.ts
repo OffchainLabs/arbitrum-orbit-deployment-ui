@@ -1,3 +1,33 @@
+export type ChainConfig = {
+  chainId: number;
+  homesteadBlock: number;
+  daoForkBlock: null;
+  daoForkSupport: boolean;
+  eip150Block: number;
+  eip150Hash: string;
+  eip155Block: number;
+  eip158Block: number;
+  byzantiumBlock: number;
+  constantinopleBlock: number;
+  petersburgBlock: number;
+  istanbulBlock: number;
+  muirGlacierBlock: number;
+  berlinBlock: number;
+  londonBlock: number;
+  clique: {
+    period: number;
+    epoch: number;
+  };
+  arbitrum: {
+    EnableArbOS: boolean;
+    AllowDebugPrecompiles: boolean;
+    DataAvailabilityCommittee: boolean;
+    InitialArbOSVersion: number;
+    InitialChainOwner: string;
+    GenesisBlockNum: number;
+  };
+};
+
 import { z } from 'zod';
 
 import { AddressSchema } from '@/utils/schemas';
@@ -8,7 +38,7 @@ export type RollupConfigData = {
       'chain-id': number;
       'parent-chain-id': number;
       'chain-name': string;
-      'chain-config': object;
+      'chain-config': ChainConfig;
       'rollup': {
         'bridge': string;
         'inbox': string;

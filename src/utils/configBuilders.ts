@@ -1,12 +1,20 @@
 import { parseEther, GetFunctionArgs } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
-import { rollupCreatorABI } from '@/generated';
-import { AnyTrustConfigData, RollupConfig, RollupConfigData } from '@/types/rollupConfigDataType';
+import {
+  AnyTrustConfigData,
+  ChainConfig,
+  RollupConfig,
+  RollupConfigData,
+} from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
+import { ChainType } from '@/types/ChainType';
 import { assertIsAddress } from './validators';
 
-export const buildChainConfig = (chainConfig: { chainId: number; owner: `0x${string}` }) => ({
+export const buildChainConfig = (
+  chainConfig: { chainId: number; owner: `0x${string}` },
+  chainType: ChainType,
+): ChainConfig => ({
   chainId: Number(chainConfig.chainId),
   homesteadBlock: 0,
   daoForkBlock: null,
@@ -29,7 +37,7 @@ export const buildChainConfig = (chainConfig: { chainId: number; owner: `0x${str
   arbitrum: {
     EnableArbOS: true,
     AllowDebugPrecompiles: false,
-    DataAvailabilityCommittee: false,
+    DataAvailabilityCommittee: chainType === ChainType.AnyTrust,
     InitialArbOSVersion: 10,
     InitialChainOwner: chainConfig.owner,
     GenesisBlockNum: 0,
@@ -42,12 +50,14 @@ export function buildRollupConfigData({
   validators,
   batchPoster,
   parentChainId,
+  chainConfig,
 }: {
   rollupConfig: RollupConfig;
   rollupContracts: RollupContracts;
   validators: Wallet[];
   batchPoster: Wallet;
   parentChainId: number;
+  chainConfig: ChainConfig;
 }): RollupConfigData {
   const parentChainRpcUrl = getRpcUrl(parentChainId);
 
@@ -58,35 +68,7 @@ export function buildRollupConfigData({
           'chain-id': Number(rollupConfig.chainId),
           'parent-chain-id': parentChainId,
           'chain-name': rollupConfig.chainName,
-          'chain-config': {
-            chainId: Number(rollupConfig.chainId),
-            homesteadBlock: 0,
-            daoForkBlock: null,
-            daoForkSupport: true,
-            eip150Block: 0,
-            eip150Hash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-            eip155Block: 0,
-            eip158Block: 0,
-            byzantiumBlock: 0,
-            constantinopleBlock: 0,
-            petersburgBlock: 0,
-            istanbulBlock: 0,
-            muirGlacierBlock: 0,
-            berlinBlock: 0,
-            londonBlock: 0,
-            clique: {
-              period: 0,
-              epoch: 0,
-            },
-            arbitrum: {
-              EnableArbOS: true,
-              AllowDebugPrecompiles: false,
-              DataAvailabilityCommittee: false,
-              InitialArbOSVersion: 10,
-              InitialChainOwner: rollupConfig.owner,
-              GenesisBlockNum: 0,
-            },
-          },
+          'chain-config': chainConfig,
           'rollup': {
             'bridge': rollupContracts.bridge,
             'inbox': rollupContracts.inbox,
@@ -156,7 +138,7 @@ export const buildRollupConfigPayload = ({
   chainConfig,
 }: {
   rollupConfig: RollupConfig;
-  chainConfig: string;
+  chainConfig: ChainConfig;
 }): RollupConfigPayload => {
   try {
     assertIsAddress(rollupConfig.owner);
