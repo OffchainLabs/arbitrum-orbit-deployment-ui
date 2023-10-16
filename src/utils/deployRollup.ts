@@ -1,10 +1,10 @@
 import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, Log } from 'viem';
 import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
 
-import { RollupCreatorAbi } from '@/abis/RollupCreatorAbi';
+import { RollupCreatorAbi, RollupCreatorAbiType } from '@/abis/RollupCreatorAbi';
 import { ChainType } from '@/types/ChainType';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
-import { RollupConfig, RollupConfigPayload } from '@/types/rollupConfigDataType';
+import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
   buildChainConfig,
@@ -31,12 +31,12 @@ type DeployRollupProps = {
   account: Address;
 };
 
-type RollupCreatorEvent = Extract<(typeof RollupCreatorAbi)[number], { type: 'event' }>;
+type RollupCreatorEvent = Extract<RollupCreatorAbiType[number], { type: 'event' }>;
 type RollupCreatorEventName = RollupCreatorEvent['name'];
 
 type RollupCreatorDecodedEventLog<
   TEventName extends RollupCreatorEventName | undefined = undefined,
-> = DecodeEventLogReturnType<typeof RollupCreatorAbi, TEventName>;
+> = DecodeEventLogReturnType<RollupCreatorAbiType, TEventName>;
 
 function getEventSignature(eventName: RollupCreatorEventName): string {
   const [eventSignature] = encodeEventTopics({
@@ -57,53 +57,6 @@ function decodeRollupCreatedEventLog(
   }
 
   return decodedEventLog;
-}
-
-type RollupConfigPayloadWriteable = Omit<
-  RollupConfigPayload,
-  | 'chainId'
-  | 'genesisBlockNum'
-  | 'confirmPeriodBlocks'
-  | 'extraChallengeTimeBlocks'
-  | 'sequencerInboxMaxTimeVariation'
-  | 'owner'
-  | 'stakeToken'
-> & {
-  chainId: bigint;
-  genesisBlockNum: bigint;
-  confirmPeriodBlocks: bigint;
-  extraChallengeTimeBlocks: bigint;
-  sequencerInboxMaxTimeVariation: {
-    delayBlocks: bigint;
-    futureBlocks: bigint;
-    delaySeconds: bigint;
-    futureSeconds: bigint;
-  };
-  owner: Address;
-  stakeToken: Address;
-};
-
-function prepareRollupConfigPayloadForWrite(
-  payload: RollupConfigPayload,
-): RollupConfigPayloadWriteable {
-  assertIsAddress(payload.owner);
-  assertIsAddress(payload.stakeToken);
-
-  return {
-    ...payload,
-    chainId: BigInt(payload.chainId),
-    genesisBlockNum: BigInt(payload.genesisBlockNum),
-    confirmPeriodBlocks: BigInt(payload.confirmPeriodBlocks),
-    extraChallengeTimeBlocks: BigInt(payload.extraChallengeTimeBlocks),
-    sequencerInboxMaxTimeVariation: {
-      delayBlocks: BigInt(payload.sequencerInboxMaxTimeVariation.delayBlocks),
-      futureBlocks: BigInt(payload.sequencerInboxMaxTimeVariation.futureBlocks),
-      delaySeconds: BigInt(payload.sequencerInboxMaxTimeVariation.delaySeconds),
-      futureSeconds: BigInt(payload.sequencerInboxMaxTimeVariation.futureSeconds),
-    },
-    owner: payload.owner,
-    stakeToken: payload.stakeToken,
-  };
 }
 
 export async function deployRollup({
@@ -142,7 +95,7 @@ export async function deployRollup({
       abi: RollupCreatorAbi,
       functionName: 'createRollup',
       args: [
-        prepareRollupConfigPayloadForWrite(rollupConfigPayload),
+        rollupConfigPayload,
         batchPosterAddress,
         validatorAddresses,
         maxDataSize,

@@ -178,3 +178,5 @@ export const RollupCreatorAbi = [
   },
   { stateMutability: 'payable', type: 'receive' },
 ] as const;
+
+export type RollupCreatorAbiType = typeof RollupCreatorAbi;
