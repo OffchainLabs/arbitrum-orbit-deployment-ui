@@ -38,11 +38,11 @@ export async function deployRollup({
   chainType = ChainType.Rollup,
 }: DeployRollupProps): Promise<RollupContracts> {
   try {
-    const chainConfig: string = JSON.stringify(buildChainConfig(rollupConfig));
-
+    const chainConfig = buildChainConfig(rollupConfig, chainType);
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
+
     console.log(chainConfig);
     console.log('Going for deployment');
 
@@ -123,6 +123,7 @@ export async function deployRollup({
       validators,
       batchPoster,
       parentChainId,
+      chainConfig,
     });
 
     if (chainType === ChainType.AnyTrust) {
