@@ -1,7 +1,7 @@
 import { parseEther, GetFunctionArgs } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
-import { RollupCreatorAbiType } from '@/abis/RollupCreatorAbi';
+import { rollupCreatorABI } from '@/generated';
 import {
   AnyTrustConfigData,
   RollupConfig,
@@ -157,7 +157,7 @@ export const buildRollupConfigPayload = ({
 }: {
   rollupConfig: RollupConfig;
   chainConfig: string;
-}): GetFunctionArgs<RollupCreatorAbiType, 'createRollup'>['args'][0] => {
+}): GetFunctionArgs<typeof rollupCreatorABI, 'createRollup'>['args'][0] => {
   try {
     const rollupConfigPayload: RollupConfigPayload = {
       ...rollupConfig,

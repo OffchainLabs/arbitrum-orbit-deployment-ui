@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "yarn wagmi:generate",
     "dev": "next dev",
+    "prebuild": "yarn wagmi:generate",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier:format": "prettier --config-precedence file-override --write \"src/**/*.{tsx,ts,scss,md,json}\""
+    "prettier:format": "prettier --config-precedence file-override --write \"src/**/*.{tsx,ts,scss,md,json}\"",
+    "wagmi:generate": "wagmi generate"
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
@@ -40,7 +43,9 @@
     "@types/react": "18.2.2",
     "@types/react-dom": "18.2.3",
     "@types/react-syntax-highlighter": "^15.5.7",
+    "@wagmi/cli": "^1.5.2",
     "autoprefixer": "10.4.14",
+    "axios": "^1.5.1",
     "dotenv": "^16.0.3",
     "eslint": "8.39.0",
     "eslint-config-next": "13.4.13",

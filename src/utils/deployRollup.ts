@@ -1,7 +1,7 @@
 import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, Log } from 'viem';
 import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
 
-import { RollupCreatorAbi, RollupCreatorAbiType } from '@/abis/RollupCreatorAbi';
+import { rollupCreatorABI } from '@/generated';
 import { ChainType } from '@/types/ChainType';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { RollupConfig } from '@/types/rollupConfigDataType';
@@ -31,6 +31,8 @@ type DeployRollupProps = {
   account: Address;
 };
 
+type RollupCreatorAbiType = typeof rollupCreatorABI;
+
 type RollupCreatorEvent = Extract<RollupCreatorAbiType[number], { type: 'event' }>;
 type RollupCreatorEventName = RollupCreatorEvent['name'];
 
@@ -40,7 +42,7 @@ type RollupCreatorDecodedEventLog<
 
 function getEventSignature(eventName: RollupCreatorEventName): string {
   const [eventSignature] = encodeEventTopics({
-    abi: RollupCreatorAbi,
+    abi: rollupCreatorABI,
     eventName,
   });
 
@@ -50,7 +52,7 @@ function getEventSignature(eventName: RollupCreatorEventName): string {
 function decodeRollupCreatedEventLog(
   log: Log<bigint, number>,
 ): RollupCreatorDecodedEventLog<'RollupCreated'> {
-  const decodedEventLog = decodeEventLog({ ...log, abi: RollupCreatorAbi });
+  const decodedEventLog = decodeEventLog({ ...log, abi: rollupCreatorABI });
 
   if (decodedEventLog.eventName !== 'RollupCreated') {
     throw new Error(`[decodeRollupCreatedEventLog] unexpected event: ${decodedEventLog.eventName}`);
@@ -81,6 +83,7 @@ export async function deployRollup({
 
     const parentChainId = await publicClient.getChainId();
 
+    // todo: use generated value
     const rollupCreatorContractAddress =
       parentChainId === ChainId.ArbitrumGoerli
         ? ARB_GOERLI_CREATOR_ADDRESS
@@ -92,7 +95,7 @@ export async function deployRollup({
 
     const { request } = await publicClient.simulateContract({
       address: rollupCreatorContractAddress,
-      abi: RollupCreatorAbi,
+      abi: rollupCreatorABI,
       functionName: 'createRollup',
       args: [
         rollupConfigPayload,
