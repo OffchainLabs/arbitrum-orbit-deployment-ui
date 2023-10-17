@@ -31,7 +31,7 @@ export const RollupCreatedEvent = z.object({
     bridge: AddressSchema,
     nativeToken: AddressSchema,
     upgradeExecutor: AddressSchema,
-  })
-})
+  }),
+});
 
 export type RollupCreatedEvent = z.infer<typeof RollupCreatedEvent>;

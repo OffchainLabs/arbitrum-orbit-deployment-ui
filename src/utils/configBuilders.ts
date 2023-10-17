@@ -1,6 +1,7 @@
-import { parseEther } from 'viem';
+import { parseEther, GetFunctionArgs } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
+import { RollupCreatorAbiType } from '@/abis/RollupCreatorAbi';
 import {
   AnyTrustConfigData,
   RollupConfig,
@@ -156,14 +157,32 @@ export const buildRollupConfigPayload = ({
 }: {
   rollupConfig: RollupConfig;
   chainConfig: string;
-}): RollupConfigPayload => {
+}): GetFunctionArgs<RollupCreatorAbiType, 'createRollup'>['args'][0] => {
   try {
     const rollupConfigPayload: RollupConfigPayload = {
       ...rollupConfig,
       chainConfig,
       baseStake: parseEther(String(rollupConfig.baseStake)),
     };
-    return rollupConfigPayload;
+
+    assertIsAddress(rollupConfigPayload.owner);
+    assertIsAddress(rollupConfigPayload.stakeToken);
+
+    return {
+      ...rollupConfigPayload,
+      chainId: BigInt(rollupConfigPayload.chainId),
+      genesisBlockNum: BigInt(rollupConfigPayload.genesisBlockNum),
+      confirmPeriodBlocks: BigInt(rollupConfigPayload.confirmPeriodBlocks),
+      extraChallengeTimeBlocks: BigInt(rollupConfigPayload.extraChallengeTimeBlocks),
+      sequencerInboxMaxTimeVariation: {
+        delayBlocks: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.delayBlocks),
+        futureBlocks: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.futureBlocks),
+        delaySeconds: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.delaySeconds),
+        futureSeconds: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.futureSeconds),
+      },
+      owner: rollupConfigPayload.owner,
+      stakeToken: rollupConfigPayload.stakeToken,
+    };
   } catch (e) {
     throw new Error(`Error building rollup config payload: ${e}`);
   }
