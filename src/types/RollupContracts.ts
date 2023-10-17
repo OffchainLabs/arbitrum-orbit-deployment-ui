@@ -18,15 +18,3 @@ export type Wallet = {
   address: string;
   privateKey?: string;
 };
-
-export type RollupCreatedEvent = {
-  args: {
-    rollupAddress: Address;
-    inboxAddress: Address;
-    adminProxy: Address;
-    sequencerInbox: Address;
-    bridge: Address;
-    nativeToken: Address;
-    upgradeExecutor: Address;
-  };
-};
