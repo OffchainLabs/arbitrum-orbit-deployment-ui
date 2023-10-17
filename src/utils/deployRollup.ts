@@ -94,10 +94,6 @@ export async function deployRollup({
 
     const parentChainId: ChainId = await publicClient.getChainId();
 
-    assertIsAddress(batchPosterAddress);
-    assertIsAddress(nativeToken);
-    assertIsAddressArray(validatorAddresses);
-
     const { request } = await publicClient.simulateContract({
       address: rollupCreatorAddress[parentChainId],
       abi: rollupCreatorABI,

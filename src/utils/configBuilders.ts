@@ -1,6 +1,7 @@
 import { parseEther, GetFunctionArgs } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
+import { RollupCreatorAbiType } from '@/abis/RollupCreatorAbi';
 import {
   AnyTrustConfigData,
   ChainConfig,
