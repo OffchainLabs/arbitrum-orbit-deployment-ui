@@ -18,9 +18,6 @@ import { ChainId } from '@/types/ChainId';
 import { deterministicFactoriesDeploymentEnabled } from './constants';
 import { maxDataSize } from './defaults';
 
-export const ARB_GOERLI_CREATOR_ADDRESS = '0xB3f62C1c92D5224d0EC3A8d1efc8a44495B12BEc';
-export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x8f6C1B4d75fA3a0D43ca750F308b1F3DDA8d92F7';
-
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
   validators: Wallet[];
