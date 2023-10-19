@@ -1,7 +1,7 @@
 import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, Log } from 'viem';
 import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
 
-import { RollupCreatorAbi, RollupCreatorAbiType } from '@/abis/RollupCreatorAbi';
+import { rollupCreatorABI, rollupCreatorAddress } from '@/generated';
 import { ChainType } from '@/types/ChainType';
 import { Wallet, RollupContracts, WalletSchema } from '@/types/RollupContracts';
 import { RollupConfig, RollupConfigPayloadSchema } from '@/types/rollupConfigDataType';
@@ -18,9 +18,6 @@ import { ChainId } from '@/types/ChainId';
 import { z } from 'zod';
 import { deterministicFactoriesDeploymentEnabled } from './constants';
 import { maxDataSize } from './defaults';
-
-export const ARB_GOERLI_CREATOR_ADDRESS = '0xB3f62C1c92D5224d0EC3A8d1efc8a44495B12BEc';
-export const ARB_SEPOLIA_CREATOR_ADDRESS = '0x8f6C1B4d75fA3a0D43ca750F308b1F3DDA8d92F7';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -39,6 +36,8 @@ const RollupCreateSchema = z.object({
 });
 const assertIsValidRollupCreatePayload = RollupCreateSchema.parse;
 
+type RollupCreatorAbiType = typeof rollupCreatorABI;
+
 type RollupCreatorEvent = Extract<RollupCreatorAbiType[number], { type: 'event' }>;
 type RollupCreatorEventName = RollupCreatorEvent['name'];
 
@@ -48,7 +47,7 @@ type RollupCreatorDecodedEventLog<
 
 function getEventSignature(eventName: RollupCreatorEventName): string {
   const [eventSignature] = encodeEventTopics({
-    abi: RollupCreatorAbi,
+    abi: rollupCreatorABI,
     eventName,
   });
 
@@ -58,7 +57,7 @@ function getEventSignature(eventName: RollupCreatorEventName): string {
 function decodeRollupCreatedEventLog(
   log: Log<bigint, number>,
 ): RollupCreatorDecodedEventLog<'RollupCreated'> {
-  const decodedEventLog = decodeEventLog({ ...log, abi: RollupCreatorAbi });
+  const decodedEventLog = decodeEventLog({ ...log, abi: rollupCreatorABI });
 
   if (decodedEventLog.eventName !== 'RollupCreated') {
     throw new Error(`[decodeRollupCreatedEventLog] unexpected event: ${decodedEventLog.eventName}`);
@@ -78,8 +77,8 @@ export async function deployRollup({
 }: DeployRollupProps): Promise<RollupContracts> {
   try {
     const chainConfig: string = JSON.stringify(buildChainConfig(rollupConfig));
-
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
+
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
     const nativeToken = rollupConfig.nativeToken;
@@ -93,29 +92,27 @@ export async function deployRollup({
       validators,
     });
 
-    const parentChainId = await publicClient.getChainId();
-
-    const rollupCreatorContractAddress =
-      parentChainId === ChainId.ArbitrumGoerli
-        ? ARB_GOERLI_CREATOR_ADDRESS
-        : ARB_SEPOLIA_CREATOR_ADDRESS;
+    const parentChainId: ChainId = await publicClient.getChainId();
 
     assertIsAddress(batchPosterAddress);
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
     const { request } = await publicClient.simulateContract({
-      address: rollupCreatorContractAddress,
-      abi: RollupCreatorAbi,
+      address: rollupCreatorAddress[parentChainId],
+      abi: rollupCreatorABI,
       functionName: 'createRollup',
       args: [
-        rollupConfigPayload,
-        batchPosterAddress,
-        validatorAddresses,
-        maxDataSize,
-        nativeToken,
-        deterministicFactoriesDeploymentEnabled,
-        parseGwei('0.1'), // this will be ignored because the above is currently set to false
+        {
+          config: rollupConfigPayload,
+          batchPoster: batchPosterAddress,
+          validators: validatorAddresses,
+          maxDataSize,
+          nativeToken,
+          deployFactoriesToL2: deterministicFactoriesDeploymentEnabled,
+          // this will be ignored because the above is currently set to false
+          maxFeePerGasForRetryables: parseGwei('0.1'),
+        },
       ],
       value: BigInt(0),
       account,
