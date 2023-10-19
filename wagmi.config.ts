@@ -1,48 +1,59 @@
-import { defineConfig } from '@wagmi/cli';
 import { fetch } from '@wagmi/cli/plugins';
-import axios from 'axios';
 
 import { ChainId } from '@/types/ChainId';
+import { fetchAbi, getRequestUrl } from '@/utils/fetchAbi';
 
-async function request(contract: { address: Record<number, `0x${string}`> }) {
-  function getAbiRequestUrl(chainId: ChainId, address: string) {
-    if (chainId === ChainId.ArbitrumGoerli) {
-      return `https://api-goerli.arbiscan.io/api?module=contract&action=getabi&address=${address}&format=raw`;
-    }
+type ContractConfig = {
+  name: string;
+  address: Record<ChainId, `0x${string}`>;
+};
 
-    return `https://sepolia-explorer.arbitrum.io/api?module=contract&action=getabi&address=${address}`;
-  }
+const rollupCreatorContractConfig: ContractConfig = {
+  name: 'RollupCreator',
+  address: {
+    [ChainId.ArbitrumGoerli]: '0xB3f62C1c92D5224d0EC3A8d1efc8a44495B12BEc',
+    [ChainId.ArbitrumSepolia]: '0x8f6C1B4d75fA3a0D43ca750F308b1F3DDA8d92F7',
+  },
+};
 
-  const [{ data: arbiscanResponse }, { data: blockscoutResponse }] = await Promise.all(
-    Object.entries(contract.address)
-      //
-      .map(([chainId, address]) => axios(getAbiRequestUrl(Number(chainId), address))),
-  );
-
-  if (JSON.stringify(arbiscanResponse) !== blockscoutResponse.result) {
-    throw new Error(`ABIs don't match!`);
-  }
-
-  const [chainId, address] = Object.entries(contract.address)[0];
-
-  return { url: getAbiRequestUrl(Number(chainId), address) };
+function allEqual<T>(array: T[]) {
+  return array.every((value) => value === array[0]);
 }
 
-export default defineConfig({
-  out: 'src/generated.ts',
-  plugins: [
-    fetch({
-      cacheDuration: 1,
-      contracts: [
-        {
-          name: 'RollupCreator',
-          address: {
-            [ChainId.ArbitrumGoerli]: '0xB3f62C1c92D5224d0EC3A8d1efc8a44495B12BEc',
-            [ChainId.ArbitrumSepolia]: '0x8f6C1B4d75fA3a0D43ca750F308b1F3DDA8d92F7',
-          },
-        },
-      ],
-      request,
-    }),
-  ],
-});
+export async function assertContractsMatch(contract: { address: Record<number, `0x${string}`> }) {
+  const abis = await Promise.all(
+    Object.entries(contract.address)
+      // fetch abis for all chains
+      .map(([chainId, address]) => fetchAbi(Number(chainId), address)),
+  );
+
+  // make sure all abis are the same
+  if (!allEqual(abis.map((abi) => JSON.stringify(abi)))) {
+    throw new Error(`ABIs don't match`);
+  }
+
+  console.log('Contracts match.');
+}
+
+export default async function () {
+  await assertContractsMatch(rollupCreatorContractConfig);
+
+  // since we made sure that all contracts have same abis, it doesn't really matter which one we choose
+  const chainId = ChainId.ArbitrumGoerli;
+  const address = rollupCreatorContractConfig.address[chainId];
+
+  function request() {
+    return { url: getRequestUrl(chainId, address) };
+  }
+
+  return {
+    out: 'src/generated.ts',
+    plugins: [
+      fetch({
+        request,
+        contracts: [rollupCreatorContractConfig],
+        cacheDuration: 0,
+      }),
+    ],
+  };
+}
