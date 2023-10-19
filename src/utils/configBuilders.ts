@@ -1,13 +1,8 @@
 import { parseEther, GetFunctionArgs } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
-import { RollupCreatorAbiType } from '@/abis/RollupCreatorAbi';
-import {
-  AnyTrustConfigData,
-  RollupConfig,
-  RollupConfigData,
-  RollupConfigPayload,
-} from '@/types/rollupConfigDataType';
+import { rollupCreatorABI } from '@/generated';
+import { AnyTrustConfigData, RollupConfig, RollupConfigData } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsAddress } from './validators';
 
@@ -151,37 +146,39 @@ export function buildRollupConfigData({
   };
 }
 
+export type RollupConfigPayload = GetFunctionArgs<
+  typeof rollupCreatorABI,
+  'createRollup'
+>['args'][0]['config'];
+
 export const buildRollupConfigPayload = ({
   rollupConfig,
   chainConfig,
 }: {
   rollupConfig: RollupConfig;
   chainConfig: string;
-}): GetFunctionArgs<RollupCreatorAbiType, 'createRollup'>['args'][0] => {
+}): RollupConfigPayload => {
   try {
-    const rollupConfigPayload: RollupConfigPayload = {
-      ...rollupConfig,
-      chainConfig,
-      baseStake: parseEther(String(rollupConfig.baseStake)),
-    };
-
-    assertIsAddress(rollupConfigPayload.owner);
-    assertIsAddress(rollupConfigPayload.stakeToken);
+    assertIsAddress(rollupConfig.owner);
+    assertIsAddress(rollupConfig.stakeToken);
 
     return {
-      ...rollupConfigPayload,
-      chainId: BigInt(rollupConfigPayload.chainId),
-      genesisBlockNum: BigInt(rollupConfigPayload.genesisBlockNum),
-      confirmPeriodBlocks: BigInt(rollupConfigPayload.confirmPeriodBlocks),
-      extraChallengeTimeBlocks: BigInt(rollupConfigPayload.extraChallengeTimeBlocks),
+      confirmPeriodBlocks: BigInt(rollupConfig.confirmPeriodBlocks),
+      extraChallengeTimeBlocks: BigInt(rollupConfig.extraChallengeTimeBlocks),
+      stakeToken: rollupConfig.stakeToken,
+      baseStake: parseEther(String(rollupConfig.baseStake)),
+      wasmModuleRoot: rollupConfig.wasmModuleRoot,
+      owner: rollupConfig.owner,
+      loserStakeEscrow: rollupConfig.loserStakeEscrow,
+      chainId: BigInt(rollupConfig.chainId),
+      chainConfig,
+      genesisBlockNum: BigInt(rollupConfig.genesisBlockNum),
       sequencerInboxMaxTimeVariation: {
-        delayBlocks: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.delayBlocks),
-        futureBlocks: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.futureBlocks),
-        delaySeconds: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.delaySeconds),
-        futureSeconds: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.futureSeconds),
+        delayBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delayBlocks),
+        futureBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.futureBlocks),
+        delaySeconds: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delaySeconds),
+        futureSeconds: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.futureSeconds),
       },
-      owner: rollupConfigPayload.owner,
-      stakeToken: rollupConfigPayload.stakeToken,
     };
   } catch (e) {
     throw new Error(`Error building rollup config payload: ${e}`);

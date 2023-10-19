@@ -102,8 +102,6 @@ export type RollupConfig = {
   };
 };
 
-export type RollupConfigPayload = Omit<RollupConfig, 'baseStake'> & { baseStake: bigint };
-
 export type AnyTrustConfig = RollupConfig & {
   sequencerInboxAddress: string;
 };
