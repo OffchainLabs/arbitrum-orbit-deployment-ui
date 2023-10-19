@@ -2,12 +2,7 @@ import { parseEther, GetFunctionArgs } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
 import { rollupCreatorABI } from '@/generated';
-import {
-  AnyTrustConfigData,
-  RollupConfig,
-  RollupConfigData,
-  RollupConfigPayload,
-} from '@/types/rollupConfigDataType';
+import { AnyTrustConfigData, RollupConfig, RollupConfigData } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsAddress } from './validators';
 
@@ -151,13 +146,18 @@ export function buildRollupConfigData({
   };
 }
 
+export type RollupConfigPayload = GetFunctionArgs<
+  typeof rollupCreatorABI,
+  'createRollup'
+>['args'][0]['config'];
+
 export const buildRollupConfigPayload = ({
   rollupConfig,
   chainConfig,
 }: {
   rollupConfig: RollupConfig;
   chainConfig: string;
-}): GetFunctionArgs<typeof rollupCreatorABI, 'createRollup'>['args'][0]['config'] => {
+}): RollupConfigPayload => {
   try {
     assertIsAddress(rollupConfig.owner);
     assertIsAddress(rollupConfig.stakeToken);
