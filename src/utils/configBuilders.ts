@@ -157,7 +157,7 @@ export const buildRollupConfigPayload = ({
 }: {
   rollupConfig: RollupConfig;
   chainConfig: string;
-}): GetFunctionArgs<typeof rollupCreatorABI, 'createRollup'>['args']['0']['config'] => {
+}): GetFunctionArgs<typeof rollupCreatorABI, 'createRollup'>['args'][0]['config'] => {
   try {
     assertIsAddress(rollupConfig.owner);
     assertIsAddress(rollupConfig.stakeToken);
