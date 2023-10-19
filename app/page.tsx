@@ -57,7 +57,7 @@ export default function Home() {
           >
             Connect with us to learn if an Orbit chain makes sense for you
           </ExternalLinkTile>
-          <ExternalLinkTile href="https://discord.gg/KsewXePB" title="Get Support">
+          <ExternalLinkTile href="https://discord.gg/arbitrum" title="Get Support">
             Join the <span className="font-bold">#orbit-support</span> channel in Discord if you run
             into any issues
           </ExternalLinkTile>
