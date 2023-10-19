@@ -157,31 +157,28 @@ export const buildRollupConfigPayload = ({
 }: {
   rollupConfig: RollupConfig;
   chainConfig: string;
-}): GetFunctionArgs<typeof rollupCreatorABI, 'createRollup'>['args'][0] => {
+}): GetFunctionArgs<typeof rollupCreatorABI, 'createRollup'>['args'][0]['config'] => {
   try {
-    const rollupConfigPayload: RollupConfigPayload = {
-      ...rollupConfig,
-      chainConfig,
-      baseStake: parseEther(String(rollupConfig.baseStake)),
-    };
-
-    assertIsAddress(rollupConfigPayload.owner);
-    assertIsAddress(rollupConfigPayload.stakeToken);
+    assertIsAddress(rollupConfig.owner);
+    assertIsAddress(rollupConfig.stakeToken);
 
     return {
-      ...rollupConfigPayload,
-      chainId: BigInt(rollupConfigPayload.chainId),
-      genesisBlockNum: BigInt(rollupConfigPayload.genesisBlockNum),
-      confirmPeriodBlocks: BigInt(rollupConfigPayload.confirmPeriodBlocks),
-      extraChallengeTimeBlocks: BigInt(rollupConfigPayload.extraChallengeTimeBlocks),
+      confirmPeriodBlocks: BigInt(rollupConfig.confirmPeriodBlocks),
+      extraChallengeTimeBlocks: BigInt(rollupConfig.extraChallengeTimeBlocks),
+      stakeToken: rollupConfig.stakeToken,
+      baseStake: parseEther(String(rollupConfig.baseStake)),
+      wasmModuleRoot: rollupConfig.wasmModuleRoot,
+      owner: rollupConfig.owner,
+      loserStakeEscrow: rollupConfig.loserStakeEscrow,
+      chainId: BigInt(rollupConfig.chainId),
+      chainConfig,
+      genesisBlockNum: BigInt(rollupConfig.genesisBlockNum),
       sequencerInboxMaxTimeVariation: {
-        delayBlocks: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.delayBlocks),
-        futureBlocks: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.futureBlocks),
-        delaySeconds: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.delaySeconds),
-        futureSeconds: BigInt(rollupConfigPayload.sequencerInboxMaxTimeVariation.futureSeconds),
+        delayBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delayBlocks),
+        futureBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.futureBlocks),
+        delaySeconds: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delaySeconds),
+        futureSeconds: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.futureSeconds),
       },
-      owner: rollupConfigPayload.owner,
-      stakeToken: rollupConfigPayload.stakeToken,
     };
   } catch (e) {
     throw new Error(`Error building rollup config payload: ${e}`);

@@ -69,8 +69,8 @@ export async function deployRollup({
 }: DeployRollupProps): Promise<RollupContracts> {
   try {
     const chainConfig: string = JSON.stringify(buildChainConfig(rollupConfig));
-
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
+
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
     const nativeToken = rollupConfig.nativeToken;
@@ -89,13 +89,16 @@ export async function deployRollup({
       abi: rollupCreatorABI,
       functionName: 'createRollup',
       args: [
-        rollupConfigPayload,
-        batchPosterAddress,
-        validatorAddresses,
-        maxDataSize,
-        nativeToken,
-        deterministicFactoriesDeploymentEnabled,
-        parseGwei('0.1'), // this will be ignored because the above is currently set to false
+        {
+          config: rollupConfigPayload,
+          batchPoster: batchPosterAddress,
+          validators: validatorAddresses,
+          maxDataSize,
+          nativeToken,
+          deployFactoriesToL2: deterministicFactoriesDeploymentEnabled,
+          // this will be ignored because the above is currently set to false
+          maxFeePerGasForRetryables: parseGwei('0.1'),
+        },
       ],
       value: BigInt(0),
       account,
