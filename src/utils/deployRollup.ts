@@ -1,7 +1,7 @@
 import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, Log } from 'viem';
 import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
 
-import { rollupCreatorABI } from '@/generated';
+import { rollupCreatorABI, rollupCreatorAddress } from '@/generated';
 import { ChainType } from '@/types/ChainType';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { RollupConfig } from '@/types/rollupConfigDataType';
@@ -81,20 +81,14 @@ export async function deployRollup({
     console.log(chainConfig);
     console.log('Going for deployment');
 
-    const parentChainId = await publicClient.getChainId();
-
-    // todo: use generated value
-    const rollupCreatorContractAddress =
-      parentChainId === ChainId.ArbitrumGoerli
-        ? ARB_GOERLI_CREATOR_ADDRESS
-        : ARB_SEPOLIA_CREATOR_ADDRESS;
+    const parentChainId: ChainId = await publicClient.getChainId();
 
     assertIsAddress(batchPosterAddress);
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
     const { request } = await publicClient.simulateContract({
-      address: rollupCreatorContractAddress,
+      address: rollupCreatorAddress[parentChainId],
       abi: rollupCreatorABI,
       functionName: 'createRollup',
       args: [
