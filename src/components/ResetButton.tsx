@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { useAccount } from 'wagmi';
 import { ButtonHTMLAttributes, FC } from 'react';
-import { assertIsHexString } from '@/utils/validators';
+import { assertIsAddress } from '@/utils/validators';
 
 interface ResetButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
@@ -19,7 +19,7 @@ export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
 
     dispatch({ type: 'set_is_loading', payload: false });
 
-    assertIsHexString(address);
+    assertIsAddress(address);
     dispatch({ type: 'reset', payload: address });
 
     router.push('/deployment/step/1');

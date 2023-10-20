@@ -126,7 +126,7 @@ const RollupConfigSchema = z.object({
   chainId: z.number(),
   chainName: z.string(),
   genesisBlockNum: z.number(),
-  nativeToken: z.string(),
+  nativeToken: AddressSchema,
   sequencerInboxMaxTimeVariation: z.object({
     delayBlocks: z.number(),
     futureBlocks: z.number(),

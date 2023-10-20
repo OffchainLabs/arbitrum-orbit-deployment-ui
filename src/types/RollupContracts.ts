@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AddressSchema } from '@/utils/schemas';
+import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
 
 export type RollupContracts = {
   rollup: string;
@@ -17,7 +17,7 @@ export type RollupContracts = {
 
 export const WalletSchema = z.object({
   address: AddressSchema,
-  privateKey: AddressSchema.optional(),
+  privateKey: PrivateKeySchema.optional(),
 });
 
 export type Wallet = z.infer<typeof WalletSchema>;

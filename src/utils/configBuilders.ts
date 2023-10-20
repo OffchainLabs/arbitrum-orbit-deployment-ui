@@ -10,6 +10,7 @@ import {
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { ChainType } from '@/types/ChainType';
 import { assertIsAddress } from './validators';
+import { rollupCreatorABI } from '../generated';
 
 export const buildChainConfig = (
   chainConfig: { chainId: number; owner: `0x${string}` },
@@ -153,7 +154,7 @@ export const buildRollupConfigPayload = ({
       owner: rollupConfig.owner,
       loserStakeEscrow: rollupConfig.loserStakeEscrow,
       chainId: BigInt(rollupConfig.chainId),
-      chainConfig,
+      chainConfig: JSON.stringify(chainConfig),
       genesisBlockNum: BigInt(rollupConfig.genesisBlockNum),
       sequencerInboxMaxTimeVariation: {
         delayBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delayBlocks),
