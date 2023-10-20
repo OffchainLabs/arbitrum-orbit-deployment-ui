@@ -15,6 +15,7 @@ import { useAccount } from 'wagmi';
 import { useStep } from '@/hooks/useStep';
 import { ChainType } from '@/types/ChainType';
 import { RollupConfigFormValues } from './RollupConfigInput';
+import type { Address, HexString } from '@/utils/schemas';
 
 type DeploymentPageContextState = {
   rollupContracts?: RollupContracts;
@@ -24,18 +25,19 @@ type DeploymentPageContextState = {
   chainType?: ChainType;
   isLoading: boolean;
 };
+const DEFAULT_OWNER = '0x0000000' as `0x${string}`;
 
 const generateDefaultRollupConfig: () => RollupConfig = () => ({
   confirmPeriodBlocks: 150,
   stakeToken: '0x0000000000000000000000000000000000000000',
   baseStake: 0.1,
-  owner: '',
+  owner: DEFAULT_OWNER,
   extraChallengeTimeBlocks: 0,
-  wasmModuleRoot: '0x0754e09320c381566cc0449904c377a52bd34a6b9404432e80afd573b67f7b17',
+  wasmModuleRoot: '0x0754e09320c381566cc0449904c377a52bd34a6b9404432e80afd573b67f7b17' as HexString,
   loserStakeEscrow: '0x0000000000000000000000000000000000000000',
   chainId: Math.floor(Math.random() * 100000000000) + 1,
   chainName: 'My Arbitrum L3 Chain',
-  chainConfig: '0x0000000000000000000000000000000000000000000000000000000000000000',
+  chainConfig: '',
   genesisBlockNum: 0,
   nativeToken: '0x0000000000000000000000000000000000000000',
   sequencerInboxMaxTimeVariation: {
@@ -46,7 +48,7 @@ const generateDefaultRollupConfig: () => RollupConfig = () => ({
   },
 });
 
-function getDefaultRollupConfig(owner: string = '') {
+function getDefaultRollupConfig(owner: Address = DEFAULT_OWNER) {
   return { ...generateDefaultRollupConfig(), owner };
 }
 
@@ -80,7 +82,7 @@ type DeploymentPageContextAction =
   | { type: 'set_validators'; payload: Wallet[] }
   | { type: 'set_batch_poster'; payload: Wallet }
   | { type: 'set_is_loading'; payload: boolean }
-  | { type: 'reset'; payload: string };
+  | { type: 'reset'; payload: Address | undefined };
 
 type DeploymentPageContextValue = [
   DeploymentPageContextState,

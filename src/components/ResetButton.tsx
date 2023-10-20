@@ -17,7 +17,7 @@ export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
     localStorage.removeItem('l3Config');
 
     dispatch({ type: 'set_is_loading', payload: false });
-    dispatch({ type: 'reset', payload: address ? address : '' });
+    dispatch({ type: 'reset', payload: address });
     router.push('/deployment/step/1');
   }
 

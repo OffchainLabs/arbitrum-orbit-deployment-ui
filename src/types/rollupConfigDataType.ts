@@ -1,32 +1,37 @@
-export type ChainConfig = {
-  chainId: number;
-  homesteadBlock: number;
-  daoForkBlock: null;
-  daoForkSupport: boolean;
-  eip150Block: number;
-  eip150Hash: string;
-  eip155Block: number;
-  eip158Block: number;
-  byzantiumBlock: number;
-  constantinopleBlock: number;
-  petersburgBlock: number;
-  istanbulBlock: number;
-  muirGlacierBlock: number;
-  berlinBlock: number;
-  londonBlock: number;
-  clique: {
-    period: number;
-    epoch: number;
-  };
-  arbitrum: {
-    EnableArbOS: boolean;
-    AllowDebugPrecompiles: boolean;
-    DataAvailabilityCommittee: boolean;
-    InitialArbOSVersion: number;
-    InitialChainOwner: string;
-    GenesisBlockNum: number;
-  };
-};
+import { z } from 'zod';
+import { AddressSchema, HexStringSchema } from '@/utils/schemas';
+
+export const ChainConfigSchema = z.object({
+  chainId: z.number(),
+  homesteadBlock: z.number(),
+  daoForkBlock: z.null(),
+  daoForkSupport: z.boolean(),
+  eip150Block: z.number(),
+  eip150Hash: z.string(),
+  eip155Block: z.number(),
+  eip158Block: z.number(),
+  byzantiumBlock: z.number(),
+  constantinopleBlock: z.number(),
+  petersburgBlock: z.number(),
+  istanbulBlock: z.number(),
+  muirGlacierBlock: z.number(),
+  berlinBlock: z.number(),
+  londonBlock: z.number(),
+  clique: z.object({
+    period: z.number(),
+    epoch: z.number(),
+  }),
+  arbitrum: z.object({
+    EnableArbOS: z.boolean(),
+    AllowDebugPrecompiles: z.boolean(),
+    DataAvailabilityCommittee: z.boolean(),
+    InitialArbOSVersion: z.number(),
+    InitialChainOwner: z.string(),
+    GenesisBlockNum: z.number(),
+  }),
+});
+
+export type ChainConfig = z.infer<typeof ChainConfigSchema>;
 
 export type RollupConfigData = {
   'chain': {
@@ -111,27 +116,45 @@ export type AnyTrustConfigData = RollupConfigData & {
   };
 };
 
-export type RollupConfig = {
-  confirmPeriodBlocks: number;
-  stakeToken: string;
-  baseStake: number;
-  owner: string;
-  extraChallengeTimeBlocks: number;
-  wasmModuleRoot: `0x${string}`;
-  loserStakeEscrow: `0x${string}`;
-  chainId: number;
-  chainName: string;
-  chainConfig: string;
-  genesisBlockNum: number;
-  nativeToken: string;
-  sequencerInboxMaxTimeVariation: {
-    delayBlocks: number;
-    futureBlocks: number;
-    delaySeconds: number;
-    futureSeconds: number;
-  };
-};
+const RollupConfigSchema = z.object({
+  confirmPeriodBlocks: z.number(),
+  stakeToken: AddressSchema,
+  baseStake: z.number(),
+  owner: AddressSchema,
+  extraChallengeTimeBlocks: z.number(),
+  wasmModuleRoot: HexStringSchema,
+  loserStakeEscrow: AddressSchema,
+  chainId: z.number(),
+  chainName: z.string(),
+  genesisBlockNum: z.number(),
+  nativeToken: AddressSchema,
+  sequencerInboxMaxTimeVariation: z.object({
+    delayBlocks: z.number(),
+    futureBlocks: z.number(),
+    delaySeconds: z.number(),
+    futureSeconds: z.number(),
+  }),
+});
 
+export type RollupConfig = z.infer<typeof RollupConfigSchema>;
+
+export const RollupConfigPayloadSchema = RollupConfigSchema.omit({
+  nativeToken: true,
+  chainName: true,
+}).extend({
+  confirmPeriodBlocks: z.bigint(),
+  baseStake: z.bigint(),
+  chainId: z.bigint(),
+  chainConfig: z.string(),
+  extraChallengeTimeBlocks: z.bigint(),
+  genesisBlockNum: z.bigint(),
+  sequencerInboxMaxTimeVariation: z.object({
+    delayBlocks: z.bigint(),
+    futureBlocks: z.bigint(),
+    delaySeconds: z.bigint(),
+    futureSeconds: z.bigint(),
+  }),
+});
 export type AnyTrustConfig = RollupConfig & {
   sequencerInboxAddress: string;
 };

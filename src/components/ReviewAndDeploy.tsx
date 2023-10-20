@@ -4,6 +4,7 @@ import { deployRollup } from '@/utils/deployRollup';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { StepTitle } from './StepTitle';
 import { ChainType } from '@/types/ChainType';
+import { useState } from 'react';
 
 export const ReviewAndDeploy = () => {
   const [{ rollupConfig, validators, batchPoster, chainType }, dispatch] =
@@ -12,6 +13,7 @@ export const ReviewAndDeploy = () => {
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const { nextStep, reviewAndDeployFormRef } = useStep();
+  const [errorMessage, setErrorMessage] = useState('');
 
   if (!rollupConfig) return <div>No rollup config found</div>;
   if (!validators) return <div>No validators found</div>;
@@ -19,7 +21,7 @@ export const ReviewAndDeploy = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setErrorMessage('');
     try {
       dispatch({ type: 'set_is_loading', payload: true });
       if (!walletClient || !address) return;
@@ -36,6 +38,7 @@ export const ReviewAndDeploy = () => {
       nextStep();
     } catch (e) {
       console.error(e);
+      if (e instanceof Error && e.message) setErrorMessage(e.message);
     } finally {
       dispatch({ type: 'set_is_loading', payload: false });
     }
@@ -112,6 +115,14 @@ export const ReviewAndDeploy = () => {
               {batchPoster.address}
             </pre>
           </div>
+          {errorMessage && (
+            <div className="mt-2">
+              <pre className="overflow-scroll whitespace-pre-wrap rounded bg-[#ffcbcb] p-2 text-xs text-[#a72d2d]">
+                <h3 className="font-bold text-[#a72d2d]">Error</h3>
+                {errorMessage}
+              </pre>
+            </div>
+          )}
         </div>
 
         <form

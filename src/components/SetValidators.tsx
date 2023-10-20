@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { useStep } from '@/hooks/useStep';
 import { Wallet } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
-import { AddressSchema } from '@/utils/schemas';
+import { Address, AddressSchema } from '@/utils/schemas';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
@@ -55,7 +55,7 @@ export const SetValidators = () => {
 
   const onSubmit = (data: ValidatorsFormValues) => {
     // Remove the private key if the user entered a custom address
-    const compareWallets = (wallets: Wallet[], addresses: string[]): Wallet[] => {
+    const compareWallets = (wallets: Wallet[], addresses: Address[]): Wallet[] => {
       return addresses
         .map((address) => {
           const wallet = wallets.find((w) => w.address === address);

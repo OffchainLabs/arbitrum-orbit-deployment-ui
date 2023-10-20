@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainType } from '@/types/ChainType';
-import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { AddressSchema } from '@/utils/schemas';
@@ -13,7 +12,7 @@ const rollupConfigSchema = z.object({
   chainId: z.number().gt(0),
   chainName: z.string().nonempty(),
   confirmPeriodBlocks: z.number().gt(0),
-  stakeToken: z.string(),
+  stakeToken: AddressSchema,
   baseStake: z.number().gt(0),
   owner: AddressSchema,
   nativeToken: AddressSchema,

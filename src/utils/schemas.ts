@@ -1,11 +1,33 @@
 import { z } from 'zod';
+import { Address } from 'abitype/zod';
 
-export const AddressSchema = z
-  .string()
-  .length(42)
-  .regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid address');
+export const AddressSchema = Address;
+export type Address = z.infer<typeof Address>;
 
-export const PrivateKeySchema = z
-  .string()
-  .length(2 + 64)
-  .regex(/^0x[0-9a-fA-F]+$/, 'Must be a valid private key');
+export const PrivateKeySchema = z.string().transform((val, ctx) => {
+  const regex = /^0x[a-fA-F0-9]{64}$/;
+
+  if (!regex.test(val)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Invalid Private Key ${val}`,
+    });
+  }
+
+  return val as `0x${string}`;
+});
+export type PrivateKey = z.infer<typeof PrivateKeySchema>;
+
+export const HexStringSchema = z.string().transform((val, ctx) => {
+  const regex = /^0x[a-fA-F0-9]$/;
+
+  if (!regex.test(val)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Invalid Hex String ${val}`,
+    });
+  }
+
+  return val as `0x${string}`;
+});
+export type HexString = z.infer<typeof HexStringSchema>;

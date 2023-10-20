@@ -1,10 +1,11 @@
+import { z } from 'zod';
 import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, Log } from 'viem';
 import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
 
 import { rollupCreatorABI, rollupCreatorAddress } from '@/generated';
 import { ChainType } from '@/types/ChainType';
-import { Wallet, RollupContracts } from '@/types/RollupContracts';
-import { RollupConfig } from '@/types/rollupConfigDataType';
+import { Wallet, RollupContracts, WalletSchema } from '@/types/RollupContracts';
+import { RollupConfig, RollupConfigPayloadSchema } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
   buildChainConfig,
@@ -13,10 +14,10 @@ import {
   buildRollupConfigPayload,
 } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
-import { assertIsAddress, assertIsAddressArray } from './validators';
 import { ChainId } from '@/types/ChainId';
 import { deterministicFactoriesDeploymentEnabled } from './constants';
 import { maxDataSize } from './defaults';
+import { AddressSchema } from './schemas';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -27,6 +28,13 @@ type DeployRollupProps = {
   chainType?: ChainType;
   account: Address;
 };
+
+const RollupCreateSchema = z.object({
+  rollupConfigPayload: RollupConfigPayloadSchema,
+  batchPoster: WalletSchema,
+  validators: z.array(WalletSchema),
+});
+const assertIsValidRollupConfigPayload = RollupCreateSchema.parse;
 
 type RollupCreatorAbiType = typeof rollupCreatorABI;
 
@@ -78,11 +86,13 @@ export async function deployRollup({
     console.log(chainConfig);
     console.log('Going for deployment');
 
-    const parentChainId: ChainId = await publicClient.getChainId();
+    assertIsValidRollupConfigPayload({
+      rollupConfigPayload,
+      batchPoster,
+      validators,
+    });
 
-    assertIsAddress(batchPosterAddress);
-    assertIsAddress(nativeToken);
-    assertIsAddressArray(validatorAddresses);
+    const parentChainId: ChainId = await publicClient.getChainId();
 
     const { request } = await publicClient.simulateContract({
       address: rollupCreatorAddress[parentChainId],

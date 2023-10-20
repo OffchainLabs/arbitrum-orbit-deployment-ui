@@ -1,4 +1,5 @@
-import { Address } from 'viem';
+import { z } from 'zod';
+import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
 
 export type RollupContracts = {
   rollup: string;
@@ -14,7 +15,23 @@ export type RollupContracts = {
   upgradeExecutor: string;
 };
 
-export type Wallet = {
-  address: string;
-  privateKey?: string;
-};
+export const WalletSchema = z.object({
+  address: AddressSchema,
+  privateKey: PrivateKeySchema.optional(),
+});
+
+export type Wallet = z.infer<typeof WalletSchema>;
+
+export const RollupCreatedEvent = z.object({
+  args: z.object({
+    rollupAddress: AddressSchema,
+    inboxAddress: AddressSchema,
+    adminProxy: AddressSchema,
+    sequencerInbox: AddressSchema,
+    bridge: AddressSchema,
+    nativeToken: AddressSchema,
+    upgradeExecutor: AddressSchema,
+  }),
+});
+
+export type RollupCreatedEvent = z.infer<typeof RollupCreatedEvent>;

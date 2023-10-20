@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Wallet } from '@/types/RollupContracts';
 import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
+import { assertIsPrivateKey } from '@/utils/validators';
 
 const batchPosterSchema = z.object({
   batchPosterAddress: AddressSchema,
@@ -30,11 +31,13 @@ export const SetBatchPoster = () => {
     resolver: zodResolver(batchPosterSchema),
     defaultValues: {
       batchPosterAddress: batchPoster.address,
-      batchPosterPrivateKey: batchPoster.privateKey ?? '',
+      batchPosterPrivateKey: batchPoster.privateKey ?? '0x000000',
     },
   });
 
   const onSubmit = (data: BatchPosterFormValues) => {
+    assertIsPrivateKey(data.batchPosterPrivateKey);
+
     const payload = {
       address: data.batchPosterAddress,
       privateKey: data.batchPosterPrivateKey,

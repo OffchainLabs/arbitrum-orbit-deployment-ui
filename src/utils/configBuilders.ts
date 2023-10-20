@@ -1,8 +1,6 @@
-import { parseEther, GetFunctionArgs } from 'viem';
+import { parseEther, GetFunctionArgs, Address } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
-import { ChainType } from '@/types/ChainType';
-import { rollupCreatorABI } from '@/generated';
 import {
   AnyTrustConfigData,
   ChainConfig,
@@ -10,10 +8,12 @@ import {
   RollupConfigData,
 } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
+import { ChainType } from '@/types/ChainType';
 import { assertIsAddress } from './validators';
+import { rollupCreatorABI } from '@/generated';
 
 export const buildChainConfig = (
-  chainConfig: { chainId: number; owner: string },
+  chainConfig: { chainId: number; owner: Address },
   chainType: ChainType,
 ): ChainConfig => ({
   chainId: Number(chainConfig.chainId),
