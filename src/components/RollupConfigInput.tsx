@@ -150,18 +150,22 @@ export const RollupConfigInput = () => {
             error={errors.nativeToken?.message}
           />
 
-          {nativeTokenIsError ? (
-            <span className="text-yellow-600">
-              Failed to detect a valid ERC-20 contract at the given address.
-            </span>
-          ) : (
-            <span>
-              The chain will use{' '}
-              <b>
-                {nativeTokenData.name} ({nativeTokenData.symbol})
-              </b>{' '}
-              as the native token.
-            </span>
+          {chainType === ChainType.AnyTrust && (
+            <>
+              {nativeTokenIsError ? (
+                <span className="text-yellow-600">
+                  Failed to detect a valid ERC-20 contract at the given address.
+                </span>
+              ) : (
+                <span>
+                  The chain will use{' '}
+                  <b>
+                    {nativeTokenData.name} ({nativeTokenData.symbol})
+                  </b>{' '}
+                  as the native token.
+                </span>
+              )}
+            </>
           )}
         </div>
       </form>
