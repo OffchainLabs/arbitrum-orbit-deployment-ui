@@ -162,7 +162,7 @@ export const RollupConfigInput = () => {
                   <b>
                     {nativeTokenData.name} ({nativeTokenData.symbol})
                   </b>{' '}
-                  as the native token.
+                  as the native token for paying gas fees.
                 </span>
               )}
             </>
