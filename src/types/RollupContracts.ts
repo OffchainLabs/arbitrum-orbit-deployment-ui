@@ -21,17 +21,3 @@ export const WalletSchema = z.object({
 });
 
 export type Wallet = z.infer<typeof WalletSchema>;
-
-export const RollupCreatedEvent = z.object({
-  args: z.object({
-    rollupAddress: AddressSchema,
-    inboxAddress: AddressSchema,
-    adminProxy: AddressSchema,
-    sequencerInbox: AddressSchema,
-    bridge: AddressSchema,
-    nativeToken: AddressSchema,
-    upgradeExecutor: AddressSchema,
-  }),
-});
-
-export type RollupCreatedEvent = z.infer<typeof RollupCreatedEvent>;
