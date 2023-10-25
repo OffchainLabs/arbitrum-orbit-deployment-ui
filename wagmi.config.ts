@@ -11,8 +11,8 @@ type ContractConfig = {
 const rollupCreatorContractConfig: ContractConfig = {
   name: 'RollupCreator',
   address: {
-    [ChainId.ArbitrumGoerli]: '0xA7a3e192086518e39E389B9C719467D4605ECA92',
-    [ChainId.ArbitrumSepolia]: '0x7BF720af84D88b0319eb446aDf3f9F6E2453e9ca',
+    [ChainId.ArbitrumGoerli]: '0x2025FCb2Ee63Fcd60E079c9602f7a25bfcA100EE',
+    [ChainId.ArbitrumSepolia]: '0x06E341073b2749e0Bb9912461351f716DeCDa9b0',
   },
 };
 
