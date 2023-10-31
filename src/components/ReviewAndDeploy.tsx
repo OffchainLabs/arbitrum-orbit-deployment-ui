@@ -86,6 +86,12 @@ export const ReviewAndDeploy = () => {
                 {rollupConfig.owner}
               </pre>
             </div>
+            <div>
+              <span className="font-bold">Native Token</span>
+              <pre className="whitespace-pre-wrap break-all rounded bg-[#eff5f9] p-2 text-[#243045]">
+                {rollupConfig.nativeToken}
+              </pre>
+            </div>
           </div>
         </div>
         <div>

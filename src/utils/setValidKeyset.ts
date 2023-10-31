@@ -1,30 +1,41 @@
-import { PublicClient, WalletClient } from 'viem';
-import { AnyTrustConfigData } from '@/types/rollupConfigDataType';
-import SequencerInbox from '@/ethereum/SequencerInbox.json';
-import { assertIsHexString } from './validators';
+import { PublicClient, WalletClient, encodeFunctionData, parseAbi, Address } from 'viem';
+
+function getEncodedCallData(keyset: `0x${string}`) {
+  return encodeFunctionData({
+    abi: parseAbi(['function setValidKeyset(bytes keysetBytes)']),
+    functionName: 'setValidKeyset',
+    args: [keyset],
+  });
+}
 
 export const setValidKeyset = async ({
-  anyTrustConfigData,
-  account,
+  upgradeExecutorAddress,
+  sequencerInboxAddress,
   publicClient,
   walletClient,
   keyset,
 }: {
-  anyTrustConfigData: AnyTrustConfigData;
-  keyset: string;
-  account: `0x${string}`;
+  upgradeExecutorAddress: Address;
+  sequencerInboxAddress: Address;
+  keyset: `0x${string}`;
   publicClient: PublicClient;
   walletClient: WalletClient;
 }) => {
-  try {
-    const keysetAddress = anyTrustConfigData.node['data-availability']['sequencer-inbox-address'];
-    assertIsHexString(keysetAddress);
+  const account = walletClient.account?.address;
 
+  if (typeof account === 'undefined') {
+    throw new Error('[setValidKeyset] account is undefined');
+  }
+
+  try {
     const { request } = await publicClient.simulateContract({
-      address: keysetAddress,
-      abi: SequencerInbox.abi,
-      functionName: 'setValidKeyset',
-      args: [keyset],
+      address: upgradeExecutorAddress,
+      abi: parseAbi(['function executeCall(address target, bytes targetCallData)']),
+      functionName: 'executeCall',
+      args: [
+        sequencerInboxAddress, // target
+        getEncodedCallData(keyset), // targetCallData
+      ],
       account,
     });
 

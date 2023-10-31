@@ -1,16 +1,16 @@
-import { parseEther } from 'viem';
+import { parseEther, GetFunctionArgs } from 'viem';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
+import { ChainType } from '@/types/ChainType';
+import { rollupCreatorABI } from '@/generated';
 import {
   AnyTrustConfigData,
   ChainConfig,
   RollupConfig,
   RollupConfigData,
-  RollupConfigPayload,
 } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
-import { assertIsHexString } from './validators';
-import { ChainType } from '@/types/ChainType';
+import { assertIsAddress } from './validators';
 
 export const buildChainConfig = (
   chainConfig: { chainId: number; owner: string },
@@ -129,6 +129,11 @@ export function buildRollupConfigData({
   };
 }
 
+export type RollupConfigPayload = GetFunctionArgs<
+  typeof rollupCreatorABI,
+  'createRollup'
+>['args'][0]['config'];
+
 export const buildRollupConfigPayload = ({
   rollupConfig,
   chainConfig,
@@ -137,12 +142,27 @@ export const buildRollupConfigPayload = ({
   chainConfig: ChainConfig;
 }): RollupConfigPayload => {
   try {
-    const rollupConfigPayload: RollupConfigPayload = {
-      ...rollupConfig,
-      chainConfig: JSON.stringify(chainConfig),
+    assertIsAddress(rollupConfig.owner);
+    assertIsAddress(rollupConfig.stakeToken);
+
+    return {
+      confirmPeriodBlocks: BigInt(rollupConfig.confirmPeriodBlocks),
+      extraChallengeTimeBlocks: BigInt(rollupConfig.extraChallengeTimeBlocks),
+      stakeToken: rollupConfig.stakeToken,
       baseStake: parseEther(String(rollupConfig.baseStake)),
+      wasmModuleRoot: rollupConfig.wasmModuleRoot,
+      owner: rollupConfig.owner,
+      loserStakeEscrow: rollupConfig.loserStakeEscrow,
+      chainId: BigInt(rollupConfig.chainId),
+      chainConfig: JSON.stringify(chainConfig),
+      genesisBlockNum: BigInt(rollupConfig.genesisBlockNum),
+      sequencerInboxMaxTimeVariation: {
+        delayBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delayBlocks),
+        futureBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.futureBlocks),
+        delaySeconds: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delaySeconds),
+        futureSeconds: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.futureSeconds),
+      },
     };
-    return rollupConfigPayload;
   } catch (e) {
     throw new Error(`Error building rollup config payload: ${e}`);
   }
@@ -153,7 +173,7 @@ export function buildAnyTrustNodeConfig(
   sequencerInboxAddress: string,
   parentChainId: number,
 ): AnyTrustConfigData {
-  assertIsHexString(sequencerInboxAddress);
+  assertIsAddress(sequencerInboxAddress);
 
   const parentChainRpcUrl = getRpcUrl(parentChainId);
 

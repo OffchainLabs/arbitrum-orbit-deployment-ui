@@ -1,7 +1,9 @@
+import { useToken } from 'wagmi';
+import { zeroAddress } from 'viem';
+import { z } from 'zod';
 import { useStep } from '@/hooks/useStep';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainType } from '@/types/ChainType';
 import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
@@ -16,7 +18,11 @@ const rollupConfigSchema = z.object({
   stakeToken: z.string(),
   baseStake: z.number().gt(0),
   owner: AddressSchema,
+  nativeToken: AddressSchema,
 });
+
+const ether = { name: 'Ether', symbol: 'ETH' };
+const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration`;
 
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
@@ -27,6 +33,7 @@ export const RollupConfigInput = () => {
     handleSubmit,
     register,
     formState: { errors },
+    watch,
   } = useForm<z.infer<typeof rollupConfigSchema>>({
     defaultValues: rollupConfig,
     mode: 'onBlur',
@@ -43,7 +50,12 @@ export const RollupConfigInput = () => {
 
   const titleContent = chainType === ChainType.Rollup ? 'Configure Rollup' : 'Configure AnyTrust';
 
-  const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration`;
+  // todo: debounce? though don't think anyone will actually type it character by character
+  const nativeToken = watch('nativeToken');
+
+  const { data: nativeTokenData = ether, isError: nativeTokenIsError } = useToken({
+    address: nativeToken === zeroAddress ? undefined : (nativeToken as `0x${string}`),
+  });
 
   return (
     <>
@@ -121,6 +133,41 @@ export const RollupConfigInput = () => {
           register={() => register('owner')}
           error={errors.owner?.message}
         />
+
+        <div className="flex flex-col gap-2">
+          <TextInputWithInfoLink
+            label="Native Token"
+            explainerText={
+              chainType === ChainType.Rollup
+                ? 'Only AnyTrust chains support custom Native Tokens'
+                : ''
+            }
+            href={`${commonDocLink}#native-token`} // todo: update link
+            infoText="Read about Native Token in the docs"
+            defaultValue={rollupConfig?.nativeToken || ''}
+            register={() => register('nativeToken')}
+            disabled={chainType === ChainType.Rollup}
+            error={errors.nativeToken?.message}
+          />
+
+          {chainType === ChainType.AnyTrust && (
+            <>
+              {nativeTokenIsError ? (
+                <span className="text-yellow-600">
+                  Failed to detect a valid ERC-20 contract at the given address.
+                </span>
+              ) : (
+                <span>
+                  The chain will use{' '}
+                  <b>
+                    {nativeTokenData.name} ({nativeTokenData.symbol})
+                  </b>{' '}
+                  as the native token for paying gas fees.
+                </span>
+              )}
+            </>
+          )}
+        </div>
       </form>
     </>
   );
