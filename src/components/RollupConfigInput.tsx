@@ -1,4 +1,3 @@
-import { useToken } from 'wagmi';
 import { zeroAddress } from 'viem';
 import { z } from 'zod';
 import { useStep } from '@/hooks/useStep';
@@ -11,7 +10,6 @@ import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { AddressSchema } from '@/utils/schemas';
 import { useToken } from 'wagmi';
 import { useEffect } from 'react';
-import { DEFAULT_TOKEN } from '@/utils/constants';
 
 const rollupConfigSchema = z.object({
   chainId: z.number().gt(0),
@@ -23,7 +21,7 @@ const rollupConfigSchema = z.object({
   nativeToken: AddressSchema,
 });
 
-const ether = { name: 'Ether', symbol: 'ETH' };
+const ether = { name: 'Ether', symbol: 'ETH', decimals: 18 };
 const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration`;
 
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
@@ -36,41 +34,42 @@ export const RollupConfigInput = () => {
     register,
     setError,
     clearErrors,
-    watch,
     formState: { errors },
     watch,
   } = useForm<z.infer<typeof rollupConfigSchema>>({
     defaultValues: rollupConfig,
     resolver: zodResolver(rollupConfigSchema),
   });
-  const watchedNativeTokenAddress = watch(
-    'nativeToken',
-    rollupConfig?.nativeToken || DEFAULT_TOKEN,
-  );
+  const watchedNativeTokenAddress = watch('nativeToken', rollupConfig?.nativeToken || zeroAddress);
 
   const {
-    data: nativeTokenInfo,
-    isLoading: isNativeTokenInfoLoading,
-    isError: nativeTokenInfoHasError,
-  } = useToken({ address: watchedNativeTokenAddress });
+    data: nativeTokenData = ether,
+    isLoading: isNativeTokenDataLoading,
+    isError: nativeTokenDataHasError,
+  } = useToken({
+    address:
+      watchedNativeTokenAddress === zeroAddress
+        ? undefined
+        : (watchedNativeTokenAddress as `0x${string}`),
+  });
 
   const validateNativeToken = () => {
-    if (watchedNativeTokenAddress === DEFAULT_TOKEN) {
+    if (watchedNativeTokenAddress === zeroAddress) {
       clearErrors('nativeToken');
       return true;
-    } else if (nativeTokenInfoHasError) {
+    } else if (nativeTokenDataHasError) {
       setError('nativeToken', {
         type: 'manual',
         message: 'Invalid token address',
       });
       return false;
-    } else if (!nativeTokenInfo || !nativeTokenInfo.decimals) {
+    } else if (!nativeTokenData || !nativeTokenData.decimals) {
       setError('nativeToken', {
         type: 'manual',
         message: 'Invalid token address',
       });
       return false;
-    } else if (nativeTokenInfo && nativeTokenInfo.decimals !== 18) {
+    } else if (nativeTokenData && nativeTokenData.decimals !== 18) {
       setError('nativeToken', {
         type: 'manual',
         message: 'Native token must have 18 decimals',
@@ -84,13 +83,13 @@ export const RollupConfigInput = () => {
 
   useEffect(() => {
     validateNativeToken();
-  }, [nativeTokenInfoHasError, nativeTokenInfo]);
+  }, [nativeTokenDataHasError, nativeTokenData]);
 
   const onSubmit = (updatedRollupConfig: RollupConfigFormValues) => {
     const isNativeTokenValid = validateNativeToken();
 
     // Don't proceed with submission if there's a validation error for nativeToken
-    if (!isNativeTokenValid || isNativeTokenInfoLoading || errors.nativeToken) {
+    if (!isNativeTokenValid || isNativeTokenDataLoading || errors.nativeToken) {
       return;
     }
 
@@ -102,13 +101,6 @@ export const RollupConfigInput = () => {
   };
 
   const titleContent = chainType === ChainType.Rollup ? 'Configure Rollup' : 'Configure AnyTrust';
-
-  // todo: debounce? though don't think anyone will actually type it character by character
-  const nativeToken = watch('nativeToken');
-
-  const { data: nativeTokenData = ether, isError: nativeTokenIsError } = useToken({
-    address: nativeToken === zeroAddress ? undefined : (nativeToken as `0x${string}`),
-  });
 
   return (
     <>
@@ -187,34 +179,29 @@ export const RollupConfigInput = () => {
           error={errors.owner?.message}
         />
 
-
         <div className="flex flex-col gap-2">
-        <TextInputWithInfoLink
-          label="Native Token"
-          explainerText={
-            chainType === ChainType.Rollup
-              ? 'Only AnyTrust chains support custom Native Tokens'
-              : ''
-          }
-          href={`${commonDocLink}#native-token`} // todo: update link
-          infoText="Read about Native Token in the docs"
-          defaultValue={rollupConfig?.nativeToken || ''}
-          register={() => register('nativeToken')}
-          disabled={chainType === ChainType.Rollup}
-          isLoading={isNativeTokenInfoLoading}
-          error={errors.nativeToken?.message}
-        />
+          <TextInputWithInfoLink
+            label="Native Token"
+            explainerText={
+              chainType === ChainType.Rollup
+                ? 'Only AnyTrust chains support custom Native Tokens'
+                : ''
+            }
+            href={`${commonDocLink}#native-token`} // todo: update link
+            infoText="Read about Native Token in the docs"
+            defaultValue={rollupConfig?.nativeToken || zeroAddress}
+            register={() => register('nativeToken')}
+            disabled={chainType === ChainType.Rollup}
+            isLoading={isNativeTokenDataLoading}
+            error={errors.nativeToken?.message}
+          />
           {chainType === ChainType.AnyTrust && (
             <>
-              {nativeTokenIsError ? (
-                <span className="text-yellow-600">
-                  Failed to detect a valid ERC-20 contract at the given address.
-                </span>
-              ) : (
+              {!nativeTokenDataHasError && !isNativeTokenDataLoading && !errors.nativeToken && (
                 <span>
                   The chain will use{' '}
                   <b>
-                    {nativeTokenData.name} ({nativeTokenData.symbol})
+                    {nativeTokenData?.name} ({nativeTokenData?.symbol})
                   </b>{' '}
                   as the native token for paying gas fees.
                 </span>
