@@ -3,3 +3,5 @@ export const ARBITRUM_SEPOLIA_ICON_URL =
 
 // todo: allow changing this through the ui
 export const deterministicFactoriesDeploymentEnabled = false;
+
+export const DEFAULT_TOKEN = '0x0000000000000000000000000000000000000000';

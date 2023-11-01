@@ -9,6 +9,7 @@ interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElemen
   href: string;
   infoText: string | JSX.Element;
   error?: string;
+  isLoading?: boolean;
   register?: () => UseFormRegisterReturn<InternalFieldName>;
 }
 
@@ -18,6 +19,7 @@ export const TextInputWithInfoLink = ({
   href,
   infoText,
   error,
+  isLoading,
   register,
   ...props
 }: TextInputWithInfoLinkProps) => {
@@ -34,16 +36,24 @@ export const TextInputWithInfoLink = ({
         </label>
         <InfoCircleWithTooltip href={href} infoText={infoText} />
       </div>
-      <input
-        id={props.name}
-        className={twJoin(
-          'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
-          error && 'border-red-500',
-          props.disabled && 'cursor-not-allowed bg-gray-200 opacity-50',
+      <div className="relative">
+        <input
+          id={props.name}
+          className={twJoin(
+            'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
+            error && 'border-red-500',
+            props.disabled && 'cursor-not-allowed bg-gray-200 opacity-50',
+          )}
+          {...props}
+          {...getRegister()}
+        />
+        {isLoading && (
+          <div className="absolute inset-y-0 right-3 flex items-center">
+            <div className="border-primary-500 h-4 w-4 animate-spin rounded-full border-b-2 border-t-2"></div>
+          </div>
         )}
-        {...props}
-        {...getRegister()}
-      />
+      </div>
+
       {explainerText && <span className="text-sm text-zinc-500">{explainerText}</span>}
       {error && <span className="text-red-500">{error}</span>}
     </div>
