@@ -33,9 +33,7 @@ export function DeploymentSummary() {
       {rollupContracts && (
         <>
           <div className="flex flex-col gap-1">
-            <p className="text-xl font-bold">
-              {chainType === ChainType.Rollup ? 'Rollup' : 'AnyTrust'} Contracts
-            </p>
+            <p className="text-xl font-bold">Contracts</p>
           </div>
           <ul className="flex flex-col gap-2 rounded-lg border border-black p-3">
             <li className="flex flex-col" key={rollupContracts.rollup}>
