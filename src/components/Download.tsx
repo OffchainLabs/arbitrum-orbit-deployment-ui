@@ -2,9 +2,12 @@ import { useConfigDownloads } from '@/hooks/useConfigDownloads';
 import { CodeComponent } from './CodeComponent';
 import { StepTitle } from './StepTitle';
 import { DeploymentSummary } from './DeploymentSummary';
+import { useDeploymentPageContext } from './DeploymentPageContext';
+import { ChainType } from '@/types/ChainType';
 
 export function Download() {
   const { rollupConfigDownloadData, rollupConfigDisplayData, l3Config } = useConfigDownloads();
+  const [{ chainType }] = useDeploymentPageContext();
 
   return (
     <div className="mx-0 my-2 grid grid-cols-2 gap-4">
@@ -13,7 +16,9 @@ export function Download() {
         <p className="my-1">Configuration files are required to deploy locally.</p>
         <div className="mx-0 my-2">
           <div>
-            <h4 className="font-bold">Rollup Config</h4>
+            <h4 className="font-bold">
+              {chainType === ChainType.Rollup ? 'Rollup' : 'AnyTrust'} Config
+            </h4>
             {!rollupConfigDownloadData ? (
               <div>No rollup data found.</div>
             ) : (

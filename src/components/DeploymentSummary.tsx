@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { useNetwork } from 'wagmi';
 import { useDeploymentPageContext } from './DeploymentPageContext';
+import { ChainType } from '@/types/ChainType';
 
 function BlockExplorerLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -20,7 +21,7 @@ function BlockExplorerLink({ href, children }: { href: string; children: React.R
 export function DeploymentSummary() {
   const { chain } = useNetwork();
 
-  const [{ rollupContracts, validators = [], batchPoster }] = useDeploymentPageContext();
+  const [{ rollupContracts, validators = [], batchPoster, chainType }] = useDeploymentPageContext();
 
   const blockExplorerUrl = useMemo(
     () => chain?.blockExplorers?.default?.url ?? 'https://goerli.arbiscan.io',
@@ -32,7 +33,9 @@ export function DeploymentSummary() {
       {rollupContracts && (
         <>
           <div className="flex flex-col gap-1">
-            <p className="text-xl font-bold">Rollup Contracts</p>
+            <p className="text-xl font-bold">
+              {chainType === ChainType.Rollup ? 'Rollup' : 'AnyTrust'} Contracts
+            </p>
           </div>
           <ul className="flex flex-col gap-2 rounded-lg border border-black p-3">
             <li className="flex flex-col" key={rollupContracts.rollup}>
