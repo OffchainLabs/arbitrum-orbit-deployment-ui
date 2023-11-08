@@ -1,7 +1,7 @@
-import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, Log } from 'viem';
+import { PublicClient, WalletClient, decodeEventLog, Address, Log } from 'viem';
 import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
-
-import { rollupCreatorABI, rollupCreatorAddress } from '@/generated';
+import { createRollup } from '@arbitrum/orbit-sdk';
+import { rollupCreator } from '@arbitrum/orbit-sdk/contracts';
 import { ChainType } from '@/types/ChainType';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { RollupConfig } from '@/types/rollupConfigDataType';
@@ -15,7 +15,6 @@ import {
 import { updateLocalStorage } from './localStorageHandler';
 import { assertIsAddress, assertIsAddressArray } from './validators';
 import { ChainId } from '@/types/ChainId';
-import { deterministicFactoriesDeploymentEnabled } from './constants';
 import { maxDataSize } from './defaults';
 
 type DeployRollupProps = {
@@ -27,6 +26,8 @@ type DeployRollupProps = {
   chainType?: ChainType;
   account: Address;
 };
+
+const rollupCreatorABI = rollupCreator.abi;
 
 type RollupCreatorAbiType = typeof rollupCreatorABI;
 
@@ -84,29 +85,16 @@ export async function deployRollup({
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
-    const { request } = await publicClient.simulateContract({
-      address: rollupCreatorAddress[parentChainId],
-      abi: rollupCreatorABI,
-      functionName: 'createRollup',
-      args: [
-        {
-          config: rollupConfigPayload,
-          batchPoster: batchPosterAddress,
-          validators: validatorAddresses,
-          maxDataSize,
-          nativeToken,
-          deployFactoriesToL2: deterministicFactoriesDeploymentEnabled,
-          // this will be ignored because the above is currently set to false
-          maxFeePerGasForRetryables: parseGwei('0.1'),
-        },
-      ],
-      value: BigInt(0),
-      account,
-    });
-
-    const hash = await walletClient.writeContract(request);
-    const createRollupTxReceipt = await publicClient.waitForTransactionReceipt({
-      hash: hash,
+    const { txReceipt: createRollupTxReceipt } = await createRollup({
+      params: {
+        config: rollupConfigPayload,
+        batchPoster: batchPosterAddress,
+        validators: validatorAddresses,
+        maxDataSize,
+        nativeToken,
+      },
+      walletClient,
+      publicClient,
     });
 
     const log = createRollupTxReceipt.logs

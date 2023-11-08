@@ -1,8 +1,9 @@
 import { parseEther, GetFunctionArgs } from 'viem';
+import { rollupCreator } from '@arbitrum/orbit-sdk/contracts';
+
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
 import { ChainType } from '@/types/ChainType';
-import { rollupCreatorABI } from '@/generated';
 import {
   AnyTrustConfigData,
   ChainConfig,
@@ -130,7 +131,7 @@ export function buildRollupConfigData({
 }
 
 export type RollupConfigPayload = GetFunctionArgs<
-  typeof rollupCreatorABI,
+  typeof rollupCreator.abi,
   'createRollup'
 >['args'][0]['config'];
 
