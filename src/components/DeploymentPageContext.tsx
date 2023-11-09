@@ -12,7 +12,7 @@ import {
   useRef,
 } from 'react';
 import { useAccount } from 'wagmi';
-import { generateChainId } from '@arbitrum/orbit-sdk';
+import { generateChainId } from '@arbitrum/orbit-sdk/utils';
 
 import { useStep } from '@/hooks/useStep';
 import { ChainType } from '@/types/ChainType';
