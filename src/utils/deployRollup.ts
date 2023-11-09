@@ -1,7 +1,5 @@
-import { PublicClient, WalletClient, decodeEventLog, Address, Log } from 'viem';
-import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
+import { PublicClient, WalletClient, Address } from 'viem';
 import { createRollup, createRollupPrepareChainConfig } from '@arbitrum/orbit-sdk';
-import { rollupCreator } from '@arbitrum/orbit-sdk/contracts';
 
 import { ChainType } from '@/types/ChainType';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
@@ -26,38 +24,6 @@ type DeployRollupProps = {
   chainType?: ChainType;
   account: Address;
 };
-
-const rollupCreatorABI = rollupCreator.abi;
-
-type RollupCreatorAbiType = typeof rollupCreatorABI;
-
-type RollupCreatorEvent = Extract<RollupCreatorAbiType[number], { type: 'event' }>;
-type RollupCreatorEventName = RollupCreatorEvent['name'];
-
-type RollupCreatorDecodedEventLog<
-  TEventName extends RollupCreatorEventName | undefined = undefined,
-> = DecodeEventLogReturnType<RollupCreatorAbiType, TEventName>;
-
-function getEventSignature(eventName: RollupCreatorEventName): string {
-  const [eventSignature] = encodeEventTopics({
-    abi: rollupCreatorABI,
-    eventName,
-  });
-
-  return eventSignature;
-}
-
-function decodeRollupCreatedEventLog(
-  log: Log<bigint, number>,
-): RollupCreatorDecodedEventLog<'RollupCreated'> {
-  const decodedEventLog = decodeEventLog({ ...log, abi: rollupCreatorABI });
-
-  if (decodedEventLog.eventName !== 'RollupCreated') {
-    throw new Error(`[decodeRollupCreatedEventLog] unexpected event: ${decodedEventLog.eventName}`);
-  }
-
-  return decodedEventLog;
-}
 
 export async function deployRollup({
   rollupConfig,
@@ -93,7 +59,7 @@ export async function deployRollup({
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
-    const { txReceipt: createRollupTxReceipt } = await createRollup({
+    const { receipt, result } = await createRollup({
       params: {
         config: rollupConfigPayload,
         batchPoster: batchPosterAddress,
@@ -105,28 +71,18 @@ export async function deployRollup({
       publicClient,
     });
 
-    const log = createRollupTxReceipt.logs
-      // find the event log that matches the RollupCreated event signature
-      .find((log) => log.topics[0] === getEventSignature('RollupCreated'));
-
-    if (typeof log === 'undefined') {
-      throw new Error('RollupCreated event log not found');
-    }
-
-    const rollupCreatedEvent = decodeRollupCreatedEventLog(log);
-
     const rollupContracts: RollupContracts = {
-      rollup: rollupCreatedEvent.args.rollupAddress,
-      inbox: rollupCreatedEvent.args.inboxAddress,
-      outbox: rollupCreatedEvent.args.outbox,
-      adminProxy: rollupCreatedEvent.args.adminProxy,
-      sequencerInbox: rollupCreatedEvent.args.sequencerInbox,
-      bridge: rollupCreatedEvent.args.bridge,
-      utils: rollupCreatedEvent.args.validatorUtils,
-      validatorWalletCreator: rollupCreatedEvent.args.validatorWalletCreator,
-      deployedAtBlockNumber: Number(createRollupTxReceipt.blockNumber),
-      nativeToken: rollupCreatedEvent.args.nativeToken,
-      upgradeExecutor: rollupCreatedEvent.args.upgradeExecutor,
+      rollup: result.rollupAddress,
+      inbox: result.inboxAddress,
+      outbox: result.outbox,
+      adminProxy: result.adminProxy,
+      sequencerInbox: result.sequencerInbox,
+      bridge: result.bridge,
+      utils: result.validatorUtils,
+      validatorWalletCreator: result.validatorWalletCreator,
+      deployedAtBlockNumber: Number(receipt.blockNumber),
+      nativeToken: result.nativeToken,
+      upgradeExecutor: result.upgradeExecutor,
     };
 
     let rollupConfigData = buildRollupConfigData({
@@ -141,7 +97,7 @@ export async function deployRollup({
     if (chainType === ChainType.AnyTrust) {
       rollupConfigData = buildAnyTrustNodeConfig(
         rollupConfigData,
-        rollupCreatedEvent.args.sequencerInbox,
+        result.sequencerInbox,
         parentChainId,
       );
     }
