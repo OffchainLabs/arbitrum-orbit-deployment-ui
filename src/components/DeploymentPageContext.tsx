@@ -12,6 +12,8 @@ import {
   useRef,
 } from 'react';
 import { useAccount } from 'wagmi';
+import { generateChainId } from '@arbitrum/orbit-sdk';
+
 import { useStep } from '@/hooks/useStep';
 import { ChainType } from '@/types/ChainType';
 import { RollupConfigFormValues } from './RollupConfigInput';
@@ -33,7 +35,7 @@ const generateDefaultRollupConfig: () => RollupConfig = () => ({
   extraChallengeTimeBlocks: 0,
   wasmModuleRoot: '0x0754e09320c381566cc0449904c377a52bd34a6b9404432e80afd573b67f7b17',
   loserStakeEscrow: '0x0000000000000000000000000000000000000000',
-  chainId: Math.floor(Math.random() * 100000000000) + 1,
+  chainId: generateChainId(),
   chainName: 'My Arbitrum L3 Chain',
   chainConfig: '0x0000000000000000000000000000000000000000000000000000000000000000',
   genesisBlockNum: 0,
