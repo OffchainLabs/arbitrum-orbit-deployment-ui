@@ -1,50 +1,12 @@
 import { parseEther, GetFunctionArgs } from 'viem';
+import { ChainConfig } from '@arbitrum/orbit-sdk';
 import { rollupCreator } from '@arbitrum/orbit-sdk/contracts';
 
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
-import { ChainType } from '@/types/ChainType';
-import {
-  AnyTrustConfigData,
-  ChainConfig,
-  RollupConfig,
-  RollupConfigData,
-} from '@/types/rollupConfigDataType';
+import { AnyTrustConfigData, RollupConfig, RollupConfigData } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsAddress } from './validators';
-
-export const buildChainConfig = (
-  chainConfig: { chainId: number; owner: string },
-  chainType: ChainType,
-): ChainConfig => ({
-  chainId: Number(chainConfig.chainId),
-  homesteadBlock: 0,
-  daoForkBlock: null,
-  daoForkSupport: true,
-  eip150Block: 0,
-  eip150Hash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-  eip155Block: 0,
-  eip158Block: 0,
-  byzantiumBlock: 0,
-  constantinopleBlock: 0,
-  petersburgBlock: 0,
-  istanbulBlock: 0,
-  muirGlacierBlock: 0,
-  berlinBlock: 0,
-  londonBlock: 0,
-  clique: {
-    period: 0,
-    epoch: 0,
-  },
-  arbitrum: {
-    EnableArbOS: true,
-    AllowDebugPrecompiles: false,
-    DataAvailabilityCommittee: chainType === ChainType.AnyTrust,
-    InitialArbOSVersion: 10,
-    InitialChainOwner: chainConfig.owner,
-    GenesisBlockNum: 0,
-  },
-});
 
 export function buildRollupConfigData({
   rollupConfig,

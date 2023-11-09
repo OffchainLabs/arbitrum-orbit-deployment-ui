@@ -1,13 +1,13 @@
 import { PublicClient, WalletClient, decodeEventLog, Address, Log } from 'viem';
 import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
-import { createRollup } from '@arbitrum/orbit-sdk';
+import { createRollup, createRollupPrepareChainConfig } from '@arbitrum/orbit-sdk';
 import { rollupCreator } from '@arbitrum/orbit-sdk/contracts';
+
 import { ChainType } from '@/types/ChainType';
 import { Wallet, RollupContracts } from '@/types/RollupContracts';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
   buildAnyTrustNodeConfig,
-  buildChainConfig,
   buildL3Config,
   buildRollupConfigData,
   buildRollupConfigPayload,
@@ -69,7 +69,15 @@ export async function deployRollup({
   chainType = ChainType.Rollup,
 }: DeployRollupProps): Promise<RollupContracts> {
   try {
-    const chainConfig = buildChainConfig(rollupConfig, chainType);
+    assertIsAddress(rollupConfig.owner);
+
+    const chainConfig = createRollupPrepareChainConfig({
+      chainId: rollupConfig.chainId,
+      arbitrum: {
+        InitialChainOwner: rollupConfig.owner,
+        DataAvailabilityCommittee: chainType === ChainType.AnyTrust,
+      },
+    });
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
 
     const validatorAddresses = validators.map((v) => v.address);
