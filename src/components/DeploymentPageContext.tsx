@@ -1,5 +1,6 @@
 'use client';
-import { Wallet, RollupContracts } from '@/types/RollupContracts';
+import { CoreContracts } from '@arbitrum/orbit-sdk';
+import { Wallet } from '@/types/RollupContracts';
 import { RollupStepMap } from '@/types/Steps';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
@@ -19,7 +20,7 @@ import { ChainType } from '@/types/ChainType';
 import { RollupConfigFormValues } from './RollupConfigInput';
 
 type DeploymentPageContextState = {
-  rollupContracts?: RollupContracts;
+  rollupContracts?: CoreContracts;
   rollupConfig: RollupConfig;
   validators?: Wallet[];
   batchPoster?: Wallet;
@@ -76,7 +77,7 @@ function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState
 }
 
 type DeploymentPageContextAction =
-  | { type: 'set_rollup_contracts'; payload: RollupContracts }
+  | { type: 'set_rollup_contracts'; payload: CoreContracts }
   | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
   | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Wallet[] }
