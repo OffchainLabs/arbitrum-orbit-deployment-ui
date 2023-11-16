@@ -1,19 +1,19 @@
 import { PublicClient, WalletClient, Address } from 'viem';
-import { createRollup, createRollupPrepareChainConfig } from '@arbitrum/orbit-sdk';
+import {
+  createRollup,
+  prepareChainConfig,
+  prepareNodeConfig,
+  CoreContracts,
+} from '@arbitrum/orbit-sdk';
 
 import { ChainType } from '@/types/ChainType';
-import { Wallet, RollupContracts } from '@/types/RollupContracts';
+import { Wallet } from '@/types/RollupContracts';
 import { RollupConfig } from '@/types/rollupConfigDataType';
-import {
-  buildAnyTrustNodeConfig,
-  buildL3Config,
-  buildRollupConfigData,
-  buildRollupConfigPayload,
-} from './configBuilders';
+import { buildL3Config, buildRollupConfigPayload } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
 import { assertIsAddress, assertIsAddressArray } from './validators';
 import { ChainId } from '@/types/ChainId';
-import { maxDataSize } from './defaults';
+import { getRpcUrl } from './getRpcUrl';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -33,11 +33,11 @@ export async function deployRollup({
   walletClient,
   account,
   chainType = ChainType.Rollup,
-}: DeployRollupProps): Promise<RollupContracts> {
+}: DeployRollupProps): Promise<CoreContracts> {
   try {
     assertIsAddress(rollupConfig.owner);
 
-    const chainConfig = createRollupPrepareChainConfig({
+    const chainConfig = prepareChainConfig({
       chainId: rollupConfig.chainId,
       arbitrum: {
         InitialChainOwner: rollupConfig.owner,
@@ -59,62 +59,42 @@ export async function deployRollup({
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
-    const { receipt, result } = await createRollup({
+    const txReceipt = await createRollup({
       params: {
         config: rollupConfigPayload,
         batchPoster: batchPosterAddress,
         validators: validatorAddresses,
-        maxDataSize,
         nativeToken,
       },
       walletClient,
       publicClient,
     });
 
-    const rollupContracts: RollupContracts = {
-      rollup: result.rollupAddress,
-      inbox: result.inboxAddress,
-      outbox: result.outbox,
-      adminProxy: result.adminProxy,
-      sequencerInbox: result.sequencerInbox,
-      bridge: result.bridge,
-      utils: result.validatorUtils,
-      validatorWalletCreator: result.validatorWalletCreator,
-      deployedAtBlockNumber: Number(receipt.blockNumber),
-      nativeToken: result.nativeToken,
-      upgradeExecutor: result.upgradeExecutor,
-    };
+    const coreContracts = txReceipt.getCoreContracts();
 
-    let rollupConfigData = buildRollupConfigData({
-      rollupConfig,
-      rollupContracts,
-      validators,
-      batchPoster,
-      parentChainId,
+    const nodeConfig = prepareNodeConfig({
+      chainName: rollupConfig.chainName,
       chainConfig,
+      coreContracts,
+      batchPosterPrivateKey: batchPoster.privateKey || '',
+      validatorPrivateKey: validators[0].privateKey || '',
+      parentChainId,
+      parentChainRpcUrl: getRpcUrl(parentChainId),
     });
-
-    if (chainType === ChainType.AnyTrust) {
-      rollupConfigData = buildAnyTrustNodeConfig(
-        rollupConfigData,
-        result.sequencerInbox,
-        parentChainId,
-      );
-    }
 
     // Defining L3 config
     const l3Config = await buildL3Config({
       address: account,
       rollupConfig,
-      rollupContracts,
+      coreContracts,
       validators,
       batchPoster,
       parentChainId,
     });
 
-    updateLocalStorage(rollupConfigData, l3Config);
+    updateLocalStorage(nodeConfig, l3Config);
 
-    return rollupContracts;
+    return coreContracts;
   } catch (e) {
     throw new Error(`Failed to deploy rollup: ${e}`);
   }
