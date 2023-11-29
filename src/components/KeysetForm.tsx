@@ -1,6 +1,7 @@
-import { useStep } from '@/hooks/useStep';
-import { setValidKeyset } from '@/utils/setValidKeyset';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { setValidKeyset } from '@arbitrum/orbit-sdk';
+
+import { useStep } from '@/hooks/useStep';
 import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 import { StepTitle } from './StepTitle';
 import { useDeploymentPageContext } from './DeploymentPageContext';
@@ -23,15 +24,14 @@ export const KeysetForm = () => {
       dispatch({ type: 'set_is_loading', payload: true });
       if (!walletClient || !address) return;
 
-      const upgradeExecutorAddress = rollupContracts?.upgradeExecutor;
-      const sequencerInboxAddress = rollupContracts?.sequencerInbox;
+      const upgradeExecutor = rollupContracts?.upgradeExecutor;
+      const sequencerInbox = rollupContracts?.sequencerInbox;
 
-      assertIsAddress(upgradeExecutorAddress);
-      assertIsAddress(sequencerInboxAddress);
+      assertIsAddress(upgradeExecutor);
+      assertIsAddress(sequencerInbox);
 
       await setValidKeyset({
-        upgradeExecutorAddress,
-        sequencerInboxAddress,
+        coreContracts: { upgradeExecutor, sequencerInbox },
         keyset: DEFAULT_KEYSET_STRING,
         walletClient,
         publicClient,
