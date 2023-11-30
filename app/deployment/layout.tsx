@@ -57,7 +57,7 @@ function DeploymentLayout({ children }: any) {
         <br />
       </p>
       <p className="text-left text-sm">
-        Please ensure you have at least 1.5 testnet ETH before getting started.
+        Please ensure you have at least 1 testnet ETH (0.6 ETH plus 0.4 native token for custom fee token chain)
       </p>
       <div className="flex w-full items-baseline justify-between">
         <ExternalLink
