@@ -4,13 +4,15 @@ import { useNetwork } from 'wagmi';
 import { useConfigDownloads } from '@/hooks/useConfigDownloads';
 import { ExternalLink } from './ExternalLink';
 import { StepTitle } from './StepTitle';
+import { getRpcUrl } from '@/utils/getRpcUrl';
+import { ChainId } from '@/types/ChainId';
 
 export const DeployLocallyComponent = () => {
   const { chain } = useNetwork();
   const { downloadRollupConfig, downloadL3Config } = useConfigDownloads();
 
   const parentChainRpcUrl = useMemo(
-    () => chain?.rpcUrls?.default?.http[0] ?? 'https://goerli-rollup.arbitrum.io/rpc',
+    () => chain?.rpcUrls?.default?.http[0] ?? getRpcUrl(ChainId.ArbitrumSepolia),
     [chain],
   );
 

@@ -11,7 +11,6 @@ type ContractConfig = {
 const rollupCreatorContractConfig: ContractConfig = {
   name: 'RollupCreator',
   address: {
-    [ChainId.ArbitrumGoerli]: '0x2025FCb2Ee63Fcd60E079c9602f7a25bfcA100EE',
     [ChainId.ArbitrumSepolia]: '0x06E341073b2749e0Bb9912461351f716DeCDa9b0',
   },
 };
@@ -39,7 +38,7 @@ export default async function () {
   await assertContractsMatch(rollupCreatorContractConfig);
 
   // since we made sure that all contracts have same abis, it doesn't really matter which one we choose
-  const chainId = ChainId.ArbitrumGoerli;
+  const chainId = ChainId.ArbitrumSepolia;
   const address = rollupCreatorContractConfig.address[chainId];
 
   function request() {

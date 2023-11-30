@@ -5,7 +5,6 @@ import { RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 import posthog from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
 import { WagmiConfig } from 'wagmi';
-import { arbitrumGoerli } from 'wagmi/chains';
 import { appInfo, chains, wagmiConfig } from '@/setupWagmi';
 
 import '@rainbow-me/rainbowkit/styles.css';
