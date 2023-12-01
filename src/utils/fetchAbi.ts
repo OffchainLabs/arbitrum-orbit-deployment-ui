@@ -7,9 +7,6 @@ type BlockExplorerApi = {
 };
 
 const blockExplorerApis: Record<ChainId, BlockExplorerApi> = {
-  [ChainId.ArbitrumGoerli]: {
-    url: 'https://api-goerli.arbiscan.io/api',
-  },
   [ChainId.ArbitrumSepolia]: {
     url: 'https://api-sepolia.arbiscan.io/api',
   },

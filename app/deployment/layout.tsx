@@ -104,8 +104,7 @@ export default function DeploymentPageWithContext({ children }: { children: any 
   const isMounted = useIsMounted();
   const { chain } = useNetwork();
 
-  const isWrongChain =
-    chain?.id !== ChainId.ArbitrumGoerli && chain?.id !== ChainId.ArbitrumSepolia;
+  const isWrongChain = chain?.id !== ChainId.ArbitrumSepolia;
 
   if (!isMounted || !isConnected || !address) {
     return (
