@@ -17,10 +17,10 @@
   resolved "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
-"@arbitrum/orbit-sdk@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@arbitrum/orbit-sdk/-/orbit-sdk-0.5.1.tgz#b973cee474d940a32776083af720d50c561af931"
-  integrity sha512-QtM0SIgmT/e8uEF22AEIgX6PiLZ7Q21Ztq5Qc0oktHKPeV1bzGPSMct5ZywgQOm+KupSwvWZAKrbNoqtwzxSlw==
+"@arbitrum/orbit-sdk@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@arbitrum/orbit-sdk/-/orbit-sdk-0.5.2.tgz#a39d2cbcd8bd0dc8a1ef7bd7520f32c3f27b87d3"
+  integrity sha512-PwY67z+xnRUpSfxOwO8v1WVukFlyqEzfv0Wy+vQZt81w7ETNUVwcKiOhNRo9KaNGAXuJpxLOBrsv7dKbRVsvTg==
 
 "@babel/runtime@^7.12.5", "@babel/runtime@^7.17.2":
   version "7.22.5"
