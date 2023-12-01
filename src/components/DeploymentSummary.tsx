@@ -2,7 +2,10 @@
 
 import { useMemo } from 'react';
 import { useNetwork } from 'wagmi';
+
+import { ChainId } from '@/types/ChainId';
 import { useDeploymentPageContext } from './DeploymentPageContext';
+import { getBlockExplorerUrl } from '@/utils/getBlockExplorerUrl';
 
 function BlockExplorerLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -23,7 +26,7 @@ export function DeploymentSummary() {
   const [{ rollupContracts, validators = [], batchPoster }] = useDeploymentPageContext();
 
   const blockExplorerUrl = useMemo(
-    () => chain?.blockExplorers?.default?.url ?? 'https://goerli.arbiscan.io',
+    () => chain?.blockExplorers?.default?.url ?? getBlockExplorerUrl(ChainId.ArbitrumSepolia),
     [chain],
   );
 
