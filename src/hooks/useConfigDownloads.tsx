@@ -1,9 +1,10 @@
+import { NodeConfig } from '@arbitrum/orbit-sdk';
+
 import { L3Config } from '@/types/L3Config';
-import { RollupConfigData } from '@/types/rollupConfigDataType';
 import { useEffect, useState } from 'react';
 
 export const useConfigDownloads = () => {
-  const [rollupConfigData, setRollupConfigData] = useState<RollupConfigData | null>(null);
+  const [rollupConfigData, setRollupConfigData] = useState<NodeConfig | null>(null);
   const [l3Config, setL3Config] = useState<L3Config | null>(null);
 
   const unwantedFields = [
@@ -89,26 +90,6 @@ const removeNestedFields = (obj: any): any => {
 
     // Stringify the entire 'info-json' object
     newObj.chain['info-json'] = JSON.stringify(newObj.chain['info-json']);
-  }
-
-  // Check and update 'private-key' in 'staker'
-  if (newObj.node && newObj.node.staker && newObj.node.staker['parent-chain-wallet']) {
-    let privateKey = newObj.node.staker['parent-chain-wallet']['private-key'];
-    if (privateKey.startsWith('0x')) {
-      newObj.node.staker['parent-chain-wallet']['private-key'] = privateKey.slice(2);
-    }
-  }
-
-  // Check and update 'private-key' in 'batch-poster'
-  if (
-    newObj.node &&
-    newObj.node['batch-poster'] &&
-    newObj.node['batch-poster']['parent-chain-wallet']
-  ) {
-    let privateKey = newObj.node['batch-poster']['parent-chain-wallet']['private-key'];
-    if (privateKey.startsWith('0x')) {
-      newObj.node['batch-poster']['parent-chain-wallet']['private-key'] = privateKey.slice(2);
-    }
   }
 
   return newObj;

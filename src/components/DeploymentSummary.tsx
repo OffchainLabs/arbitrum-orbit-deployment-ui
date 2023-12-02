@@ -82,10 +82,12 @@ export function DeploymentSummary() {
                 {rollupContracts.bridge}
               </BlockExplorerLink>
             </li>
-            <li className="flex flex-col" key={rollupContracts.utils}>
-              <span className="font-bold">Utils address:</span>
-              <BlockExplorerLink href={`${blockExplorerUrl}/address/${rollupContracts.utils}`}>
-                {rollupContracts.utils}
+            <li className="flex flex-col" key={rollupContracts.validatorUtils}>
+              <span className="font-bold">Validator Utils address:</span>
+              <BlockExplorerLink
+                href={`${blockExplorerUrl}/address/${rollupContracts.validatorUtils}`}
+              >
+                {rollupContracts.validatorUtils}
               </BlockExplorerLink>
             </li>
             <li className="flex flex-col" key={rollupContracts.validatorWalletCreator}>

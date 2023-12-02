@@ -1,5 +1,6 @@
 'use client';
-import { Wallet, RollupContracts } from '@/types/RollupContracts';
+import { CoreContracts } from '@arbitrum/orbit-sdk';
+import { Wallet } from '@/types/RollupContracts';
 import { RollupStepMap } from '@/types/Steps';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
@@ -12,12 +13,14 @@ import {
   useRef,
 } from 'react';
 import { useAccount } from 'wagmi';
+import { generateChainId } from '@arbitrum/orbit-sdk/utils';
+
 import { useStep } from '@/hooks/useStep';
 import { ChainType } from '@/types/ChainType';
 import { RollupConfigFormValues } from './RollupConfigInput';
 
 type DeploymentPageContextState = {
-  rollupContracts?: RollupContracts;
+  rollupContracts?: CoreContracts;
   rollupConfig: RollupConfig;
   validators?: Wallet[];
   batchPoster?: Wallet;
@@ -33,7 +36,7 @@ const generateDefaultRollupConfig: () => RollupConfig = () => ({
   extraChallengeTimeBlocks: 0,
   wasmModuleRoot: '0x0754e09320c381566cc0449904c377a52bd34a6b9404432e80afd573b67f7b17',
   loserStakeEscrow: '0x0000000000000000000000000000000000000000',
-  chainId: Math.floor(Math.random() * 100000000000) + 1,
+  chainId: generateChainId(),
   chainName: 'My Arbitrum L3 Chain',
   chainConfig: '0x0000000000000000000000000000000000000000000000000000000000000000',
   genesisBlockNum: 0,
@@ -74,7 +77,7 @@ function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState
 }
 
 type DeploymentPageContextAction =
-  | { type: 'set_rollup_contracts'; payload: RollupContracts }
+  | { type: 'set_rollup_contracts'; payload: CoreContracts }
   | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
   | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Wallet[] }

@@ -1,22 +1,19 @@
-import { PublicClient, WalletClient, decodeEventLog, parseGwei, Address, Log } from 'viem';
-import { DecodeEventLogReturnType, encodeEventTopics } from 'viem/utils';
-
-import { rollupCreatorABI, rollupCreatorAddress } from '@/generated';
-import { ChainType } from '@/types/ChainType';
-import { Wallet, RollupContracts } from '@/types/RollupContracts';
-import { RollupConfig } from '@/types/rollupConfigDataType';
+import { PublicClient, WalletClient, Address } from 'viem';
 import {
-  buildAnyTrustNodeConfig,
-  buildChainConfig,
-  buildL3Config,
-  buildRollupConfigData,
-  buildRollupConfigPayload,
-} from './configBuilders';
+  createRollup,
+  prepareChainConfig,
+  prepareNodeConfig,
+  CoreContracts,
+} from '@arbitrum/orbit-sdk';
+
+import { ChainType } from '@/types/ChainType';
+import { Wallet } from '@/types/RollupContracts';
+import { RollupConfig } from '@/types/rollupConfigDataType';
+import { buildL3Config, buildRollupConfigPayload } from './configBuilders';
 import { updateLocalStorage } from './localStorageHandler';
 import { assertIsAddress, assertIsAddressArray } from './validators';
 import { ChainId } from '@/types/ChainId';
-import { deterministicFactoriesDeploymentEnabled } from './constants';
-import { maxDataSize } from './defaults';
+import { getRpcUrl } from './getRpcUrl';
 
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
@@ -28,36 +25,6 @@ type DeployRollupProps = {
   account: Address;
 };
 
-type RollupCreatorAbiType = typeof rollupCreatorABI;
-
-type RollupCreatorEvent = Extract<RollupCreatorAbiType[number], { type: 'event' }>;
-type RollupCreatorEventName = RollupCreatorEvent['name'];
-
-type RollupCreatorDecodedEventLog<
-  TEventName extends RollupCreatorEventName | undefined = undefined,
-> = DecodeEventLogReturnType<RollupCreatorAbiType, TEventName>;
-
-function getEventSignature(eventName: RollupCreatorEventName): string {
-  const [eventSignature] = encodeEventTopics({
-    abi: rollupCreatorABI,
-    eventName,
-  });
-
-  return eventSignature;
-}
-
-function decodeRollupCreatedEventLog(
-  log: Log<bigint, number>,
-): RollupCreatorDecodedEventLog<'RollupCreated'> {
-  const decodedEventLog = decodeEventLog({ ...log, abi: rollupCreatorABI });
-
-  if (decodedEventLog.eventName !== 'RollupCreated') {
-    throw new Error(`[decodeRollupCreatedEventLog] unexpected event: ${decodedEventLog.eventName}`);
-  }
-
-  return decodedEventLog;
-}
-
 export async function deployRollup({
   rollupConfig,
   validators,
@@ -66,9 +33,17 @@ export async function deployRollup({
   walletClient,
   account,
   chainType = ChainType.Rollup,
-}: DeployRollupProps): Promise<RollupContracts> {
+}: DeployRollupProps): Promise<CoreContracts> {
   try {
-    const chainConfig = buildChainConfig(rollupConfig, chainType);
+    assertIsAddress(rollupConfig.owner);
+
+    const chainConfig = prepareChainConfig({
+      chainId: rollupConfig.chainId,
+      arbitrum: {
+        InitialChainOwner: rollupConfig.owner,
+        DataAvailabilityCommittee: chainType === ChainType.AnyTrust,
+      },
+    });
     const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
 
     const validatorAddresses = validators.map((v) => v.address);
@@ -84,85 +59,42 @@ export async function deployRollup({
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
-    const { request } = await publicClient.simulateContract({
-      address: rollupCreatorAddress[parentChainId],
-      abi: rollupCreatorABI,
-      functionName: 'createRollup',
-      args: [
-        {
-          config: rollupConfigPayload,
-          batchPoster: batchPosterAddress,
-          validators: validatorAddresses,
-          maxDataSize,
-          nativeToken,
-          deployFactoriesToL2: deterministicFactoriesDeploymentEnabled,
-          // this will be ignored because the above is currently set to false
-          maxFeePerGasForRetryables: parseGwei('0.1'),
-        },
-      ],
-      value: BigInt(0),
-      account,
+    const txReceipt = await createRollup({
+      params: {
+        config: rollupConfigPayload,
+        batchPoster: batchPosterAddress,
+        validators: validatorAddresses,
+        nativeToken,
+      },
+      walletClient,
+      publicClient,
     });
 
-    const hash = await walletClient.writeContract(request);
-    const createRollupTxReceipt = await publicClient.waitForTransactionReceipt({
-      hash: hash,
-    });
+    const coreContracts = txReceipt.getCoreContracts();
 
-    const log = createRollupTxReceipt.logs
-      // find the event log that matches the RollupCreated event signature
-      .find((log) => log.topics[0] === getEventSignature('RollupCreated'));
-
-    if (typeof log === 'undefined') {
-      throw new Error('RollupCreated event log not found');
-    }
-
-    const rollupCreatedEvent = decodeRollupCreatedEventLog(log);
-
-    const rollupContracts: RollupContracts = {
-      rollup: rollupCreatedEvent.args.rollupAddress,
-      inbox: rollupCreatedEvent.args.inboxAddress,
-      outbox: rollupCreatedEvent.args.outbox,
-      adminProxy: rollupCreatedEvent.args.adminProxy,
-      sequencerInbox: rollupCreatedEvent.args.sequencerInbox,
-      bridge: rollupCreatedEvent.args.bridge,
-      utils: rollupCreatedEvent.args.validatorUtils,
-      validatorWalletCreator: rollupCreatedEvent.args.validatorWalletCreator,
-      deployedAtBlockNumber: Number(createRollupTxReceipt.blockNumber),
-      nativeToken: rollupCreatedEvent.args.nativeToken,
-      upgradeExecutor: rollupCreatedEvent.args.upgradeExecutor,
-    };
-
-    let rollupConfigData = buildRollupConfigData({
-      rollupConfig,
-      rollupContracts,
-      validators,
-      batchPoster,
-      parentChainId,
+    const nodeConfig = prepareNodeConfig({
+      chainName: rollupConfig.chainName,
       chainConfig,
+      coreContracts,
+      batchPosterPrivateKey: batchPoster.privateKey || '',
+      validatorPrivateKey: validators[0].privateKey || '',
+      parentChainId,
+      parentChainRpcUrl: getRpcUrl(parentChainId),
     });
-
-    if (chainType === ChainType.AnyTrust) {
-      rollupConfigData = buildAnyTrustNodeConfig(
-        rollupConfigData,
-        rollupCreatedEvent.args.sequencerInbox,
-        parentChainId,
-      );
-    }
 
     // Defining L3 config
     const l3Config = await buildL3Config({
       address: account,
       rollupConfig,
-      rollupContracts,
+      coreContracts,
       validators,
       batchPoster,
       parentChainId,
     });
 
-    updateLocalStorage(rollupConfigData, l3Config);
+    updateLocalStorage(nodeConfig, l3Config);
 
-    return rollupContracts;
+    return coreContracts;
   } catch (e) {
     throw new Error(`Failed to deploy rollup: ${e}`);
   }
