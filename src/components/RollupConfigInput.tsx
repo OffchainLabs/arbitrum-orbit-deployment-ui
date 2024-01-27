@@ -8,9 +8,14 @@ import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainType } from '@/types/ChainType';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
-import { AddressSchema } from '@/utils/schemas';
+import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
 import { SetValidators } from './SetValidators';
+import { SetBatchPoster } from './SetBatchPoster';
 
+const WalletSchema = z.object({
+  address: AddressSchema,
+  privateKey: PrivateKeySchema,
+});
 const rollupConfigSchema = z.object({
   chainId: z.number().gt(0),
   chainName: z.string().nonempty(),
@@ -20,6 +25,7 @@ const rollupConfigSchema = z.object({
   owner: AddressSchema,
   nativeToken: AddressSchema,
   addresses: z.array(AddressSchema),
+  batchPoster: WalletSchema,
 });
 
 const ether = { name: 'Ether', symbol: 'ETH' };
@@ -29,7 +35,7 @@ export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export const RollupConfigInput = () => {
   const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
-  const { nextStep, rollupConfigFormRef, validatorFormRef } = useStep();
+  const { nextStep, rollupConfigFormRef, validatorFormRef, batchPosterFormRef } = useStep();
   const {
     handleSubmit,
     register,
@@ -48,9 +54,10 @@ export const RollupConfigInput = () => {
       payload: { ...rollupConfig, ...updatedRollupConfig, stakeToken: rollupConfig.stakeToken },
     });
     validatorFormRef?.current?.onSubmit(updatedRollupConfig.addresses);
+    batchPosterFormRef?.current?.onSubmit(updatedRollupConfig.batchPoster);
     nextStep();
   };
-
+  console.log({ errors });
   const titleContent = chainType === ChainType.Rollup ? 'Configure Rollup' : 'Configure AnyTrust';
 
   // todo: debounce? though don't think anyone will actually type it character by character
@@ -176,6 +183,12 @@ export const RollupConfigInput = () => {
           register={register}
           setValue={setValue}
           ref={validatorFormRef}
+        />
+        <SetBatchPoster
+          errors={errors}
+          register={register}
+          setValue={setValue}
+          ref={batchPosterFormRef}
         />
       </form>
     </>

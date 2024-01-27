@@ -1,7 +1,6 @@
 'use client';
 import {
   ChooseChainType,
-  ConfigureBatchPoster,
   ConfigureChain,
   ConfigureKeyset,
   DeployLocally,
@@ -27,8 +26,6 @@ export default function StepPage() {
       return <ChainTypeForm />;
     case ConfigureChain:
       return <RollupConfigInput />;
-    case ConfigureBatchPoster:
-      return <SetBatchPoster />;
     case ReviewAndDeployRollup:
     case ReviewAndDeployAnyTrust:
       return <ReviewAndDeploy />;

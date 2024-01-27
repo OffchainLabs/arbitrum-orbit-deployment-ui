@@ -6,7 +6,6 @@ import {
   AnyTrustStepMap,
   Step,
   StepId,
-  ConfigureBatchPoster,
   ConfigureChain,
   ConfigureKeyset,
   ReviewAndDeployAnyTrust,
@@ -47,11 +46,6 @@ export const useStep = () => {
       case ConfigureChain:
         if (rollupConfigFormRef?.current) {
           rollupConfigFormRef.current.requestSubmit();
-        }
-        break;
-      case ConfigureBatchPoster:
-        if (batchPosterFormRef?.current) {
-          batchPosterFormRef.current.requestSubmit();
         }
         break;
       case ReviewAndDeployRollup:
@@ -119,7 +113,6 @@ export const useStep = () => {
     createSortedStepMapArray,
     ChooseChainType,
     ConfigureChain,
-    ConfigureBatchPoster,
     ReviewAndDeployRollup,
     ReviewAndDeployAnyTrust,
     ConfigureKeyset,
