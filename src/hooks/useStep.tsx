@@ -9,7 +9,6 @@ import {
   ConfigureBatchPoster,
   ConfigureChain,
   ConfigureKeyset,
-  ConfigureValidators,
   ReviewAndDeployAnyTrust,
   ReviewAndDeployRollup,
 } from '@/types/Steps';
@@ -43,11 +42,6 @@ export const useStep = () => {
       case ChooseChainType:
         if (pickChainFormRef?.current) {
           pickChainFormRef.current.requestSubmit();
-        }
-        break;
-      case ConfigureValidators:
-        if (validatorFormRef?.current) {
-          validatorFormRef.current.requestSubmit();
         }
         break;
       case ConfigureChain:
@@ -125,7 +119,6 @@ export const useStep = () => {
     createSortedStepMapArray,
     ChooseChainType,
     ConfigureChain,
-    ConfigureValidators,
     ConfigureBatchPoster,
     ReviewAndDeployRollup,
     ReviewAndDeployAnyTrust,

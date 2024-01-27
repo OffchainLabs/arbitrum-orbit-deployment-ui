@@ -6,10 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainType } from '@/types/ChainType';
-import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { AddressSchema } from '@/utils/schemas';
+import { SetValidators } from './SetValidators';
 
 const rollupConfigSchema = z.object({
   chainId: z.number().gt(0),
@@ -19,6 +19,7 @@ const rollupConfigSchema = z.object({
   baseStake: z.number().gt(0),
   owner: AddressSchema,
   nativeToken: AddressSchema,
+  addresses: z.array(AddressSchema),
 });
 
 const ether = { name: 'Ether', symbol: 'ETH' };
@@ -28,12 +29,13 @@ export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export const RollupConfigInput = () => {
   const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
-  const { nextStep, rollupConfigFormRef } = useStep();
+  const { nextStep, rollupConfigFormRef, validatorFormRef } = useStep();
   const {
     handleSubmit,
     register,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<z.infer<typeof rollupConfigSchema>>({
     defaultValues: rollupConfig,
     mode: 'onBlur',
@@ -45,6 +47,7 @@ export const RollupConfigInput = () => {
       type: 'set_rollup_config',
       payload: { ...rollupConfig, ...updatedRollupConfig, stakeToken: rollupConfig.stakeToken },
     });
+    validatorFormRef?.current?.onSubmit(updatedRollupConfig.addresses);
     nextStep();
   };
 
@@ -62,7 +65,7 @@ export const RollupConfigInput = () => {
       <StepTitle>{titleContent}</StepTitle>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mx-0 grid grid-cols-2 gap-4 py-4"
+        className="mx-0 flex flex-col gap-4 py-4"
         ref={rollupConfigFormRef}
       >
         <TextInputWithInfoLink
@@ -168,6 +171,12 @@ export const RollupConfigInput = () => {
             </>
           )}
         </div>
+        <SetValidators
+          errors={errors}
+          register={register}
+          setValue={setValue}
+          ref={validatorFormRef}
+        />
       </form>
     </>
   );

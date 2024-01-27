@@ -1,44 +1,26 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { z } from 'zod';
 
-import { useStep } from '@/hooks/useStep';
 import { Wallet } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
 import { AddressSchema } from '@/utils/schemas';
-import { useDeploymentPageContext } from './DeploymentPageContext';
-import { StepTitle } from './StepTitle';
-import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { twJoin } from 'tailwind-merge';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 
-const validatorsSchema = z.object({
-  numberOfValidators: z.number().min(1).max(16),
-  addresses: z.array(AddressSchema),
-});
+const validatorsSchema = z.array(AddressSchema);
 type ValidatorsFormValues = z.infer<typeof validatorsSchema>;
 
-export const SetValidators = () => {
+export const SetValidators = forwardRef(({ errors, register, setValue }: any, ref: any) => {
   const [{ validators: savedWallets }, dispatch] = useDeploymentPageContext();
-  const { nextStep, validatorFormRef } = useStep();
 
   const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
   const [wallets, setWallets] = useState<Wallet[]>(
     savedWallets || Array.from({ length: walletCount }, getRandomWallet),
   );
 
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(validatorsSchema),
-    defaultValues: {
-      numberOfValidators: walletCount,
-      addresses: wallets.map((wallet) => wallet.address),
-    },
-  });
+  const handleAddValidator = () => {
+    setWalletCount((walletCount) => walletCount + 1);
+  };
 
   useEffect(() => {
     const newWallets =
@@ -66,41 +48,19 @@ export const SetValidators = () => {
         })
         .filter(Boolean);
     };
-    const payload = compareWallets(wallets, data.addresses);
+    const payload = compareWallets(wallets, data);
 
     dispatch({ type: 'set_validators', payload });
-    nextStep();
   };
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" ref={validatorFormRef}>
-      <StepTitle>Configure Validators</StepTitle>
-      <div className="w-1/2">
-        <TextInputWithInfoLink
-          label="Number of Validators"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-4-configure-your-chains-validators`}
-          name="numberOfValidators"
-          placeholder="Number of validators"
-          infoText="Read about Validators in the docs"
-          type="number"
-          {...(register('numberOfValidators'),
-          {
-            min: 1,
-            max: 16,
-            value: walletCount,
-            onChange: (e) => {
-              setWalletCount(Math.max(1, Math.min(16, Number(e.target.value))));
-            },
-          })}
-        />
-        {errors.numberOfValidators && (
-          <p className="text-sm text-red-500">
-            {JSON.stringify(errors.numberOfValidators?.message)}
-          </p>
-        )}
-      </div>
+  useImperativeHandle(ref, () => {
+    return { onSubmit };
+  });
 
+  return (
+    <div ref={ref}>
       <label className="font-bold">Validators</label>
+
       <div className="mx-1 grid grid-cols-2 gap-2">
         <div className="flex flex-col gap-2">
           {wallets.slice(0, 8).map((wallet, index) => (
@@ -142,7 +102,11 @@ export const SetValidators = () => {
             </div>
           ))}
         </div>
+        <span className="cursor-pointer text-xs hover:underline" onClick={handleAddValidator}>
+          <i className="pi pi-plus-circle mr-1 text-xs" />
+          Add Validator
+        </span>
       </div>
-    </form>
+    </div>
   );
-};
+});
