@@ -72,7 +72,7 @@ export const RollupConfigInput = () => {
       <StepTitle>{titleContent}</StepTitle>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mx-0 flex flex-col gap-4 py-4"
+        className="mx-0 flex w-1/2 flex-col gap-4 py-4"
         ref={rollupConfigFormRef}
       >
         <TextInputWithInfoLink

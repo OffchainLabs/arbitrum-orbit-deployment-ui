@@ -26,7 +26,7 @@ export const SetBatchPoster = forwardRef(({ errors, register, setValue }: any, r
   });
 
   return (
-    <div ref={ref} className="flex w-1/2 flex-col gap-4">
+    <div ref={ref} className="flex flex-col gap-4">
       <TextInputWithInfoLink
         label="Batch Poster Address"
         href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-5-configure-your-chains-batch-poster`}

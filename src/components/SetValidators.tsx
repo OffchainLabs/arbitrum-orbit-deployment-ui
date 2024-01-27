@@ -60,8 +60,7 @@ export const SetValidators = forwardRef(({ errors, register, setValue }: any, re
   return (
     <div ref={ref}>
       <label className="font-bold">Validators</label>
-
-      <div className="mx-1 grid grid-cols-2 gap-2">
+      <div className="mx-1">
         <div className="flex flex-col gap-2">
           {wallets.slice(0, 8).map((wallet, index) => (
             <div key={wallet.address + index}>
