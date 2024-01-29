@@ -3,8 +3,14 @@ import { getRandomWallet } from '@/utils/getRandomWallet';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
+import { useFormContext } from 'react-hook-form';
 
-export const SetBatchPoster = forwardRef(({ errors, register, setValue }: any, ref: any) => {
+export const SetBatchPoster = forwardRef(({}, ref: any) => {
+  const {
+    register,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
   const [{ batchPoster: currentBatchPoster }, dispatch] = useDeploymentPageContext();
   const [batchPoster] = useState<Wallet>(currentBatchPoster ?? getRandomWallet());
 

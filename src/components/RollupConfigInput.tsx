@@ -3,7 +3,7 @@ import { zeroAddress } from 'viem';
 import { z } from 'zod';
 import { useStep } from '@/hooks/useStep';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainType } from '@/types/ChainType';
 import { StepTitle } from './StepTitle';
@@ -11,6 +11,9 @@ import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
 import { SetValidators } from './SetValidators';
 import { SetBatchPoster } from './SetBatchPoster';
+import { getRandomWallet } from '@/utils/getRandomWallet';
+import { useState } from 'react';
+import { Wallet } from '@/types/RollupContracts';
 
 const WalletSchema = z.object({
   address: AddressSchema,
@@ -34,19 +37,28 @@ const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export const RollupConfigInput = () => {
-  const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
+  const [{ rollupConfig, chainType, validators: savedWallets }, dispatch] =
+    useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef, validatorFormRef, batchPosterFormRef } = useStep();
+  const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
+  const [wallets, setWallets] = useState<Wallet[]>(
+    savedWallets || Array.from({ length: walletCount }, getRandomWallet),
+  );
+
+  const methods = useForm<z.infer<typeof rollupConfigSchema>>({
+    defaultValues: {
+      ...rollupConfig,
+      addresses: wallets.map((wallet) => wallet.address),
+    },
+    mode: 'onBlur',
+    resolver: zodResolver(rollupConfigSchema),
+  });
   const {
     handleSubmit,
     register,
     formState: { errors },
     watch,
-    setValue,
-  } = useForm<z.infer<typeof rollupConfigSchema>>({
-    defaultValues: rollupConfig,
-    mode: 'onBlur',
-    resolver: zodResolver(rollupConfigSchema),
-  });
+  } = methods;
 
   const onSubmit = (updatedRollupConfig: RollupConfigFormValues) => {
     dispatch({
@@ -57,7 +69,7 @@ export const RollupConfigInput = () => {
     batchPosterFormRef?.current?.onSubmit(updatedRollupConfig.batchPoster);
     nextStep();
   };
-  console.log({ errors });
+
   const titleContent = chainType === ChainType.Rollup ? 'Configure Rollup' : 'Configure AnyTrust';
 
   // todo: debounce? though don't think anyone will actually type it character by character
@@ -68,7 +80,7 @@ export const RollupConfigInput = () => {
   });
 
   return (
-    <>
+    <FormProvider {...methods}>
       <StepTitle>{titleContent}</StepTitle>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -179,18 +191,11 @@ export const RollupConfigInput = () => {
           )}
         </div>
         <SetValidators
-          errors={errors}
-          register={register}
-          setValue={setValue}
+          {...{ wallets, setWalletCount, walletCount, setWallets }}
           ref={validatorFormRef}
         />
-        <SetBatchPoster
-          errors={errors}
-          register={register}
-          setValue={setValue}
-          ref={batchPosterFormRef}
-        />
+        <SetBatchPoster ref={batchPosterFormRef} />
       </form>
-    </>
+    </FormProvider>
   );
 };
