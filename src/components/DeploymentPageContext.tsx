@@ -141,8 +141,6 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
 
   const pickChainFormRef = useRef<HTMLFormElement>(null);
   const rollupConfigFormRef = useRef<HTMLFormElement>(null);
-  const validatorFormRef = useRef<HTMLFormElement>(null);
-  const batchPosterFormRef = useRef<HTMLFormElement>(null);
   const reviewAndDeployFormRef = useRef<HTMLFormElement>(null);
   const keysetFormRef = useRef<HTMLFormElement>(null);
 
@@ -173,8 +171,6 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
         {
           pickChainFormRef,
           rollupConfigFormRef,
-          validatorFormRef,
-          batchPosterFormRef,
           reviewAndDeployFormRef,
           keysetFormRef,
         },

@@ -14,6 +14,7 @@ import { SetBatchPoster } from './SetBatchPoster';
 import { getRandomWallet } from '@/utils/getRandomWallet';
 import { useState } from 'react';
 import { Wallet } from '@/types/RollupContracts';
+import { compareWallets } from '@/utils/wallets';
 
 const WalletSchema = z.object({
   address: AddressSchema,
@@ -37,9 +38,9 @@ const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export const RollupConfigInput = () => {
-  const [{ rollupConfig, chainType, validators: savedWallets }, dispatch] =
+  const [{ rollupConfig, chainType, validators: savedWallets, batchPoster }, dispatch] =
     useDeploymentPageContext();
-  const { nextStep, rollupConfigFormRef, validatorFormRef, batchPosterFormRef } = useStep();
+  const { nextStep, rollupConfigFormRef } = useStep();
   const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
   const [wallets, setWallets] = useState<Wallet[]>(
     savedWallets || Array.from({ length: walletCount }, getRandomWallet),
@@ -49,6 +50,7 @@ export const RollupConfigInput = () => {
     defaultValues: {
       ...rollupConfig,
       addresses: wallets.map((wallet) => wallet.address),
+      batchPoster: batchPoster || getRandomWallet(),
     },
     mode: 'onBlur',
     resolver: zodResolver(rollupConfigSchema),
@@ -65,8 +67,15 @@ export const RollupConfigInput = () => {
       type: 'set_rollup_config',
       payload: { ...rollupConfig, ...updatedRollupConfig, stakeToken: rollupConfig.stakeToken },
     });
-    validatorFormRef?.current?.onSubmit(updatedRollupConfig.addresses);
-    batchPosterFormRef?.current?.onSubmit(updatedRollupConfig.batchPoster);
+    dispatch({
+      type: 'set_validators',
+      payload: compareWallets(wallets, updatedRollupConfig.addresses),
+    });
+    dispatch({
+      type: 'set_batch_poster',
+      payload: updatedRollupConfig.batchPoster,
+    });
+
     nextStep();
   };
 
@@ -190,11 +199,8 @@ export const RollupConfigInput = () => {
             </>
           )}
         </div>
-        <SetValidators
-          {...{ wallets, setWalletCount, walletCount, setWallets }}
-          ref={validatorFormRef}
-        />
-        <SetBatchPoster ref={batchPosterFormRef} />
+        <SetValidators {...{ wallets, setWalletCount, walletCount, setWallets }} />
+        <SetBatchPoster />
       </form>
     </FormProvider>
   );

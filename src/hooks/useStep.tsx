@@ -26,14 +26,7 @@ export const useStep = () => {
   const [
     { chainType },
     ,
-    {
-      pickChainFormRef,
-      rollupConfigFormRef,
-      validatorFormRef,
-      batchPosterFormRef,
-      reviewAndDeployFormRef,
-      keysetFormRef,
-    },
+    { pickChainFormRef, rollupConfigFormRef, reviewAndDeployFormRef, keysetFormRef },
   ] = useDeploymentPageContext();
 
   const submitForm = () => {
@@ -118,8 +111,6 @@ export const useStep = () => {
     ConfigureKeyset,
     pickChainFormRef,
     rollupConfigFormRef,
-    validatorFormRef,
-    batchPosterFormRef,
     reviewAndDeployFormRef,
     keysetFormRef,
   };
