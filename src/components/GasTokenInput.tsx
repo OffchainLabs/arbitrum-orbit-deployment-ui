@@ -114,7 +114,9 @@ export const GasTokenInput = ({ setTokenDecimals }: any) => {
               as the native token for paying gas fees.
             </span>
           )}
-          {errors.nativeToken && <span className="text-red-500">{errors.nativeToken.message}</span>}
+          {errors.nativeToken && (
+            <span className="text-red-500">{errors.nativeToken.message as string}</span>
+          )}
         </>
       )}
     </div>
