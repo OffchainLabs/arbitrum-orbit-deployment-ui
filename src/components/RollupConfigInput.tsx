@@ -43,6 +43,19 @@ export const RollupConfigInput = () => {
   const [wallets, setWallets] = useState<Wallet[]>(
     savedWallets || Array.from({ length: walletCount }, getRandomWallet),
   );
+  const [tokenDecimals, setTokenDecimals] = useState<number>(18);
+
+  // refines the schema to check if token decimals is 18
+  // done here because zod schema must be synchronous
+  const refinedRollupConfigSchema = rollupConfigSchema.refine(
+    (data) => {
+      return tokenDecimals && tokenDecimals === 18;
+    },
+    {
+      message: 'Token decimals must be 18.',
+      path: ['nativeToken'],
+    },
+  );
 
   const methods = useForm<z.infer<typeof rollupConfigSchema>>({
     defaultValues: {
@@ -51,7 +64,7 @@ export const RollupConfigInput = () => {
       batchPoster: batchPoster || getRandomWallet(),
     },
     mode: 'onBlur',
-    resolver: zodResolver(rollupConfigSchema),
+    resolver: zodResolver(refinedRollupConfigSchema),
   });
   const {
     handleSubmit,
@@ -154,7 +167,7 @@ export const RollupConfigInput = () => {
           register={() => register('owner')}
           error={errors.owner?.message}
         />
-        <GasTokenInput />
+        <GasTokenInput setTokenDecimals={setTokenDecimals} />
         <SetValidators {...{ wallets, setWalletCount, walletCount, setWallets }} />
         <SetBatchPoster />
       </form>

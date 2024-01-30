@@ -1,9 +1,9 @@
 import { ChainType } from '@/types/ChainType';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { twJoin } from 'tailwind-merge';
 import { zeroAddress } from 'viem';
-import { useToken } from 'wagmi';
+import { erc20ABI, useContractRead, useToken } from 'wagmi';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 
 enum GAS_TOKEN_KIND {
@@ -12,14 +12,20 @@ enum GAS_TOKEN_KIND {
 }
 const ether = { name: 'Ether', symbol: 'ETH' };
 
-export const GasTokenInput = () => {
+export const GasTokenInput = ({ setTokenDecimals }: any) => {
   const [{ rollupConfig, chainType }] = useDeploymentPageContext();
-  const { register, setValue, watch } = useFormContext();
+  const {
+    register,
+    setValue,
+    watch,
+    clearErrors,
+    formState: { errors },
+  } = useFormContext();
 
   // todo: debounce? though don't think anyone will actually type it character by character
   const nativeToken = watch('nativeToken');
 
-  const { data: nativeTokenData = ether, isError: nativeTokenIsError } = useToken({
+  const { data: nativeTokenData = ether, isError: tokenNotFound } = useToken({
     address: nativeToken === zeroAddress ? undefined : (nativeToken as `0x${string}`),
   });
 
@@ -27,7 +33,37 @@ export const GasTokenInput = () => {
     nativeToken === zeroAddress ? GAS_TOKEN_KIND.ETH : GAS_TOKEN_KIND.CUSTOM,
   );
 
+  // Fetch token decimals
+  const { data: tokenDecimals } = useContractRead(
+    // checks if it's not ETH to avoid unnecessary calls
+    nativeToken !== zeroAddress
+      ? {
+          address: nativeToken,
+          abi: erc20ABI,
+          functionName: 'decimals',
+        }
+      : {},
+  );
+
+  // Reset state for rollup chains incase user switches back to rollup from anytrust
+  useEffect(() => {
+    if (chainType === ChainType.Rollup) {
+      setTokenDecimals(18);
+      setSelectedToken(GAS_TOKEN_KIND.ETH);
+      setValue('nativeToken', zeroAddress);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedToken === GAS_TOKEN_KIND.ETH) {
+      setTokenDecimals(18);
+    } else {
+      setTokenDecimals(tokenDecimals);
+    }
+  }, [selectedToken, tokenDecimals]);
+
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    clearErrors('nativeToken');
     setSelectedToken(event.target.value as GAS_TOKEN_KIND);
     if (event.target.value === GAS_TOKEN_KIND.ETH) {
       setValue('nativeToken', zeroAddress);
@@ -41,6 +77,7 @@ export const GasTokenInput = () => {
         className={twJoin('w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input')}
         value={selectedToken}
         onChange={handleSelectChange}
+        disabled={chainType === ChainType.Rollup}
       >
         <option value={GAS_TOKEN_KIND.ETH}>ETH</option>
         <option value={GAS_TOKEN_KIND.CUSTOM}>Custom</option>
@@ -52,7 +89,7 @@ export const GasTokenInput = () => {
           disabled={chainType === ChainType.Rollup}
           className={twJoin(
             'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
-            nativeTokenIsError && 'border-red-500',
+            (tokenNotFound || errors.nativeToken) && 'border-red-500',
             chainType === ChainType.Rollup && 'cursor-not-allowed bg-gray-200 opacity-50',
           )}
         />
@@ -64,7 +101,7 @@ export const GasTokenInput = () => {
       )}
       {chainType === ChainType.AnyTrust && (
         <>
-          {nativeTokenIsError ? (
+          {tokenNotFound ? (
             <span className="text-yellow-600">
               Failed to detect a valid ERC-20 contract at the given address.
             </span>
@@ -72,11 +109,12 @@ export const GasTokenInput = () => {
             <span>
               The chain will use{' '}
               <b>
-                {nativeTokenData.name} ({nativeTokenData.symbol})
+                {nativeTokenData?.name} ({nativeTokenData?.symbol})
               </b>{' '}
               as the native token for paying gas fees.
             </span>
           )}
+          {errors.nativeToken && <span className="text-red-500">{errors.nativeToken.message}</span>}
         </>
       )}
     </div>
