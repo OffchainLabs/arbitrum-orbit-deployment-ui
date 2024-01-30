@@ -1,7 +1,14 @@
 import { useStep } from '@/hooks/useStep';
-import { ConfigureKeyset, ReviewAndDeployAnyTrust, ReviewAndDeployRollup } from '@/types/Steps';
-import { MouseEvent, FC, ButtonHTMLAttributes } from 'react';
-import { twJoin } from 'tailwind-merge';
+import {
+  ConfigureKeyset,
+  DownloadAnyTrustConfig,
+  DownloadConfig,
+  ReviewAndDeployAnyTrust,
+  ReviewAndDeployRollup,
+} from '@/types/Steps';
+import { MouseEvent, FC, ButtonHTMLAttributes, useMemo } from 'react';
+import { twJoin, twMerge } from 'tailwind-merge';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 
 interface NextButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
@@ -11,11 +18,17 @@ interface NextButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading }) => {
   const { currentStep } = useStep();
+  const [{ isDownloadCompleted }] = useDeploymentPageContext();
   const isLastStep = currentStep?.next === null;
 
   const isDeploymentStep =
     currentStep === ReviewAndDeployRollup || currentStep === ReviewAndDeployAnyTrust;
-
+  const isDownloadRequired = useMemo(() => {
+    return (
+      !isDownloadCompleted &&
+      (currentStep === DownloadConfig || currentStep === DownloadAnyTrustConfig)
+    );
+  }, [isDownloadCompleted, currentStep]);
   const isTransactionStep = currentStep === ConfigureKeyset;
 
   const getLabel = () => {
@@ -36,15 +49,16 @@ export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading 
   };
   return (
     <button
-      className={twJoin(
+      className={twMerge(
         `w-full rounded-lg bg-[#243145] px-3 py-2 text-white`,
         (isLoading || isLastStep) && 'cursor-not-allowed bg-gray-400',
         isLastStep && 'invisible',
         'hover:bg-[#283C55]',
+        isDownloadRequired && 'cursor-not-allowed bg-gray-300 text-gray-600 hover:bg-gray-300',
         className,
       )}
       onClick={onClick}
-      disabled={isLoading || isLastStep}
+      disabled={isLoading || isLastStep || isDownloadRequired}
     >
       {getLabel()}
       {getIcon()}

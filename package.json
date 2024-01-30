@@ -15,6 +15,7 @@
     "@hookform/resolvers": "^3.2.0",
     "@rainbow-me/rainbowkit": "^1.0.8",
     "encoding": "^0.1.13",
+    "jszip": "^3.10.1",
     "lokijs": "^1.5.12",
     "next": "^13.5.6",
     "pino-pretty": "^10.2.0",

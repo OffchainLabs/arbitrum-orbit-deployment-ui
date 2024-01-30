@@ -26,6 +26,7 @@ type DeploymentPageContextState = {
   batchPoster?: Wallet;
   chainType?: ChainType;
   isLoading: boolean;
+  isDownloadCompleted: boolean;
 };
 
 const generateDefaultRollupConfig: () => RollupConfig = () => ({
@@ -60,6 +61,7 @@ const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
   batchPoster: undefined,
   chainType: undefined,
   isLoading: false,
+  isDownloadCompleted: false,
 };
 
 function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState {
@@ -83,6 +85,7 @@ type DeploymentPageContextAction =
   | { type: 'set_validators'; payload: Wallet[] }
   | { type: 'set_batch_poster'; payload: Wallet }
   | { type: 'set_is_loading'; payload: boolean }
+  | { type: 'set_is_download_completed'; payload: boolean }
   | { type: 'reset'; payload: string };
 
 type DeploymentPageContextValue = [
@@ -120,6 +123,9 @@ function reducer(
     case 'set_is_loading':
       return { ...state, isLoading: action.payload };
 
+    case 'set_is_download_completed':
+      return { ...state, isDownloadCompleted: action.payload };
+
     case 'reset':
       return {
         ...deploymentPageContextStateDefaultValue,
@@ -153,6 +159,7 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
         rollupContracts: state.rollupContracts,
         validators: state.validators,
         batchPoster: state.batchPoster,
+        isDownloadCompleted: state.isDownloadCompleted,
       }),
     );
   }, [state]);
