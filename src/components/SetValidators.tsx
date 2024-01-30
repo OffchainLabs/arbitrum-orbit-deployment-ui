@@ -1,7 +1,7 @@
 import { Wallet } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
 import { useFormContext } from 'react-hook-form';
-import { twJoin } from 'tailwind-merge';
+import { twMerge } from 'tailwind-merge';
 
 type SetValidatorsProps = {
   wallets: Wallet[];
@@ -19,11 +19,15 @@ export const SetValidators = ({
   const { register, setValue, formState } = useFormContext();
   const { errors } = formState;
 
+  const isMaxWalletCount = walletCount >= 16;
+
   const handleAddValidator = () => {
-    const newWallet = getRandomWallet();
-    setValue(`addresses.${walletCount}`, newWallet.address);
-    setWalletCount(walletCount + 1);
-    setWallets([...wallets, newWallet]);
+    if (!isMaxWalletCount) {
+      const newWallet = getRandomWallet();
+      setValue(`addresses.${walletCount}`, newWallet.address);
+      setWalletCount(walletCount + 1);
+      setWallets([...wallets, newWallet]);
+    }
   };
 
   // @ts-expect-error - react-hook-form doesn't handle the array properly
@@ -39,7 +43,7 @@ export const SetValidators = ({
               <input
                 type="text"
                 placeholder={`Validator Address ${index + 1}`}
-                className={twJoin(
+                className={twMerge(
                   'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
                   index === 0 && 'cursor-not-allowed bg-gray-200 opacity-50',
                 )}
@@ -67,10 +71,25 @@ export const SetValidators = ({
             </div>
           ))}
         </div>
-        <span className="cursor-pointer text-xs hover:underline" onClick={handleAddValidator}>
-          <i className="pi pi-plus-circle mr-1 text-xs" />
-          Add Validator
-        </span>
+        <button
+          className={twMerge(
+            'text-xs',
+            !isMaxWalletCount && 'hover:underline',
+            isMaxWalletCount && 'opacity-50',
+          )}
+          type="button"
+          onClick={handleAddValidator}
+          disabled={isMaxWalletCount}
+        >
+          {isMaxWalletCount ? (
+            <span>Maximum Number of Validators</span>
+          ) : (
+            <>
+              <i className="pi pi-plus-circle mr-1 text-xs" />
+              Add Validator
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
