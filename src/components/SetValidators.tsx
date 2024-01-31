@@ -46,6 +46,7 @@ export const SetValidators = ({
                 className={twMerge(
                   'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
                   index === 0 && 'cursor-not-allowed bg-gray-200 opacity-50',
+                  addressErrors?.[index] && 'border-red-500',
                 )}
                 readOnly={index === 0}
                 {...register(`addresses.${index}`)}
@@ -62,7 +63,10 @@ export const SetValidators = ({
               <input
                 type="text"
                 placeholder={`Validator ${index + 9}`}
-                className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
+                className={twMerge(
+                  'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
+                  addressErrors?.[index + 8] && 'border-red-500',
+                )}
                 {...register(`addresses.${index + 8}`)}
               />
               {addressErrors?.[index + 8] && (
