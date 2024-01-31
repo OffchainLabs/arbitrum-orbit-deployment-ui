@@ -1,55 +1,64 @@
+enum StepIds {
+  ChooseChainType = 'chain-type',
+  ConfigureChain = 'configure',
+  ReviewAndDeploy = 'review',
+  DownloadConfig = 'download',
+  ConfigureKeyset = 'keyset',
+  DeployLocally = 'deploy',
+}
+
 export const ChooseChainType = {
-  id: 1,
-  next: 2,
+  id: StepIds.ChooseChainType,
+  next: StepIds.ConfigureChain,
   previous: null,
   label: 'Chain Type',
 } as const;
 
 export const ConfigureChain = {
-  id: 2,
-  next: 5,
-  previous: 1,
+  id: StepIds.ConfigureChain,
+  next: StepIds.ReviewAndDeploy,
+  previous: StepIds.ChooseChainType,
   label: 'Configure Chain',
 } as const;
 
 export const ReviewAndDeployRollup = {
-  id: 5,
-  next: 7,
-  previous: 2,
+  id: StepIds.ReviewAndDeploy,
+  next: StepIds.DownloadConfig,
+  previous: StepIds.ConfigureChain,
   label: 'Review & Deploy',
 } as const;
 
 export const DownloadConfig = {
-  id: 7,
-  next: 8,
+  id: StepIds.DownloadConfig,
+  next: StepIds.DeployLocally,
   previous: null,
   label: 'Download',
 } as const;
 
 export const ReviewAndDeployAnyTrust = {
   ...ReviewAndDeployRollup,
-  next: 6,
+  next: StepIds.ConfigureKeyset,
   label: 'Review & Deploy',
 } as const;
 
 export const ConfigureKeyset = {
-  id: 6,
-  next: 7,
+  id: StepIds.ConfigureKeyset,
+  next: StepIds.DownloadConfig,
   previous: null,
   label: 'Keyset',
 } as const;
 
 export const DownloadAnyTrustConfig = {
-  id: 7,
-  next: 8,
-  previous: 6,
+  id: StepIds.DownloadConfig,
+  next: StepIds.DeployLocally,
+  previous: StepIds.ConfigureKeyset,
   label: 'Download',
 } as const;
 
 export const DeployLocally = {
-  id: 8,
+  id: StepIds.DeployLocally,
   next: null,
-  previous: 7,
+  previous: StepIds.DownloadConfig,
   label: 'Deploy Locally',
 } as const;
 
