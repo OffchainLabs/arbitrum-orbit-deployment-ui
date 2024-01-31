@@ -1,10 +1,8 @@
 'use client';
 import {
   ChooseChainType,
-  ConfigureBatchPoster,
   ConfigureChain,
   ConfigureKeyset,
-  ConfigureValidators,
   DeployLocally,
   DownloadAnyTrustConfig,
   DownloadConfig,
@@ -18,7 +16,6 @@ import { KeysetForm } from '@/components/KeysetForm';
 import { ReviewAndDeploy } from '@/components/ReviewAndDeploy';
 import { RollupConfigInput } from '@/components/RollupConfigInput';
 import { SetBatchPoster } from '@/components/SetBatchPoster';
-import { SetValidators } from '@/components/SetValidators';
 import { useStep } from '@/hooks/useStep';
 
 export default function StepPage() {
@@ -29,10 +26,6 @@ export default function StepPage() {
       return <ChainTypeForm />;
     case ConfigureChain:
       return <RollupConfigInput />;
-    case ConfigureValidators:
-      return <SetValidators />;
-    case ConfigureBatchPoster:
-      return <SetBatchPoster />;
     case ReviewAndDeployRollup:
     case ReviewAndDeployAnyTrust:
       return <ReviewAndDeploy />;

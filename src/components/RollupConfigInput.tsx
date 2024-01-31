@@ -3,14 +3,23 @@ import { zeroAddress } from 'viem';
 import { z } from 'zod';
 import { useStep } from '@/hooks/useStep';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainType } from '@/types/ChainType';
-import { SelectInputWithInfoLink } from './SelectInputWithInfoLink';
 import { StepTitle } from './StepTitle';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
-import { AddressSchema } from '@/utils/schemas';
+import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
+import { SetValidators } from './SetValidators';
+import { SetBatchPoster } from './SetBatchPoster';
+import { getRandomWallet } from '@/utils/getRandomWallet';
+import { useState } from 'react';
+import { Wallet } from '@/types/RollupContracts';
+import { compareWallets } from '@/utils/wallets';
 
+const WalletSchema = z.object({
+  address: AddressSchema,
+  privateKey: PrivateKeySchema,
+});
 const rollupConfigSchema = z.object({
   chainId: z.number().gt(0),
   chainName: z.string().nonempty(),
@@ -19,6 +28,22 @@ const rollupConfigSchema = z.object({
   baseStake: z.number().gt(0),
   owner: AddressSchema,
   nativeToken: AddressSchema,
+  addresses: z.array(AddressSchema).superRefine((data, ctx) => {
+    const seen = new Set();
+
+    data.forEach((address, index) => {
+      if (seen.has(address)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Duplicate addresses are not allowed',
+          path: [index],
+        });
+      } else {
+        seen.add(address);
+      }
+    });
+  }),
+  batchPoster: WalletSchema,
 });
 
 const ether = { name: 'Ether', symbol: 'ETH' };
@@ -27,24 +52,44 @@ const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export const RollupConfigInput = () => {
-  const [{ rollupConfig, chainType }, dispatch] = useDeploymentPageContext();
+  const [{ rollupConfig, chainType, validators: savedWallets, batchPoster }, dispatch] =
+    useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
+  const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
+  const [wallets, setWallets] = useState<Wallet[]>(
+    savedWallets || Array.from({ length: walletCount }, getRandomWallet),
+  );
+
+  const methods = useForm<z.infer<typeof rollupConfigSchema>>({
+    defaultValues: {
+      ...rollupConfig,
+      addresses: wallets.map((wallet) => wallet.address),
+      batchPoster: batchPoster || getRandomWallet(),
+    },
+    mode: 'onBlur',
+    resolver: zodResolver(rollupConfigSchema),
+  });
   const {
     handleSubmit,
     register,
     formState: { errors },
     watch,
-  } = useForm<z.infer<typeof rollupConfigSchema>>({
-    defaultValues: rollupConfig,
-    mode: 'onBlur',
-    resolver: zodResolver(rollupConfigSchema),
-  });
+  } = methods;
 
   const onSubmit = (updatedRollupConfig: RollupConfigFormValues) => {
     dispatch({
       type: 'set_rollup_config',
       payload: { ...rollupConfig, ...updatedRollupConfig, stakeToken: rollupConfig.stakeToken },
     });
+    dispatch({
+      type: 'set_validators',
+      payload: compareWallets(wallets, updatedRollupConfig.addresses),
+    });
+    dispatch({
+      type: 'set_batch_poster',
+      payload: updatedRollupConfig.batchPoster,
+    });
+
     nextStep();
   };
 
@@ -58,11 +103,11 @@ export const RollupConfigInput = () => {
   });
 
   return (
-    <>
+    <FormProvider {...methods}>
       <StepTitle>{titleContent}</StepTitle>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mx-0 grid grid-cols-2 gap-4 py-4"
+        className="mx-0 flex w-1/2 flex-col gap-4 py-4"
         ref={rollupConfigFormRef}
       >
         <TextInputWithInfoLink
@@ -168,7 +213,9 @@ export const RollupConfigInput = () => {
             </>
           )}
         </div>
+        <SetValidators {...{ wallets, setWalletCount, walletCount, setWallets }} />
+        <SetBatchPoster />
       </form>
-    </>
+    </FormProvider>
   );
 };

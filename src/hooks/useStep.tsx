@@ -6,10 +6,8 @@ import {
   AnyTrustStepMap,
   Step,
   StepId,
-  ConfigureBatchPoster,
   ConfigureChain,
   ConfigureKeyset,
-  ConfigureValidators,
   ReviewAndDeployAnyTrust,
   ReviewAndDeployRollup,
 } from '@/types/Steps';
@@ -28,14 +26,7 @@ export const useStep = () => {
   const [
     { chainType },
     ,
-    {
-      pickChainFormRef,
-      rollupConfigFormRef,
-      validatorFormRef,
-      batchPosterFormRef,
-      reviewAndDeployFormRef,
-      keysetFormRef,
-    },
+    { pickChainFormRef, rollupConfigFormRef, reviewAndDeployFormRef, keysetFormRef },
   ] = useDeploymentPageContext();
 
   const submitForm = () => {
@@ -45,19 +36,9 @@ export const useStep = () => {
           pickChainFormRef.current.requestSubmit();
         }
         break;
-      case ConfigureValidators:
-        if (validatorFormRef?.current) {
-          validatorFormRef.current.requestSubmit();
-        }
-        break;
       case ConfigureChain:
         if (rollupConfigFormRef?.current) {
           rollupConfigFormRef.current.requestSubmit();
-        }
-        break;
-      case ConfigureBatchPoster:
-        if (batchPosterFormRef?.current) {
-          batchPosterFormRef.current.requestSubmit();
         }
         break;
       case ReviewAndDeployRollup:
@@ -125,15 +106,11 @@ export const useStep = () => {
     createSortedStepMapArray,
     ChooseChainType,
     ConfigureChain,
-    ConfigureValidators,
-    ConfigureBatchPoster,
     ReviewAndDeployRollup,
     ReviewAndDeployAnyTrust,
     ConfigureKeyset,
     pickChainFormRef,
     rollupConfigFormRef,
-    validatorFormRef,
-    batchPosterFormRef,
     reviewAndDeployFormRef,
     keysetFormRef,
   };

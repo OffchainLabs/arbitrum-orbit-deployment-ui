@@ -7,29 +7,15 @@ export const ChooseChainType = {
 
 export const ConfigureChain = {
   id: 2,
-  next: 3,
+  next: 5,
   previous: 1,
   label: 'Configure Chain',
-} as const;
-
-export const ConfigureValidators = {
-  id: 3,
-  next: 4,
-  previous: 2,
-  label: 'Validators',
-} as const;
-
-export const ConfigureBatchPoster = {
-  id: 4,
-  next: 5,
-  previous: 3,
-  label: 'Batch Poster',
 } as const;
 
 export const ReviewAndDeployRollup = {
   id: 5,
   next: 7,
-  previous: 4,
+  previous: 2,
   label: 'Review & Deploy',
 } as const;
 
@@ -70,8 +56,6 @@ export const DeployLocally = {
 export const RollupStepMap = {
   ChooseChainType,
   ConfigureChain,
-  ConfigureValidators,
-  ConfigureBatchPoster,
   ReviewAndDeploy: ReviewAndDeployRollup,
   DownloadConfig,
   DeployLocally,
