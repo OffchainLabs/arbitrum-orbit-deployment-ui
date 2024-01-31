@@ -27,7 +27,21 @@ const rollupConfigSchema = z.object({
   baseStake: z.number().gt(0),
   owner: AddressSchema,
   nativeToken: AddressSchema,
-  addresses: z.array(AddressSchema),
+  addresses: z.array(AddressSchema).superRefine((data, ctx) => {
+    const seen = new Set();
+
+    data.forEach((address, index) => {
+      if (seen.has(address)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Duplicate addresses are not allowed',
+          path: [index],
+        });
+      } else {
+        seen.add(address);
+      }
+    });
+  }),
   batchPoster: WalletSchema,
 });
 
