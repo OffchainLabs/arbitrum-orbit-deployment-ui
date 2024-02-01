@@ -75,6 +75,25 @@ export const SetValidators = ({
             </div>
           ))}
         </div>
+        <button
+          className={twMerge(
+            'text-xs',
+            !isMaxWalletCount && 'hover:underline',
+            isMaxWalletCount && 'opacity-50',
+          )}
+          type="button"
+          onClick={handleAddValidator}
+          disabled={isMaxWalletCount}
+        >
+          {isMaxWalletCount ? (
+            <span>Maximum Number of Validators</span>
+          ) : (
+            <>
+              <i className="pi pi-plus-circle mr-1 text-xs" />
+              Add Validator
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
