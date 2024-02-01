@@ -17,7 +17,7 @@ import { generateChainId } from '@arbitrum/orbit-sdk/utils';
 
 import { useStep } from '@/hooks/useStep';
 import { ChainType } from '@/types/ChainType';
-import { RollupConfigFormValues } from './RollupConfigInput';
+import { RollupConfigFormValues } from '../../app/deployment/step/configure/page';
 
 type DeploymentPageContextState = {
   rollupContracts?: CoreContracts;

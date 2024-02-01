@@ -13,7 +13,7 @@ import {
 } from '@/types/Steps';
 import { usePathname, useRouter } from 'next/navigation';
 
-const FIRST_STEP = ChooseChainType;
+export const FIRST_STEP = ChooseChainType;
 
 function getLastPartOfPath(path: string): string {
   const parts = path.split('/');
@@ -63,14 +63,17 @@ export const useStep = () => {
     } else {
       router.push(`/deployment/step/${id}`);
     }
+    if (currentStep && currentStep.next) {
+      router.prefetch(`/deployment/step/${currentStep?.next}`);
+    }
   };
 
-  const currentStepId = pathname ? parseInt(getLastPartOfPath(pathname)) : FIRST_STEP.id;
+  const currentStepId = pathname ? getLastPartOfPath(pathname) : FIRST_STEP.id;
 
   const chainStepMap: Record<string, Step> =
     chainType === ChainType.Rollup ? RollupStepMap : AnyTrustStepMap;
 
-  const findStepById = (id: number): Step | undefined => {
+  const findStepById = (id: string): Step | undefined => {
     const keys = Object.keys(chainStepMap);
     const key = keys.find((key) => chainStepMap[key].id === id);
     return key ? chainStepMap[key] : undefined;

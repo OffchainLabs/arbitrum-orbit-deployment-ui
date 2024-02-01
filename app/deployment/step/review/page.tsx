@@ -1,11 +1,13 @@
+'use client';
+
 import { useStep } from '@/hooks/useStep';
-import { useDeploymentPageContext } from './DeploymentPageContext';
 import { deployRollup } from '@/utils/deployRollup';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
-import { StepTitle } from './StepTitle';
 import { ChainType } from '@/types/ChainType';
+import { useDeploymentPageContext } from '@/components/DeploymentPageContext';
+import { StepTitle } from '@/components/StepTitle';
 
-export const ReviewAndDeploy = () => {
+export default function ReviewAndDeployPage() {
   const [{ rollupConfig, validators, batchPoster, chainType }, dispatch] =
     useDeploymentPageContext();
   const { address } = useAccount();
@@ -122,4 +124,4 @@ export const ReviewAndDeploy = () => {
       </div>
     </>
   );
-};
+}
