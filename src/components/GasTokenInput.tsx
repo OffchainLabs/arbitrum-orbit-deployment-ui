@@ -1,5 +1,5 @@
 import { ChainType } from '@/types/ChainType';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { twJoin } from 'tailwind-merge';
 import { zeroAddress } from 'viem';
@@ -12,7 +12,7 @@ enum GAS_TOKEN_KIND {
 }
 const ether = { name: 'Ether', symbol: 'ETH' };
 
-export const GasTokenInput = ({ setTokenDecimals }: any) => {
+export const GasTokenInput = (props: { setTokenDecimals: Dispatch<SetStateAction<number>> }) => {
   const [{ rollupConfig, chainType }] = useDeploymentPageContext();
   const {
     register,
@@ -48,17 +48,17 @@ export const GasTokenInput = ({ setTokenDecimals }: any) => {
   // Reset state for rollup chains incase user switches back to rollup from anytrust
   useEffect(() => {
     if (chainType === ChainType.Rollup) {
-      setTokenDecimals(18);
+      props.setTokenDecimals(18);
       setSelectedToken(GAS_TOKEN_KIND.ETH);
       setValue('nativeToken', zeroAddress);
     }
-  }, []);
+  }, [chainType]);
 
   useEffect(() => {
-    if (selectedToken === GAS_TOKEN_KIND.ETH) {
-      setTokenDecimals(18);
+    if (selectedToken === GAS_TOKEN_KIND.ETH || tokenDecimals === undefined) {
+      props.setTokenDecimals(18);
     } else {
-      setTokenDecimals(tokenDecimals);
+      props.setTokenDecimals(tokenDecimals);
     }
   }, [selectedToken, tokenDecimals]);
 
