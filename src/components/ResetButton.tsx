@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { useAccount } from 'wagmi';
 import { ButtonHTMLAttributes, FC } from 'react';
+import { FIRST_STEP } from '@/hooks/useStep';
 
 interface ResetButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
@@ -18,7 +19,7 @@ export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
 
     dispatch({ type: 'set_is_loading', payload: false });
     dispatch({ type: 'reset', payload: address ? address : '' });
-    router.push('/deployment/step/1');
+    router.push(`/deployment/step/${FIRST_STEP.id}`);
   }
 
   return (

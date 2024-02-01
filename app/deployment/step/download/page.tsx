@@ -1,9 +1,11 @@
-import { useConfigDownloads } from '@/hooks/useConfigDownloads';
-import { CodeComponent } from './CodeComponent';
-import { StepTitle } from './StepTitle';
-import { DeploymentSummary } from './DeploymentSummary';
+'use client';
 
-export function Download() {
+import { CodeComponent } from '@/components/CodeComponent';
+import { DeploymentSummary } from '@/components/DeploymentSummary';
+import { StepTitle } from '@/components/StepTitle';
+import { useConfigDownloads } from '@/hooks/useConfigDownloads';
+
+export default function DownloadPage() {
   const { rollupConfigDownloadData, rollupConfigDisplayData, l3Config } = useConfigDownloads();
 
   return (

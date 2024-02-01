@@ -1,12 +1,14 @@
-import { useState } from 'react';
+'use client';
+
+import { ChainTypePicker } from '@/components/ChainTypePicker';
+import { useDeploymentPageContext } from '@/components/DeploymentPageContext';
+import { ExternalLink } from '@/components/ExternalLink';
+import { StepTitle } from '@/components/StepTitle';
 import { useStep } from '@/hooks/useStep';
 import { ChainType } from '@/types/ChainType';
-import { useDeploymentPageContext } from './DeploymentPageContext';
-import { ChainTypePicker } from './ChainTypePicker';
-import { ExternalLink } from './ExternalLink';
-import { StepTitle } from './StepTitle';
+import { useState } from 'react';
 
-export const ChainTypeForm = () => {
+export default function ChainTypePage() {
   const [{ chainType }, dispatch] = useDeploymentPageContext();
   const { nextStep, pickChainFormRef } = useStep();
   const [selectedChainType, setSelectedChainType] = useState<ChainType | undefined>(chainType);
@@ -64,4 +66,4 @@ export const ChainTypeForm = () => {
       <p className="text-red-500">{error}</p>
     </form>
   );
-};
+}
