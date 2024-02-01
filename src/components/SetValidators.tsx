@@ -2,6 +2,7 @@ import { Wallet } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
 import { useFormContext } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
+import { AnchorLabel } from './AnchorLabel';
 
 type SetValidatorsProps = {
   wallets: Wallet[];
@@ -35,7 +36,7 @@ export const SetValidators = ({
 
   return (
     <div>
-      <label className="font-bold">Validators</label>
+      <AnchorLabel anchor="validators" label="Validators" />
       <div className="mx-1 flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           {wallets.slice(0, 8).map((wallet, index) => (

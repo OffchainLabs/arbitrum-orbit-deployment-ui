@@ -16,6 +16,7 @@ export const SetBatchPoster = () => {
         infoText="Read about Batch Poster in the docs"
         disabled
         register={() => register('batchPoster.address')}
+        anchor="batch-poster"
       />
       <input type="hidden" disabled {...register('batchPoster.privateKey')} />
       {errors.batchPoster && (

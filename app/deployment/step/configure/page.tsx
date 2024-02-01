@@ -16,6 +16,7 @@ import { SetValidators } from '@/components/SetValidators';
 import { StepTitle } from '@/components/StepTitle';
 import { TextInputWithInfoLink } from '@/components/TextInputWithInfoLink';
 import { useState } from 'react';
+import { DocsPanel } from '@/components/DocsPanel';
 
 const WalletSchema = z.object({
   address: AddressSchema,
@@ -112,80 +113,90 @@ export default function RollupConfigPage() {
       <StepTitle>{titleContent}</StepTitle>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mx-0 flex w-1/2 flex-col gap-4 py-4"
+        className="mx-0 flex gap-4 py-4"
         ref={rollupConfigFormRef}
       >
-        <TextInputWithInfoLink
-          label="Chain ID"
-          href={`${commonDocLink}#chain-id`}
-          type="number"
-          placeholder="12345678"
-          infoText="Read about Chain ID in the docs"
-          defaultValue={rollupConfig?.chainId || ''}
-          register={() =>
-            register('chainId', {
-              setValueAs: (value) => Number(value),
-            })
-          }
-          error={errors.chainId?.message}
-        />
-        <TextInputWithInfoLink
-          label="Chain Name"
-          href={`${commonDocLink}#chain-name`}
-          infoText="Read about Chain Name in the docs"
-          defaultValue={rollupConfig?.chainName || ''}
-          error={errors.chainName?.message}
-          register={() => register('chainName')}
-        />
+        <div className="flex flex-col gap-2">
+          <TextInputWithInfoLink
+            label="Chain ID"
+            href={`${commonDocLink}#chain-id`}
+            type="number"
+            placeholder="12345678"
+            infoText="Read about Chain ID in the docs"
+            defaultValue={rollupConfig?.chainId || ''}
+            register={() =>
+              register('chainId', {
+                setValueAs: (value) => Number(value),
+              })
+            }
+            error={errors.chainId?.message}
+            anchor={'chain-id'}
+          />
+          <TextInputWithInfoLink
+            label="Chain Name"
+            href={`${commonDocLink}#chain-name`}
+            infoText="Read about Chain Name in the docs"
+            defaultValue={rollupConfig?.chainName || ''}
+            error={errors.chainName?.message}
+            register={() => register('chainName')}
+            anchor={'chain-name'}
+          />
 
-        <TextInputWithInfoLink
-          label="Challenge Period Blocks"
-          href={`${commonDocLink}#challenge-period-blocks`}
-          type="number"
-          infoText="Read about Challenge Period Blocks in the docs"
-          error={errors.confirmPeriodBlocks?.message}
-          defaultValue={rollupConfig?.confirmPeriodBlocks || ''}
-          register={() =>
-            register('confirmPeriodBlocks', {
-              setValueAs: (value) => Number(value),
-            })
-          }
-        />
+          <TextInputWithInfoLink
+            label="Challenge Period Blocks"
+            href={`${commonDocLink}#challenge-period-blocks`}
+            type="number"
+            infoText="Read about Challenge Period Blocks in the docs"
+            error={errors.confirmPeriodBlocks?.message}
+            defaultValue={rollupConfig?.confirmPeriodBlocks || ''}
+            register={() =>
+              register('confirmPeriodBlocks', {
+                setValueAs: (value) => Number(value),
+              })
+            }
+            anchor={'challenge-period'}
+          />
 
-        <TextInputWithInfoLink
-          label="Stake Token"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#stake-token`}
-          infoText="Read about Stake Token in the docs"
-          defaultValue={'ETH'}
-          disabled
-        />
+          <TextInputWithInfoLink
+            label="Stake Token"
+            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/how-tos/customize-deployment-configuration#stake-token`}
+            infoText="Read about Stake Token in the docs"
+            defaultValue={'ETH'}
+            disabled
+          />
 
-        <TextInputWithInfoLink
-          label="Base Stake (in Ether)"
-          href={`${commonDocLink}#base-stake`}
-          type="number"
-          step="any"
-          infoText="Read about Base Stake in the docs"
-          defaultValue={rollupConfig?.baseStake || 0}
-          error={errors.baseStake?.message}
-          register={() =>
-            register('baseStake', {
-              setValueAs: (value) => Number(value),
-            })
-          }
-        />
+          <TextInputWithInfoLink
+            label="Base Stake (in Ether)"
+            href={`${commonDocLink}#base-stake`}
+            type="number"
+            step="any"
+            infoText="Read about Base Stake in the docs"
+            defaultValue={rollupConfig?.baseStake || 0}
+            error={errors.baseStake?.message}
+            register={() =>
+              register('baseStake', {
+                setValueAs: (value) => Number(value),
+              })
+            }
+            anchor={'base-stake'}
+          />
 
-        <TextInputWithInfoLink
-          label="Owner"
-          href={`${commonDocLink}#owner`}
-          infoText="Read about Owner in the docs"
-          defaultValue={rollupConfig?.owner || ''}
-          register={() => register('owner')}
-          error={errors.owner?.message}
-        />
-        <GasTokenInput setTokenDecimals={setTokenDecimals} />
-        <SetValidators {...{ wallets, setWalletCount, walletCount, setWallets }} />
-        <SetBatchPoster />
+          <TextInputWithInfoLink
+            label="Owner"
+            href={`${commonDocLink}#owner`}
+            infoText="Read about Owner in the docs"
+            defaultValue={rollupConfig?.owner || ''}
+            register={() => register('owner')}
+            error={errors.owner?.message}
+            anchor={'owner'}
+          />
+          <GasTokenInput setTokenDecimals={setTokenDecimals} />
+          <SetValidators {...{ wallets, setWalletCount, walletCount, setWallets }} />
+          <SetBatchPoster />
+        </div>
+        <div className="border-grey h-[75vh] w-1/2 border border-solid p-2">
+          <DocsPanel />
+        </div>
       </form>
     </FormProvider>
   );
