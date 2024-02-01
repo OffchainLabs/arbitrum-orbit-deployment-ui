@@ -1,20 +1,22 @@
+'use client';
+
 import { useToken } from 'wagmi';
 import { zeroAddress } from 'viem';
 import { z } from 'zod';
 import { useStep } from '@/hooks/useStep';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useDeploymentPageContext } from './DeploymentPageContext';
 import { ChainType } from '@/types/ChainType';
-import { StepTitle } from './StepTitle';
-import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
-import { SetValidators } from './SetValidators';
-import { SetBatchPoster } from './SetBatchPoster';
 import { getRandomWallet } from '@/utils/getRandomWallet';
-import { useState } from 'react';
 import { Wallet } from '@/types/RollupContracts';
 import { compareWallets } from '@/utils/wallets';
+import { useDeploymentPageContext } from '@/components/DeploymentPageContext';
+import { SetBatchPoster } from '@/components/SetBatchPoster';
+import { SetValidators } from '@/components/SetValidators';
+import { StepTitle } from '@/components/StepTitle';
+import { TextInputWithInfoLink } from '@/components/TextInputWithInfoLink';
+import { useState } from 'react';
 
 const WalletSchema = z.object({
   address: AddressSchema,
@@ -51,7 +53,7 @@ const commonDocLink = `${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-
 
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
-export const RollupConfigInput = () => {
+export default function RollupConfigPage() {
   const [{ rollupConfig, chainType, validators: savedWallets, batchPoster }, dispatch] =
     useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
@@ -218,4 +220,4 @@ export const RollupConfigInput = () => {
       </form>
     </FormProvider>
   );
-};
+}

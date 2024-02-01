@@ -4,7 +4,7 @@ enum StepIds {
   ReviewAndDeploy = 'review',
   DownloadConfig = 'download',
   ConfigureKeyset = 'keyset',
-  DeployLocally = 'deploy',
+  DeployLocally = 'deploy-local',
 }
 
 export const ChooseChainType = {
@@ -28,13 +28,6 @@ export const ReviewAndDeployRollup = {
   label: 'Review & Deploy',
 } as const;
 
-export const DownloadConfig = {
-  id: StepIds.DownloadConfig,
-  next: StepIds.DeployLocally,
-  previous: null,
-  label: 'Download',
-} as const;
-
 export const ReviewAndDeployAnyTrust = {
   ...ReviewAndDeployRollup,
   next: StepIds.ConfigureKeyset,
@@ -46,6 +39,13 @@ export const ConfigureKeyset = {
   next: StepIds.DownloadConfig,
   previous: null,
   label: 'Keyset',
+} as const;
+
+export const DownloadConfig = {
+  id: StepIds.DownloadConfig,
+  next: StepIds.DeployLocally,
+  previous: null,
+  label: 'Download',
 } as const;
 
 export const DownloadAnyTrustConfig = {

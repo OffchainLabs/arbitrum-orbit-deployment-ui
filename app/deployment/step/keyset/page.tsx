@@ -1,16 +1,18 @@
+'use client';
+
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { setValidKeyset } from '@arbitrum/orbit-sdk';
 
 import { useStep } from '@/hooks/useStep';
-import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
-import { StepTitle } from './StepTitle';
-import { useDeploymentPageContext } from './DeploymentPageContext';
 import { assertIsAddress } from '@/utils/validators';
+import { useDeploymentPageContext } from '@/components/DeploymentPageContext';
+import { InfoCircleWithTooltip } from '@/components/InfoCircleWithTooltip';
+import { StepTitle } from '@/components/StepTitle';
 
 const DEFAULT_KEYSET_STRING =
   '0x00000000000000010000000000000001012160000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
-export const KeysetForm = () => {
+export default function KeysetPage() {
   const { nextStep, keysetFormRef } = useStep();
   const [{ rollupContracts }, dispatch] = useDeploymentPageContext();
   const { address } = useAccount();
@@ -70,4 +72,4 @@ export const KeysetForm = () => {
       </div>
     </>
   );
-};
+}

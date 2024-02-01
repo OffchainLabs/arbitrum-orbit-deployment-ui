@@ -63,6 +63,9 @@ export const useStep = () => {
     } else {
       router.push(`/deployment/step/${id}`);
     }
+    if (currentStep && currentStep.next) {
+      router.prefetch(`/deployment/step/${currentStep?.next}`);
+    }
   };
 
   const currentStepId = pathname ? getLastPartOfPath(pathname) : FIRST_STEP.id;
@@ -83,7 +86,7 @@ export const useStep = () => {
 
     while (currentStep) {
       sortedSteps.push(currentStep);
-      currentStep = steps.find((step) => step.id == currentStep?.next);
+      currentStep = steps.find((step) => step.id === currentStep?.next);
     }
 
     return sortedSteps;

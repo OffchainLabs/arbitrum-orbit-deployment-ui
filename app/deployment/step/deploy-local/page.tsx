@@ -1,13 +1,15 @@
+'use client';
+
 import { useMemo } from 'react';
 import { useNetwork } from 'wagmi';
 
 import { useConfigDownloads } from '@/hooks/useConfigDownloads';
-import { ExternalLink } from './ExternalLink';
-import { StepTitle } from './StepTitle';
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { ChainId } from '@/types/ChainId';
+import { ExternalLink } from '@/components/ExternalLink';
+import { StepTitle } from '@/components/StepTitle';
 
-export const DeployLocallyComponent = () => {
+export default function DeployLocallyPage() {
   const { chain } = useNetwork();
   const { downloadRollupConfig, downloadL3Config } = useConfigDownloads();
 
@@ -101,4 +103,4 @@ export const DeployLocallyComponent = () => {
       </ol>
     </div>
   );
-};
+}
