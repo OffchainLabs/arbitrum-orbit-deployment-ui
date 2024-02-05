@@ -2,6 +2,7 @@ import { NodeConfig } from '@arbitrum/orbit-sdk';
 
 import { L3Config } from '@/types/L3Config';
 import { useEffect, useState } from 'react';
+import JSZip from 'jszip';
 
 export const useConfigDownloads = () => {
   const [rollupConfigData, setRollupConfigData] = useState<NodeConfig | null>(null);
@@ -56,6 +57,20 @@ export const useConfigDownloads = () => {
 
   const downloadL3Config = () => downloadJSON(l3Config, 'orbitSetupScriptConfig.json');
 
+  const downloadZippedConfigs = () => {
+    const zip = new JSZip();
+    zip.file('nodeConfig.json', JSON.stringify(rollupConfigData, null, 2));
+    zip.file('orbitSetupScriptConfig.json', JSON.stringify(l3Config, null, 2));
+
+    zip.generateAsync({ type: 'blob' }).then((file) => {
+      const element = document.createElement('a');
+      element.href = URL.createObjectURL(file);
+      element.download = 'orbit-config.zip';
+      document.body.appendChild(element);
+      element.click();
+    });
+  };
+
   return {
     rollupConfigDownloadData: rollupConfigData,
     rollupConfigDisplayData: rollupConfigData ? dataWithParsedInfoJson() : '',
@@ -63,6 +78,7 @@ export const useConfigDownloads = () => {
     downloadJSON,
     downloadRollupConfig,
     downloadL3Config,
+    downloadZippedConfigs,
   };
 };
 
