@@ -1,7 +1,7 @@
 import { UseFormRegisterReturn, InternalFieldName } from 'react-hook-form';
-import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 import { InputHTMLAttributes } from 'react';
 import { twJoin } from 'tailwind-merge';
+import { AnchorLabel } from './AnchorLabel';
 
 interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -9,6 +9,7 @@ interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElemen
   href: string;
   infoText: string | JSX.Element;
   error?: string;
+  anchor?: string;
   register?: () => UseFormRegisterReturn<InternalFieldName>;
 }
 
@@ -16,9 +17,9 @@ export const TextInputWithInfoLink = ({
   label,
   explainerText,
   href,
-  infoText,
   error,
   register,
+  anchor,
   ...props
 }: TextInputWithInfoLinkProps) => {
   const getRegister = () => {
@@ -29,10 +30,7 @@ export const TextInputWithInfoLink = ({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-baseline gap-2">
-        <label htmlFor={props.name} className="font-bold">
-          {label}
-        </label>
-        <InfoCircleWithTooltip href={href} infoText={infoText} />
+        <AnchorLabel anchor={anchor} label={label} inputId={props.name} />
       </div>
       <input
         id={props.name}

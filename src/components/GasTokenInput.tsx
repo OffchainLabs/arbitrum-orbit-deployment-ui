@@ -5,6 +5,7 @@ import { twJoin } from 'tailwind-merge';
 import { zeroAddress } from 'viem';
 import { erc20ABI, useContractRead, useToken } from 'wagmi';
 import { useDeploymentPageContext } from './DeploymentPageContext';
+import { AnchorLabel } from './AnchorLabel';
 
 enum GAS_TOKEN_KIND {
   ETH = 'ETH',
@@ -72,7 +73,7 @@ export const GasTokenInput = (props: { setTokenDecimals: Dispatch<SetStateAction
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="font-bold">Gas Token</label>
+      <AnchorLabel anchor="gas-token" label="Gas Token" />
       <select
         className={twJoin('w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input')}
         value={selectedToken}
