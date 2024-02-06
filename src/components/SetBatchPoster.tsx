@@ -1,21 +1,30 @@
 import { useFormContext } from 'react-hook-form';
+import { useState, useEffect } from 'react';
+
+import { Wallet } from '@/types/RollupContracts';
+import { getRandomWallet } from '@/utils/getRandomWallet';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 import { TextInputWithInfoLink } from './TextInputWithInfoLink';
 
 export const SetBatchPoster = () => {
+  const [{ batchPoster: currentBatchPoster }] = useDeploymentPageContext();
+  const [batchPoster] = useState<Wallet>(currentBatchPoster ?? getRandomWallet());
   const {
     register,
     formState: { errors },
+    setValue,
   } = useFormContext();
+
+  useEffect(() => {
+    setValue('batchPoster', batchPoster);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
       <TextInputWithInfoLink
         label="Batch Poster Address"
-        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-5-configure-your-chains-batch-poster`}
-        placeholder="Enter address"
-        infoText="Read about Batch Poster in the docs"
-        disabled
-        register={() => register('batchPoster.address')}
+        defaultValue={batchPoster.address}
+        register={() => register('batchPosterAddress')}
         anchor="batch-poster"
       />
       <input type="hidden" disabled {...register('batchPoster.privateKey')} />

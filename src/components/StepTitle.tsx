@@ -1,3 +1,15 @@
-export const StepTitle = ({ children }: { children: React.ReactNode }) => {
-  return <h3 className="text-left text-3xl font-light">{children}</h3>;
+import { twMerge } from 'tailwind-merge';
+
+export const StepTitle = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <h3 className={twMerge('text-left text-3xl font-light text-[#B2B2B2]', className)}>
+      {children}
+    </h3>
+  );
 };

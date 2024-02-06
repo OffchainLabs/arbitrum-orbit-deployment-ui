@@ -21,7 +21,7 @@ export const AnchorLabel = ({
   return (
     <label
       htmlFor={inputId}
-      className={twJoin('font-bold', anchor && 'cursor-pointer underline')}
+      className={anchor && 'cursor-pointer underline'}
       onClick={() => handleLinkClick()}
     >
       <span>

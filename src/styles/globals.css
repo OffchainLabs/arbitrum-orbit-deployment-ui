@@ -8,3 +8,30 @@
   transform: translateY(-80%);
   content: '⌄';
 }
+
+html {
+  @apply text-white;
+  background: url('/grainient.png') no-repeat;
+  background-size: cover;
+  min-height: 100%;
+}
+
+select,
+input {
+  @apply text-black;
+  @apply bg-white;
+}
+
+/* Hide scrollbar for Chrome, Safari and Edge */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+Hide scrollbar for IE and Edge .hide-scrollbar {
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+}

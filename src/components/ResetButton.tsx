@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 import { useAccount } from 'wagmi';
 import { ButtonHTMLAttributes, FC } from 'react';
+import { twMerge } from 'tailwind-merge';
 import { FIRST_STEP } from '@/hooks/useStep';
 
 interface ResetButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -23,10 +24,7 @@ export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
   }
 
   return (
-    <button
-      className={`my-2 w-64 py-2 text-left text-sm text-[#243145] underline ${className}`}
-      onClick={reset}
-    >
+    <button className={twMerge('text-xs text-white hover:underline', className)} onClick={reset}>
       Reset and Start Over
     </button>
   );

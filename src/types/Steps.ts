@@ -1,7 +1,6 @@
 enum StepIds {
   ChooseChainType = 'chain-type',
   ConfigureChain = 'configure',
-  ReviewAndDeploy = 'review',
   DownloadConfig = 'download',
   ConfigureKeyset = 'keyset',
   DeployLocally = 'deploy-local',
@@ -14,24 +13,18 @@ export const ChooseChainType = {
   label: 'Chain Type',
 } as const;
 
-export const ConfigureChain = {
+export const ConfigureRollup = {
   id: StepIds.ConfigureChain,
-  next: StepIds.ReviewAndDeploy,
+  next: StepIds.DownloadConfig,
   previous: StepIds.ChooseChainType,
   label: 'Configure Chain',
 } as const;
 
-export const ReviewAndDeployRollup = {
-  id: StepIds.ReviewAndDeploy,
-  next: StepIds.DownloadConfig,
-  previous: StepIds.ConfigureChain,
-  label: 'Review & Deploy',
-} as const;
-
-export const ReviewAndDeployAnyTrust = {
-  ...ReviewAndDeployRollup,
+export const ConfigureAnyTrust = {
+  id: StepIds.ConfigureChain,
   next: StepIds.ConfigureKeyset,
-  label: 'Review & Deploy',
+  previous: StepIds.ChooseChainType,
+  label: 'Configure Chain',
 } as const;
 
 export const ConfigureKeyset = {
@@ -64,17 +57,17 @@ export const DeployLocally = {
 
 export const RollupStepMap = {
   ChooseChainType,
-  ConfigureChain,
-  ReviewAndDeploy: ReviewAndDeployRollup,
+  ConfigureRollup,
   DownloadConfig,
   DeployLocally,
 } as const;
 
 export const AnyTrustStepMap = {
-  ...RollupStepMap,
-  ReviewAndDeploy: ReviewAndDeployAnyTrust,
+  ChooseChainType,
+  ConfigureAnyTrust,
   ConfigureKeyset,
   DownloadConfig: DownloadAnyTrustConfig,
+  DeployLocally,
 } as const;
 
 export type RollupStep = (typeof RollupStepMap)[keyof typeof RollupStepMap];

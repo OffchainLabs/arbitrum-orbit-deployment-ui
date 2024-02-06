@@ -17,7 +17,6 @@ export const CodeComponent: FC<CodeComponentProps> = ({
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const clipboard = useClipboard();
-  const { downloadJSON } = useConfigDownloads();
 
   const copyToClipboard = (dataToCopy: any) => {
     clipboard.copy(JSON.stringify(dataToCopy, null, 2));
@@ -27,16 +26,10 @@ export const CodeComponent: FC<CodeComponentProps> = ({
 
   return (
     <div className="group relative">
-      <div className="absolute right-0 top-0 m-2 space-x-2">
-        <button
-          onClick={() => downloadJSON(dataToDownload, fileName)}
-          className="rounded-lg bg-[#243145] px-3 py-2 text-white"
-        >
-          <i className="pi pi-download"></i>
-        </button>
+      <div className="absolute right-1 top-0 m-2 space-x-2">
         <button
           onClick={() => copyToClipboard(dataToDownload)}
-          className="relative rounded-lg bg-[#243145] px-3 py-2 text-white"
+          className="relative rounded-lg bg-white px-3 py-2 text-black hover:bg-gray-200"
         >
           <i className="pi pi-copy"></i>
           {showTooltip && (
@@ -49,7 +42,9 @@ export const CodeComponent: FC<CodeComponentProps> = ({
       <SyntaxHighlighter
         language="json"
         style={nightOwl}
-        className="h-96 overflow-x-auto whitespace-pre-wrap break-all rounded-lg p-2 text-xs"
+        wrapLines={true}
+        customStyle={{ fontSize: '0.6rem' }}
+        className="hide-scrollbar h-96 overflow-y-scroll"
       >
         {JSON.stringify(dataToDisplay, null, 2)}
       </SyntaxHighlighter>
