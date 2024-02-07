@@ -27,7 +27,10 @@ export default function DownloadPage() {
         </button>
         <p>
           You are able to configure even more settings.{' '}
-          <a href="" className="underline">
+          <a
+            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-gentle-introduction`}
+            className="underline"
+          >
             Read more in the SDK docs.
           </a>
         </p>
