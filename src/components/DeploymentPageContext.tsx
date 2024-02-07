@@ -164,12 +164,6 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
     );
   }, [state]);
 
-  // useEffect(() => {
-  //   if (!isValidStep) {
-  //     goToStep(RollupStepMap.ChooseChainType);
-  //   }
-  // }, [isValidStep]);
-
   return (
     <DeploymentPageContext.Provider
       value={[
