@@ -9,6 +9,7 @@ import { appInfo, chains, wagmiConfig } from '@/setupWagmi';
 import '@rainbow-me/rainbowkit/styles.css';
 import 'primeicons/primeicons.css'; // icons
 import '@/styles/globals.css';
+import { PropsWithChildren } from 'react';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -26,7 +27,7 @@ if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY 
   });
 }
 
-export const Providers = ({ children }: any) => {
+export const Providers = ({ children }: PropsWithChildren) => {
   return (
     <PostHogProvider client={posthog}>
       <WagmiConfig config={wagmiConfig}>

@@ -21,18 +21,16 @@ export default function InfoPage() {
         </p>
         <p>
           More information around parameter customization and guidance can be found in the{' '}
-          <a
+          <ExternalLink
             href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
-            target="_blank"
-            rel="noopener noreferrer"
             className="underline"
           >
             documentation
-          </a>
+          </ExternalLink>
           . We recommend opening the documentation in a side window to follow along.
           <br />
         </p>
-        <p className="">
+        <p>
           Please ensure you have at least <strong>1.0 Arbitrum Sepolia ETH</strong> before getting
           started.
         </p>

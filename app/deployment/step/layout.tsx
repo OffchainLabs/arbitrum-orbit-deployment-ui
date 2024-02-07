@@ -6,8 +6,9 @@ import { NextButton } from '@/components/NextButton';
 import { ResetButton } from '@/components/ResetButton';
 import { useStep } from '@/hooks/useStep';
 import { DownloadConfig } from '@/types/Steps';
+import { PropsWithChildren } from 'react';
 
-export default function StepLayout({ children }: { children: any }) {
+export default function StepLayout({ children }: PropsWithChildren) {
   const { submitForm, currentStep } = useStep();
   const [{ isLoading, isDownloadCompleted }] = useDeploymentPageContext();
 

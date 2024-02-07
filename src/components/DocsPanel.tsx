@@ -1,6 +1,37 @@
+import { useState, useEffect } from 'react';
+
 export const DocsPanel = () => {
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  useEffect(() => {
+    const checkScrollPosition = () => {
+      const scrolled = document.documentElement.scrollTop;
+      const maxHeight =
+        document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const threshold = maxHeight;
+      if (scrolled > threshold) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', checkScrollPosition);
+
+    return () => {
+      window.removeEventListener('scroll', checkScrollPosition);
+    };
+  }, []);
+
   return (
-    <div className="border-px hide-scrollbar flex h-full flex-col gap-5 overflow-y-scroll rounded-md border border-[#5E5E5E] bg-[#191919] p-2 text-sm leading-tight">
+    <div className="border-px hide-scrollbar relative flex h-full flex-col gap-5 overflow-y-scroll rounded-md border border-[#5E5E5E] bg-[#191919] p-2 text-sm leading-tight">
       <h2 className="text-lg font-light" id="chain-id">
         CHAIN ID
       </h2>
@@ -22,7 +53,7 @@ export const DocsPanel = () => {
         You&apos;ll want to make this a name that you can easily remember, and that your users and
         developers will recognize.
       </p>
-      <h2 className="text-lg font-light" id="challenge-period">
+      <h2 className="text-lg font-light" id="challenge-period-blocks">
         CHALLENGE PERIOD BLOCKS
       </h2>
       <p>
@@ -173,6 +204,16 @@ export const DocsPanel = () => {
         for you; its private key will be automatically generated and stored within one of the JSON
         configuration files that will be generated in a moment.
       </p>
+      {showScrollToTop && (
+        <button
+          onClick={scrollToTop}
+          className="border-px hover:bg-grey-600 fixed left-10 top-12 z-50 flex h-12 w-12 items-center justify-center rounded-md border border-white/25 bg-black text-white shadow-lg md:hidden"
+          aria-label="Scroll to top"
+          type="button"
+        >
+          <i className="pi pi-arrow-up" />
+        </button>
+      )}
     </div>
   );
 };

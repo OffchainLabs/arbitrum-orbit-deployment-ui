@@ -5,11 +5,11 @@ import { WrongChainAlert } from '@/components/WrongChainAlert';
 import { useIsMounted } from '@/hooks/useIsMounted';
 import { ChainId } from '@/types/ChainId';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { PropsWithChildren } from 'react';
 import { useAccount, useNetwork } from 'wagmi';
 
-function DeploymentLayout({ children }: any) {
-  const { isConnected } = useAccount();
-  const { address } = useAccount();
+function DeploymentLayout({ children }: PropsWithChildren) {
+  const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
 
   const isWrongChain = chain?.id !== ChainId.ArbitrumSepolia;
@@ -33,7 +33,7 @@ function DeploymentLayout({ children }: any) {
   );
 }
 
-export default function DeploymentPageWithContext({ children }: { children: any }) {
+export default function DeploymentPageWithContext({ children }: PropsWithChildren) {
   const isMounted = useIsMounted();
 
   if (!isMounted) return null;

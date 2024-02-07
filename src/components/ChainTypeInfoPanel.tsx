@@ -5,7 +5,14 @@ export const ChainTypeInfoPanel = ({
   gasFee,
   exampleChain,
   logo,
-}: any) => {
+}: {
+  header: string;
+  description: string;
+  dataAvailabilityLayer: string | JSX.Element;
+  gasFee: string;
+  exampleChain: string | JSX.Element;
+  logo: JSX.Element;
+}) => {
   return (
     <div className="flex flex-col gap-5">
       <h3 className="text-2xl">{header}</h3>
