@@ -76,7 +76,14 @@ const AnyTrustInfoPanel = () => (
   <ChainTypeInfoPanel
     header="AnyTrust"
     description="Arbitrum AnyTrust introduces a minor trust assumption in exchange for much lower fees. Data availability is managed by a Data Availability Committee; a fixed and permissioned set of nodes with a 2-of-N trust model. AnyTrust chains are permissionless to validate and secured by Arbitrum fraud proofs."
-    dataAvailabilityLayer={<a href="">AnyTrust Data Availability Committee</a>}
+    dataAvailabilityLayer={
+      <a
+        className="hover:underline"
+        href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/node-running/how-tos/data-availability-committee/introduction`}
+      >
+        AnyTrust Data Availability Committee <i className="pi pi-external-link ml-1 text-sm" />
+      </a>
+    }
     gasFee="Typically less than $0.01"
     exampleChain="Arbitrum Nova"
     logo={<Image src="/NovaLogo.svg" alt="Logo" width={20} height={20} />}

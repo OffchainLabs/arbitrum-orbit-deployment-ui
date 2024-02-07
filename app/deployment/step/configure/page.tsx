@@ -175,7 +175,12 @@ export default function RollupConfigPage() {
               anchor={'challenge-period-blocks'}
             />
 
-            <TextInputWithInfoLink label="Stake Token" defaultValue={'ETH'} disabled />
+            <TextInputWithInfoLink
+              label="Stake Token"
+              defaultValue={'ETH'}
+              disabled
+              anchor={'stake-token'}
+            />
 
             <TextInputWithInfoLink
               label="Base Stake (in Ether)"
