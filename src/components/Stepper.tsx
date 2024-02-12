@@ -8,10 +8,16 @@ export const Stepper = () => {
   const { chainStepMap, createSortedStepMapArray } = useStep();
   const steps = createSortedStepMapArray(chainStepMap);
 
-  return <div className="flex items-center">{steps.map(StepperStep)}</div>;
+  return (
+    <div className="flex items-center">
+      {steps.map((step, index) => (
+        <StepperStep {...{ step, index }} />
+      ))}
+    </div>
+  );
 };
 
-export const StepperStep = (step: Step, index: number) => {
+export const StepperStep = ({ step, index }: { step: Step; index: number }) => {
   const { currentStep } = useStep();
   const { isConnected } = useAccount();
   const isActiveStep = step.id === currentStep?.id && isConnected;
