@@ -64,7 +64,6 @@ export async function deployRollup({
       if (!enoughAllowance) {
         // if not, create tx to approve tokens to be spent
         const txRequest = await createRollupPrepareCustomFeeTokenApprovalTransactionRequest({
-          amount: parseEther('0.125'),
           nativeToken: nativeToken as Address,
           account: walletClient.account?.address!,
           publicClient,
