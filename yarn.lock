@@ -17,7 +17,7 @@
   resolved "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
-"@arbitrum/nitro-contracts@^1.0.0-beta.8":
+"@arbitrum/nitro-contracts@1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@arbitrum/nitro-contracts/-/nitro-contracts-1.1.1.tgz#2d8a2f9ab757bb7654562aebe435bff833c4b98d"
   integrity sha512-4Tyk3XVHz+bm8UujUC78LYSw3xAxyYvBCxfEX4z3qE4/ww7Qck/rmce5gbHMzQjArEAzAP2YSfYIFuIFuRXtfg==
@@ -27,13 +27,13 @@
     "@openzeppelin/contracts-upgradeable" "4.5.2"
     patch-package "^6.4.7"
 
-"@arbitrum/orbit-sdk@^0.6.0-beta.3":
-  version "0.6.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@arbitrum/orbit-sdk/-/orbit-sdk-0.6.0-beta.3.tgz#5a38fd0abb15d4837be3ac0810dfa92e556e2762"
-  integrity sha512-59WCD8JDXifYjf3AzIgT0MwrodMxt/k+vWg+C4u3KpDSINTzNxxGAii7WmMI2ZlGWdrN/xCeXuv52FdwqzOjKQ==
+"@arbitrum/orbit-sdk@^0.6.0-beta.4":
+  version "0.6.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@arbitrum/orbit-sdk/-/orbit-sdk-0.6.0-beta.4.tgz#30c5c4f086770ed39e34806b8a3c866bd1164d37"
+  integrity sha512-69cPKRSgVU5+PUbyh1ZkQHIoar8ponKTFtUVOoLpbM76ff9fcO7luihN59tQ72e6IvU2Vhl+XbbHwO8nkZsKUg==
   dependencies:
     "@arbitrum/sdk" "^3.2.0"
-    "@arbitrum/token-bridge-contracts" "^1.2.0"
+    "@arbitrum/token-bridge-contracts" "^1.2.1"
     ethers "^5.7.2"
 
 "@arbitrum/sdk@^3.2.0":
@@ -47,12 +47,12 @@
     async-mutex "^0.4.0"
     ethers "^5.1.0"
 
-"@arbitrum/token-bridge-contracts@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@arbitrum/token-bridge-contracts/-/token-bridge-contracts-1.2.0.tgz#b1dc02e123393848d0d8e5c167028bafa0ac8229"
-  integrity sha512-GdPn6nIlhkuacgvXZkmYLmNdmOcxVoHEfkEHtNlaBnMqS+HPXEA8keqZDesBHkQ96b9PCwwCegNEx/ZjM+Rq+g==
+"@arbitrum/token-bridge-contracts@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@arbitrum/token-bridge-contracts/-/token-bridge-contracts-1.2.1.tgz#4838d70182bc0d6b36adfd733d7b4650e596c979"
+  integrity sha512-ngKeay/0O91QyVLCbcd2pyJIWtzKi2KsPm+O9q3xCfPkjuCZ0+MK5OdhYKCbvGc0jf39R7izRsvmUHE0qA603A==
   dependencies:
-    "@arbitrum/nitro-contracts" "^1.0.0-beta.8"
+    "@arbitrum/nitro-contracts" "1.1.1"
     "@offchainlabs/upgrade-executor" "1.1.0-beta.0"
     "@openzeppelin/contracts" "4.8.3"
     "@openzeppelin/contracts-upgradeable" "4.8.3"
