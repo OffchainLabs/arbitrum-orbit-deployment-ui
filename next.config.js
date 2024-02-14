@@ -9,7 +9,7 @@ const nextConfig = {
     },
     {
       source: '/deployment/step/(\\d)',
-      destination: `/deployment/step/chain-type`,
+      destination: '/deployment/step/chain-type',
       permanent: true,
     },
   ],
