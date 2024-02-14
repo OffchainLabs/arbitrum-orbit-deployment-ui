@@ -1,9 +1,11 @@
-import { PublicClient, WalletClient, Address } from 'viem';
+import { PublicClient, WalletClient, Address, zeroAddress, parseEther } from 'viem';
 import {
   createRollup,
   prepareChainConfig,
   prepareNodeConfig,
   CoreContracts,
+  createRollupEnoughCustomFeeTokenAllowance,
+  createRollupPrepareCustomFeeTokenApprovalTransactionRequest,
 } from '@arbitrum/orbit-sdk';
 
 import { ChainType } from '@/types/ChainType';
@@ -49,6 +51,30 @@ export async function deployRollup({
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
     const nativeToken = rollupConfig.nativeToken;
+
+    // custom gas token
+    if (nativeToken !== zeroAddress) {
+      // check if enough allowance on rollup creator for custom gas token
+      const enoughAllowance = await createRollupEnoughCustomFeeTokenAllowance({
+        nativeToken: nativeToken as Address,
+        account: walletClient.account?.address!,
+        publicClient,
+      });
+
+      if (!enoughAllowance) {
+        // if not, create tx to approve tokens to be spent
+        const txRequest = await createRollupPrepareCustomFeeTokenApprovalTransactionRequest({
+          nativeToken: nativeToken as Address,
+          account: walletClient.account?.address!,
+          publicClient,
+        });
+
+        // submit and wait for tx to be confirmed
+        await publicClient.waitForTransactionReceipt({
+          hash: await walletClient.sendTransaction(txRequest),
+        });
+      }
+    }
 
     console.log(chainConfig);
     console.log('Going for deployment');
