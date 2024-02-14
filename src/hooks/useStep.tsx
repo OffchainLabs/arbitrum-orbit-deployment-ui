@@ -6,10 +6,9 @@ import {
   AnyTrustStepMap,
   Step,
   StepId,
-  ConfigureChain,
   ConfigureKeyset,
-  ReviewAndDeployAnyTrust,
-  ReviewAndDeployRollup,
+  ConfigureRollup,
+  ConfigureAnyTrust,
 } from '@/types/Steps';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -36,15 +35,10 @@ export const useStep = () => {
           pickChainFormRef.current.requestSubmit();
         }
         break;
-      case ConfigureChain:
+      case ConfigureAnyTrust:
+      case ConfigureRollup:
         if (rollupConfigFormRef?.current) {
           rollupConfigFormRef.current.requestSubmit();
-        }
-        break;
-      case ReviewAndDeployRollup:
-      case ReviewAndDeployAnyTrust:
-        if (reviewAndDeployFormRef?.current) {
-          reviewAndDeployFormRef.current.requestSubmit();
         }
         break;
       case ConfigureKeyset:
@@ -107,11 +101,6 @@ export const useStep = () => {
     isValidStep,
     chainStepMap,
     createSortedStepMapArray,
-    ChooseChainType,
-    ConfigureChain,
-    ReviewAndDeployRollup,
-    ReviewAndDeployAnyTrust,
-    ConfigureKeyset,
     pickChainFormRef,
     rollupConfigFormRef,
     reviewAndDeployFormRef,

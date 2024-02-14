@@ -19,30 +19,24 @@ export const ChainTypePicker: React.FC<ChainTypePickerProps> = ({
   return (
     <div
       className={twJoin(
-        'm-0 grid cursor-pointer grid-cols-9 items-center justify-center rounded border border-[#243145] py-6 pr-6 accent-[#243145] hover:bg-[#f2f7ff]',
-        selectedChainType === chainType && 'bg-[#f2f7ff]',
+        'm-0 flex cursor-pointer flex-col justify-start gap-3 rounded border border-[#5E5E5E] bg-[#191919] p-4 py-6 pr-6  hover:bg-[#343434]',
+        selectedChainType === chainType && 'border-white bg-[#343434]',
       )}
       onClick={() => {
         if (!chainType) return;
         onClick(chainType);
       }}
     >
-      <div className="col-span-1 text-center">
-        <input
-          type="radio"
-          id="rollup"
-          name="chainType"
-          value={chainType}
-          checked={selectedChainType === chainType}
-          className="h-6 w-6 cursor-pointer"
-          readOnly
-        />
+      <div className="cursor-pointer justify-center text-left">
+        <p className="cursor-pointer pb-3 text-2xl">{label}</p>
+        <p className="text-sm text-white">{description}</p>
       </div>
-      <div className="col-span-8 cursor-pointer justify-center text-left">
-        <label htmlFor="rollup" className="cursor-pointer text-lg font-bold">
-          {label}
-        </label>
-        <p className="text-sm text-slate-700">{description}</p>
+      <div className="flex items-center gap-3">
+        <div className="h-4 w-4 rounded-full bg-green"></div>
+        <p className="text-sm">
+          Transaction data posted{' '}
+          {chainType === ChainType.Rollup ? 'to Ethereum' : 'by a Data Availability Committee'}
+        </p>
       </div>
     </div>
   );

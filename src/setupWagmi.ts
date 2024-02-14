@@ -1,6 +1,5 @@
 'use client';
 import { configureChains, createConfig } from 'wagmi';
-import { sepolia } from '@wagmi/core/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { connectorsForWallets, getDefaultWallets } from '@rainbow-me/rainbowkit';
 
@@ -40,7 +39,6 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     // Ideally, we wouldn't need to register the L1s, but there's currently an issue with WalletConnect v2: https://github.com/wagmi-dev/references/issues/225
     arbitrumSepolia,
-    sepolia,
   ],
   [publicProvider()],
 );

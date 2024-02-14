@@ -11,6 +11,7 @@ import {
   useEffect,
   useReducer,
   useRef,
+  useState,
 } from 'react';
 import { useAccount } from 'wagmi';
 import { generateChainId } from '@arbitrum/orbit-sdk/utils';
@@ -147,7 +148,6 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
 
   const pickChainFormRef = useRef<HTMLFormElement>(null);
   const rollupConfigFormRef = useRef<HTMLFormElement>(null);
-  const reviewAndDeployFormRef = useRef<HTMLFormElement>(null);
   const keysetFormRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -164,12 +164,6 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
     );
   }, [state]);
 
-  useEffect(() => {
-    if (!isValidStep) {
-      goToStep(RollupStepMap.ChooseChainType);
-    }
-  }, [isValidStep]);
-
   return (
     <DeploymentPageContext.Provider
       value={[
@@ -178,7 +172,6 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
         {
           pickChainFormRef,
           rollupConfigFormRef,
-          reviewAndDeployFormRef,
           keysetFormRef,
         },
       ]}

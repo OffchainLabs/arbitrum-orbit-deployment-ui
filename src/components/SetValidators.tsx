@@ -65,7 +65,7 @@ export const SetValidators = ({
                 type="text"
                 placeholder={`Validator ${index + 9}`}
                 className={twMerge(
-                  'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
+                  'w-full rounded-md border border-[#6D6D6D] px-3 py-2 shadow-input',
                   addressErrors?.[index + 8] && 'border-red-500',
                 )}
                 {...register(`addresses.${index + 8}`)}

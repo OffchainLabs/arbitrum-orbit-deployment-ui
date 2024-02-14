@@ -47,29 +47,20 @@ export default function KeysetPage() {
   };
 
   return (
-    <>
-      <div className="flex flex-col gap-4">
-        <div className="flex items-baseline gap-2">
-          <StepTitle>Configure Keyset</StepTitle>
-          <InfoCircleWithTooltip
-            href="https://developer.arbitrum.io/inside-anytrust#keysets"
-            infoText="Read about Keyset in the docs"
-          />
-        </div>
-        <p>
-          A Keyset specifies the public keys of Committee members and the number of signatures
-          required for a Data Availability Certificate to be valid. Keysets make Committee
-          membership changes possible and provide Committee members the ability to change their
-          keys.
-        </p>
-        <h3 className="font-bold">Default Keyset</h3>
-        <div>
-          <pre className="whitespace-pre-wrap break-all rounded bg-[#f6f6f6] p-2 text-[#6D6D6D]">
-            {DEFAULT_KEYSET_STRING}
-          </pre>
-        </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={keysetFormRef}></form>
+    <div className="border-px flex flex-col gap-4 rounded-md border border-grey p-8">
+      <StepTitle>Configure Keyset</StepTitle>
+      <p>
+        A Keyset specifies the public keys of Committee members and the number of signatures
+        required for a Data Availability Certificate to be valid. Keysets make Committee membership
+        changes possible and provide Committee members the ability to change their keys.
+      </p>
+      <h3 className="underline">Default Keyset</h3>
+      <div>
+        <pre className="whitespace-pre-wrap break-all rounded bg-[#DADADA] p-2 text-[#6D6D6D]">
+          {DEFAULT_KEYSET_STRING}
+        </pre>
       </div>
-    </>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4" ref={keysetFormRef}></form>
+    </div>
   );
 }
