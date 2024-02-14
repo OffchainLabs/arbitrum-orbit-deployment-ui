@@ -15,7 +15,7 @@ function DeploymentLayout({ children }: PropsWithChildren) {
   const isWrongChain = chain?.id !== ChainId.ArbitrumSepolia;
 
   return (
-    <div className="mx-auto mb-8 flex max-w-screen-xl flex-col gap-5 p-2">
+    <div className="mx-auto mb-8 flex max-w-screen-xl flex-col gap-5">
       <div className="mt-4 w-full">
         <Stepper />
       </div>
