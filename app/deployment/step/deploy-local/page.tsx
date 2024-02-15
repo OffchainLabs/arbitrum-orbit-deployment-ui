@@ -123,7 +123,7 @@ export default function DeployLocallyPage() {
           Optionally, to track logs, run the following command within the base directory:
           <br />
           <br />
-          <CodeSnippet code={`docker compose logs -f nitro`} />
+          <CodeSnippet code="docker compose logs -f nitro" />
         </li>
       </ol>
     </div>
