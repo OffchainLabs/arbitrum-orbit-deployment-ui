@@ -20,7 +20,7 @@ export const EditableInput = ({ register, ...props }: EditableInputProps) => {
     <div className="relative">
       <input
         id={props.name}
-        disabled={!isEditing}
+        disabled={!isEditing || props.disabled}
         className={twMerge(
           'w-full rounded-md border border-[#6D6D6D] bg-[#DADADA] px-3 py-2 pr-10 shadow-input',
           props.error && 'border-red-500',
@@ -30,7 +30,7 @@ export const EditableInput = ({ register, ...props }: EditableInputProps) => {
         {...props}
         {...getRegister()}
       />
-      {!isEditing && (
+      {!props.disabled && !isEditing && (
         <div
           className="absolute right-1 top-1/2 -translate-y-1/2 transform cursor-pointer rounded-full px-3 py-1 text-black hover:bg-[#CCCCCC]"
           onClick={() => setIsEditing(true)}
