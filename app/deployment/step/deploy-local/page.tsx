@@ -91,7 +91,7 @@ export default function DeployLocallyPage() {
         <li>
           Launch Docker, and in the base directory, run: <br />
           <br />
-          <CodeSnippet code={`docker compose up -d`} />
+          <CodeSnippet code="docker compose up -d" />
           <br />
           This will launch the node with a Public RPC reachable at{' '}
           <ExternalLink href="http://localhost:8449" className="underline">
