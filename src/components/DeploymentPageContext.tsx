@@ -1,7 +1,6 @@
 'use client';
 import { CoreContracts } from '@arbitrum/orbit-sdk';
 import { Wallet } from '@/types/RollupContracts';
-import { RollupStepMap } from '@/types/Steps';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
   Dispatch,
@@ -11,12 +10,9 @@ import {
   useEffect,
   useReducer,
   useRef,
-  useState,
 } from 'react';
 import { useAccount } from 'wagmi';
 import { generateChainId } from '@arbitrum/orbit-sdk/utils';
-
-import { useStep } from '@/hooks/useStep';
 import { ChainType } from '@/types/ChainType';
 import { RollupConfigFormValues } from '../../app/deployment/step/configure/page';
 
@@ -81,7 +77,7 @@ function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState
 
 type DeploymentPageContextAction =
   | { type: 'set_rollup_contracts'; payload: CoreContracts }
-  | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
+  | { type: 'set_rollup_config'; payload: Partial<RollupConfigFormValues> }
   | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Wallet[] }
   | { type: 'set_batch_poster'; payload: Wallet }
@@ -139,8 +135,15 @@ function reducer(
 }
 
 export function DeploymentPageContextProvider({ children }: { children: React.ReactNode }) {
-  const { address } = useAccount();
-  const { isValidStep, goToStep } = useStep();
+  const { address } = useAccount({
+    onConnect: ({ address }) => {
+      if (address) {
+        // Update owner field when use connects their wallet
+        dispatch({ type: 'set_rollup_config', payload: { owner: address as string } });
+      }
+    },
+  });
+
   const [state, dispatch] = useReducer(reducer, address, (address) => ({
     ...getDeploymentPageContextStateInitialValue(),
     rollupConfig: getDefaultRollupConfig(address),
