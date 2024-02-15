@@ -70,8 +70,8 @@ export const DocsPanel = () => {
       </p>
       <p>
         Note that the challenge period is measured in blocks on the underlying L1 chain, not the
-        base (L2) chain. For example, if your Orbit chain settles to Arbitrum Goerli, the challenge
-        period window would be the number of Challenge period (blocks) multiplied by the L1 Goerli
+        base (L2) chain. For example, if your Orbit chain settles to Arbitrum Sepolia, the challenge
+        period window would be the number of Challenge period (blocks) multiplied by the L1 Sepolia
         block time (~12 seconds).
       </p>
       <h2 className="text-lg font-light" id="stake-token">
