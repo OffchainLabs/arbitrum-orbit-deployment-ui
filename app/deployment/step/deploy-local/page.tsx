@@ -99,7 +99,7 @@ export default function DeployLocallyPage() {
           </ExternalLink>{' '}
           and a corresponding BlockScout explorer instance, viewable at{' '}
           <ExternalLink href="http://localhost" className="underline">
-            http://localhost:4000
+            http://localhost
           </ExternalLink>
           .
         </li>
