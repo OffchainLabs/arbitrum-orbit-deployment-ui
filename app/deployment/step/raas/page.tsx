@@ -16,24 +16,34 @@ export default function RaasProvidersPage() {
           Get in touch
         </button>
         <h3 className="text-2xl font-light">Lean about the Providers</h3>
-        <div className="flex flex-wrap gap-8">
+        <div className="grid grid-cols-2 gap-6">
           <RaasProviderCard
             name="Caldera"
             description="Supports AnyTrust and Rollup chains"
+            caption="Chain1,2,3"
             link="https://caldera.xyz/"
             logo="/Caldera.svg"
           />
           <RaasProviderCard
             name="Conduit"
             description="Supports AnyTrust and Rollup chains"
+            caption="Powering Frame, Orb3, and Parallel"
             link="https://conduit.xyz/"
             logo="/Conduit.svg"
           />
           <RaasProviderCard
             name="AltLayer"
-            description="Supports AnyTrust and Rollup chains"
+            description="Supports AnyTrust chains"
+            caption="Cometh, Polychain Monster & Avive"
             link="https://altlayer.io/"
             logo="/AltLayer.svg"
+          />
+          <RaasProviderCard
+            name="Gelato"
+            description="Supports AnyTrust chains"
+            caption="chain 1,2,3"
+            link="https://gelato.network/"
+            logo="/gelato.svg"
           />
         </div>
       </div>
