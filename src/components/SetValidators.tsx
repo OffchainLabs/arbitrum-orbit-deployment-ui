@@ -2,7 +2,7 @@ import { Wallet } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
 import { useFormContext } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
-import { AnchorLabel } from './AnchorLabel';
+import { ScrollWrapper } from './ScrollWrapper';
 
 type SetValidatorsProps = {
   wallets: Wallet[];
@@ -35,8 +35,10 @@ export const SetValidators = ({
   const addressErrors = errors.addresses as { message: string }[];
 
   return (
-    <div>
-      <AnchorLabel anchor="validators" label="Validators" />
+    <ScrollWrapper anchor="validators">
+      <label className={'cursor-pointer underline'}>
+        <span>{'Validators #'}</span>
+      </label>
       <div className="mx-1 flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           {wallets.slice(0, 8).map((wallet, index) => (
@@ -96,6 +98,6 @@ export const SetValidators = ({
           )}
         </button>
       </div>
-    </div>
+    </ScrollWrapper>
   );
 };
