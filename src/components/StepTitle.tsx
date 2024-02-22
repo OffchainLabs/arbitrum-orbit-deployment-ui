@@ -8,7 +8,7 @@ export const StepTitle = ({
   className?: string;
 }>) => {
   return (
-    <h3 className={twMerge('text-left text-3xl font-light text-[#B2B2B2]', className)}>
+    <h3 className={twMerge('text-left text-3xl font-normal text-[#B2B2B2]', className)}>
       {children}
     </h3>
   );

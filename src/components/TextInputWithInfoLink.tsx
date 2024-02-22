@@ -1,8 +1,7 @@
 import { UseFormRegisterReturn, InternalFieldName } from 'react-hook-form';
 import { InputHTMLAttributes } from 'react';
-import { twJoin } from 'tailwind-merge';
-import { AnchorLabel } from './AnchorLabel';
 import { EditableInput } from './EditableInput';
+import { ScrollWrapper } from './ScrollWrapper';
 
 interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -14,12 +13,18 @@ interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElemen
 
 export const TextInputWithInfoLink = (props: TextInputWithInfoLinkProps) => {
   const { anchor, label, explainerText, error, name } = props;
+
   return (
-    <div className="mt-2 flex flex-col gap-1">
-      <AnchorLabel anchor={anchor} label={label} inputId={name} />
+    <ScrollWrapper anchor={anchor} className="mt-2 flex flex-col gap-1">
+      <label htmlFor={name} className={'cursor-pointer underline'}>
+        <span>
+          {label}
+          {' #'}
+        </span>
+      </label>
       <EditableInput {...props} />
       {explainerText && <span className="text-sm text-zinc-500">{explainerText}</span>}
       {error && <span className="text-red-500">{error}</span>}
-    </div>
+    </ScrollWrapper>
   );
 };
