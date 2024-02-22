@@ -39,7 +39,7 @@ export const SetValidators = ({
       <label className={'cursor-pointer underline'}>
         <span>{'Validators #'}</span>
       </label>
-      <div className="mx-1 flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           {wallets.slice(0, 8).map((wallet, index) => (
             <div key={wallet.address + index}>
