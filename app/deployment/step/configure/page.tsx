@@ -19,6 +19,7 @@ import { getRandomWallet } from '@/utils/getRandomWallet';
 import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
 import { compareWallets } from '@/utils/wallets';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'react-toastify';
 
 const WalletSchema = z.object({
   address: AddressSchema,
@@ -130,6 +131,12 @@ export default function RollupConfigPage() {
       nextStep();
     } catch (e) {
       console.error(e);
+      if (e instanceof Error) {
+        // Shorten the error message sent from MetaMask by grabbing just the first sentence
+        const periodIndex = e.message.indexOf('.');
+        const message = e.message.substring(0, periodIndex + 1);
+        toast(message, { type: 'error' });
+      }
     } finally {
       dispatch({ type: 'set_is_loading', payload: false });
     }
