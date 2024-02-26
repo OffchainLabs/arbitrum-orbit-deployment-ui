@@ -21,7 +21,6 @@ export const RaasProviderCard = ({
         <h4 className="text-2xl font-light">{name}</h4>
         <p className="text-sm font-light">{description}</p>
         <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-white"></div>
           <p className="text-xs font-light">{caption}</p>
         </div>
         <div className="border-px border-b border-gray-200"></div>

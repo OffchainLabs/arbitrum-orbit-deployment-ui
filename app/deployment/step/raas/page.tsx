@@ -20,7 +20,7 @@ export default function RaasProvidersPage() {
           <RaasProviderCard
             name="Caldera"
             description="Supports AnyTrust and Rollup chains"
-            caption="Chain1,2,3"
+            caption="Powering Treasure, Hychain, Rari"
             link="https://caldera.xyz/"
             logo="/Caldera.svg"
           />
@@ -34,7 +34,7 @@ export default function RaasProvidersPage() {
           <RaasProviderCard
             name="AltLayer"
             description="Supports AnyTrust chains"
-            caption="Cometh, Polychain Monster & Avive"
+            caption="Powering Cometh, Polychain Monster & Avive"
             link="https://altlayer.io/"
             logo="/AltLayer.svg"
           />
