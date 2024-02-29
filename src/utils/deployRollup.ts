@@ -1,11 +1,12 @@
-import { PublicClient, WalletClient, Address, zeroAddress, parseEther } from 'viem';
+import { PublicClient, WalletClient, Address, zeroAddress } from 'viem';
 import {
-  createRollup,
   prepareChainConfig,
   prepareNodeConfig,
   CoreContracts,
   createRollupEnoughCustomFeeTokenAllowance,
   createRollupPrepareCustomFeeTokenApprovalTransactionRequest,
+  createRollupPrepareTransactionRequest,
+  createRollupPrepareTransactionReceipt,
 } from '@arbitrum/orbit-sdk';
 
 import { ChainType } from '@/types/ChainType';
@@ -85,16 +86,22 @@ export async function deployRollup({
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
-    const txReceipt = await createRollup({
+    const txRequest = await createRollupPrepareTransactionRequest({
       params: {
         config: rollupConfigPayload,
         batchPoster: batchPosterAddress,
         validators: validatorAddresses,
         nativeToken,
       },
-      walletClient,
+      account: walletClient.account?.address!,
       publicClient,
     });
+
+    const txReceipt = createRollupPrepareTransactionReceipt(
+      await publicClient.waitForTransactionReceipt({
+        hash: await walletClient.sendTransaction(txRequest),
+      }),
+    );
 
     const coreContracts = txReceipt.getCoreContracts();
 
