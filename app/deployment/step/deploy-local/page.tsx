@@ -109,7 +109,7 @@ export default function DeployLocallyPage() {
           in the following command, and run it: <br />
           <br />
           <CodeSnippet
-            code={`PRIVATE_KEY="0xYourPrivateKey" L2_RPC_URL="${parentChainRpcUrl}" L3_RPC_URL="http://localhost:8449" yarn run setup`}
+            code={`PRIVATE_KEY="0xYourPrivateKey" L2_RPC_URL="${parentChainRpcUrl}" L3_RPC_URL="http://127.0.0.1:8449" yarn run setup`}
           />
         </li>
         <br />
