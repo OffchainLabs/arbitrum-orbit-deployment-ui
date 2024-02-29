@@ -11,6 +11,7 @@ import { PropsWithChildren } from 'react';
 export default function StepLayout({ children }: PropsWithChildren) {
   const { submitForm, currentStep } = useStep();
   const [{ isLoading, isDownloadCompleted }] = useDeploymentPageContext();
+  const isLastStep = currentStep?.next === null;
   const isDownloadRequired =
     !isDownloadCompleted &&
     (currentStep === DownloadConfig || currentStep === DownloadAnyTrustConfig);
@@ -31,7 +32,7 @@ export default function StepLayout({ children }: PropsWithChildren) {
         <ResetButton />
         <div className="flex gap-5">
           <BackButton isLoading={isLoading} />
-          <div className="text-right">
+          <div className={isLastStep ? 'hidden' : 'block'}>
             <NextButton onClick={submitForm} isLoading={isLoading} />
           </div>
         </div>
