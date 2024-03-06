@@ -31,7 +31,9 @@ export default function StepLayout({ children }: PropsWithChildren) {
         <ResetButton />
         <div className="flex gap-5">
           <BackButton isLoading={isLoading} />
-          {!isLastStep && <NextButton onClick={submitForm} isLoading={isLoading} />}
+          <div className={isLastStep ? 'hidden' : 'block'}>
+            <NextButton onClick={submitForm} isLoading={isLoading} />
+          </div>
         </div>
       </div>
     </>
