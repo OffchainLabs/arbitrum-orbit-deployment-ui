@@ -31,8 +31,8 @@ export default function InfoPage() {
           <br />
         </p>
         <p>
-          Please ensure you have at least <strong>1.0 Arbitrum Sepolia ETH</strong> before getting
-          started.
+          Please ensure you have at least <strong>1.0 Arbitrum Sepolia ETH</strong> (or 0.6 Arbitrum
+          Sepolia ETH plus 0.4 native token for custom fee token chain) before getting started.
         </p>
         <div className="flex w-full flex-col items-baseline justify-between gap-2 bg-[#1A1A1A] p-4">
           <p>If you don't have enough Sepolia ETH, you can use these faucets:</p>

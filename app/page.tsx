@@ -43,10 +43,7 @@ export default function Home() {
           >
             Dig into the details of how this works
           </ExternalLinkTile>
-          <Link
-            href={`/deployment/step/${FIRST_STEP.id}`}
-            className={twMerge(twJoin(cardClassNames))}
-          >
+          <Link href={`/deployment`} className={twMerge(twJoin(cardClassNames))}>
             <button>
               <p className={`font-regular mb-2 text-2xl`}>Deploy Orbit Chain</p>
               <p className={`font-regular m-0 max-w-[28ch] text-sm`}>
