@@ -14,6 +14,7 @@ html {
   background: url('/grainient.png') no-repeat;
   background-size: cover;
   min-height: 100%;
+  background-color: black;
 }
 
 select,
@@ -27,11 +28,24 @@ input {
   display: none;
 }
 
-Hide scrollbar for IE and Edge .hide-scrollbar {
+.hide-scrollbar {
   -ms-overflow-style: none;
 }
 
 /* Hide scrollbar for Firefox */
 .hide-scrollbar {
   scrollbar-width: none;
+}
+
+@keyframes highlightAnimation {
+  from {
+    background-color: #5e5e5e;
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+.highlight-effect {
+  animation: highlightAnimation 2s;
 }

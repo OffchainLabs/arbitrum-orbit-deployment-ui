@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={unica77.style}>
+      <body style={unica77.style} className="px-4">
         <Providers>
           <header className="mx-auto flex max-w-screen-xl justify-end py-6">
             <ConnectButton />

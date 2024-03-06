@@ -5,24 +5,28 @@ import { ExternalLink } from '@/components/ExternalLink';
 import { NextButton } from '@/components/NextButton';
 import { ResetButton } from '@/components/ResetButton';
 import { useStep } from '@/hooks/useStep';
-import { DownloadAnyTrustConfig, DownloadConfig, RaasProviders } from '@/types/Steps';
+import { DownloadAnyTrustConfig, DownloadConfig } from '@/types/Steps';
+import { PropsWithChildren } from 'react';
 
-export default function StepLayout({ children }: { children: any }) {
+export default function StepLayout({ children }: PropsWithChildren) {
   const { submitForm, currentStep, isLastStep } = useStep();
   const [{ isLoading, isDownloadCompleted }] = useDeploymentPageContext();
-  const shouldShowDocsLink = currentStep !== RaasProviders;
+  const isDownloadRequired =
+    !isDownloadCompleted &&
+    (currentStep === DownloadConfig || currentStep === DownloadAnyTrustConfig);
 
   return (
     <>
-      {shouldShowDocsLink && (
-        <ExternalLink
-          href="https://docs.arbitrum.io/launch-orbit-chain/orbit-gentle-introduction"
-          className="text-xs underline"
-        >
-          Open supporting documentation for this flow
-        </ExternalLink>
-      )}
+      <ExternalLink
+        href="https://docs.arbitrum.io/launch-orbit-chain/orbit-gentle-introduction"
+        className="text-xs underline"
+      >
+        Open supporting documentation for this flow
+      </ExternalLink>
       {children}
+      {isDownloadRequired && (
+        <p className="text-right">Please download zip file before continuing</p>
+      )}
       <div className="flex w-full items-center justify-between bg-transparent">
         <ResetButton />
         <div className="flex gap-5">

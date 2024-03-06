@@ -91,15 +91,15 @@ export default function DeployLocallyPage() {
         <li>
           Launch Docker, and in the base directory, run: <br />
           <br />
-          <CodeSnippet code={`docker-compose up -d`} />
+          <CodeSnippet code="docker compose up -d" />
           <br />
           This will launch the node with a Public RPC reachable at{' '}
           <ExternalLink href="http://localhost:8449" className="underline">
             http://localhost:8449
           </ExternalLink>{' '}
           and a corresponding BlockScout explorer instance, viewable at{' '}
-          <ExternalLink href="http://localhost:4000" className="underline">
-            http://localhost:4000
+          <ExternalLink href="http://localhost" className="underline">
+            http://localhost
           </ExternalLink>
           .
         </li>
@@ -109,7 +109,7 @@ export default function DeployLocallyPage() {
           in the following command, and run it: <br />
           <br />
           <CodeSnippet
-            code={`PRIVATE_KEY="0xYourPrivateKey" L2_RPC_URL="${parentChainRpcUrl}" L3_RPC_URL="http://localhost:8449" yarn run setup`}
+            code={`PRIVATE_KEY="0xYourPrivateKey" L2_RPC_URL="${parentChainRpcUrl}" L3_RPC_URL="http://127.0.0.1:8449" yarn run setup`}
           />
         </li>
         <br />
@@ -123,7 +123,7 @@ export default function DeployLocallyPage() {
           Optionally, to track logs, run the following command within the base directory:
           <br />
           <br />
-          <CodeSnippet code={`docker-compose logs -f nitro`} />
+          <CodeSnippet code="docker compose logs -f nitro" />
         </li>
       </ol>
     </div>

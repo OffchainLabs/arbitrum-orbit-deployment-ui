@@ -7,11 +7,11 @@ import { useStep } from '@/hooks/useStep';
 import { ChainId } from '@/types/ChainId';
 import { RaasProviders } from '@/types/Steps';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { PropsWithChildren } from 'react';
 import { useAccount, useNetwork } from 'wagmi';
 
-function DeploymentLayout({ children }: any) {
-  const { isConnected } = useAccount();
-  const { address } = useAccount();
+function DeploymentLayout({ children }: PropsWithChildren) {
+  const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
   const { currentStep } = useStep();
 
@@ -36,9 +36,10 @@ function DeploymentLayout({ children }: any) {
   );
 }
 
-export default function DeploymentPageWithContext({ children }: { children: any }) {
+export default function DeploymentPageWithContext({ children }: PropsWithChildren) {
   const isMounted = useIsMounted();
 
+  if (!isMounted) return null;
   if (!isMounted) return null;
   return (
     <DeploymentPageContextProvider>

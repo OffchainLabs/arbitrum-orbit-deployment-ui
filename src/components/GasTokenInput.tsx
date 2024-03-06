@@ -5,7 +5,7 @@ import { twJoin } from 'tailwind-merge';
 import { zeroAddress } from 'viem';
 import { erc20ABI, useContractRead, useToken } from 'wagmi';
 import { useDeploymentPageContext } from './DeploymentPageContext';
-import { AnchorLabel } from './AnchorLabel';
+import { ScrollWrapper } from './ScrollWrapper';
 
 enum GAS_TOKEN_KIND {
   ETH = 'ETH',
@@ -72,8 +72,10 @@ export const GasTokenInput = (props: { setTokenDecimals: Dispatch<SetStateAction
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <AnchorLabel anchor="gas-token" label="Gas Token" />
+    <ScrollWrapper anchor="gas-token" className="flex flex-col gap-2">
+      <label className={'cursor-pointer underline'}>
+        <span>Gas Token #</span>
+      </label>
       <select
         className={twJoin('w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input')}
         value={selectedToken}
@@ -120,6 +122,6 @@ export const GasTokenInput = (props: { setTokenDecimals: Dispatch<SetStateAction
           )}
         </>
       )}
-    </div>
+    </ScrollWrapper>
   );
 };
