@@ -132,10 +132,10 @@ export default function RollupConfigPage() {
     } catch (e) {
       console.error(e);
       if (e instanceof Error) {
-        // Shorten the error message sent from MetaMask by grabbing just the first sentence
+        // Shorten the error message sent from MetaMask (or other wallets) by grabbing just the first sentence
         const periodIndex = e.message.indexOf('.');
-        const message = e.message.substring(0, periodIndex + 1);
-        toast(message, { type: 'error' });
+        const message = e.message.substring(0, periodIndex ? periodIndex + 1 : undefined);
+        toast(message, { type: 'error', pauseOnHover: true });
       }
     } finally {
       dispatch({ type: 'set_is_loading', payload: false });
