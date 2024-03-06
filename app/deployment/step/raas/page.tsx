@@ -1,6 +1,5 @@
 import { RaasProviderCard } from '@/components/RaasProviderCard';
 import { StepTitle } from '@/components/StepTitle';
-import { twMerge } from 'tailwind-merge';
 
 export default function RaasProvidersPage() {
   return (
@@ -12,9 +11,10 @@ export default function RaasProvidersPage() {
           Rollup-as-a-Service Provider. They have the context and experience to help with deploying
           contracts, protocol modifications, and maintaining infrastructure.
         </p>
-        <button className={twMerge(` w-36 rounded-sm bg-white p-2 text-lg text-black`)}>
+        {/* TODO: reactivate when page is ready */}
+        {/* <button className={twMerge(` w-36 rounded-sm bg-white p-2 text-lg text-black`)}> 
           Get in touch
-        </button>
+        </button> */}
         <h3 className="text-2xl font-light">Lean about the Providers</h3>
         <div className="grid grid-cols-2 gap-6">
           <RaasProviderCard
@@ -41,7 +41,7 @@ export default function RaasProvidersPage() {
           <RaasProviderCard
             name="Gelato"
             description="Supports AnyTrust chains"
-            caption="chain 1,2,3"
+            caption="Powering re.al and Playnance"
             link="https://gelato.network/"
             logo="/gelato.svg"
           />
