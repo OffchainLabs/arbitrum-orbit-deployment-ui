@@ -1,6 +1,6 @@
 'use client';
-import { Wallet, RollupContracts } from '@/types/RollupContracts';
-import { RollupStepMap } from '@/types/Steps';
+import { CoreContracts } from '@arbitrum/orbit-sdk';
+import { Wallet } from '@/types/RollupContracts';
 import { RollupConfig } from '@/types/rollupConfigDataType';
 import {
   Dispatch,
@@ -12,17 +12,18 @@ import {
   useRef,
 } from 'react';
 import { useAccount } from 'wagmi';
-import { useStep } from '@/hooks/useStep';
+import { generateChainId } from '@arbitrum/orbit-sdk/utils';
 import { ChainType } from '@/types/ChainType';
-import { RollupConfigFormValues } from './RollupConfigInput';
+import { RollupConfigFormValues } from '../../app/deployment/step/configure/page';
 
 type DeploymentPageContextState = {
-  rollupContracts?: RollupContracts;
+  rollupContracts?: CoreContracts;
   rollupConfig: RollupConfig;
   validators?: Wallet[];
   batchPoster?: Wallet;
   chainType?: ChainType;
   isLoading: boolean;
+  isDownloadCompleted: boolean;
 };
 
 const generateDefaultRollupConfig: () => RollupConfig = () => ({
@@ -33,7 +34,7 @@ const generateDefaultRollupConfig: () => RollupConfig = () => ({
   extraChallengeTimeBlocks: 0,
   wasmModuleRoot: '0x0754e09320c381566cc0449904c377a52bd34a6b9404432e80afd573b67f7b17',
   loserStakeEscrow: '0x0000000000000000000000000000000000000000',
-  chainId: Math.floor(Math.random() * 100000000000) + 1,
+  chainId: generateChainId(),
   chainName: 'My Arbitrum L3 Chain',
   chainConfig: '0x0000000000000000000000000000000000000000000000000000000000000000',
   genesisBlockNum: 0,
@@ -57,6 +58,7 @@ const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
   batchPoster: undefined,
   chainType: undefined,
   isLoading: false,
+  isDownloadCompleted: false,
 };
 
 function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState {
@@ -74,12 +76,13 @@ function getDeploymentPageContextStateInitialValue(): DeploymentPageContextState
 }
 
 type DeploymentPageContextAction =
-  | { type: 'set_rollup_contracts'; payload: RollupContracts }
-  | { type: 'set_rollup_config'; payload: RollupConfigFormValues }
+  | { type: 'set_rollup_contracts'; payload: CoreContracts }
+  | { type: 'set_rollup_config'; payload: Partial<RollupConfigFormValues> }
   | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Wallet[] }
   | { type: 'set_batch_poster'; payload: Wallet }
   | { type: 'set_is_loading'; payload: boolean }
+  | { type: 'set_is_download_completed'; payload: boolean }
   | { type: 'reset'; payload: string };
 
 type DeploymentPageContextValue = [
@@ -117,6 +120,9 @@ function reducer(
     case 'set_is_loading':
       return { ...state, isLoading: action.payload };
 
+    case 'set_is_download_completed':
+      return { ...state, isDownloadCompleted: action.payload };
+
     case 'reset':
       return {
         ...deploymentPageContextStateDefaultValue,
@@ -129,8 +135,15 @@ function reducer(
 }
 
 export function DeploymentPageContextProvider({ children }: { children: React.ReactNode }) {
-  const { address } = useAccount();
-  const { isValidStep, goToStep } = useStep();
+  const { address } = useAccount({
+    onConnect: ({ address }) => {
+      if (address) {
+        // Update owner field when use connects their wallet
+        dispatch({ type: 'set_rollup_config', payload: { owner: address as string } });
+      }
+    },
+  });
+
   const [state, dispatch] = useReducer(reducer, address, (address) => ({
     ...getDeploymentPageContextStateInitialValue(),
     rollupConfig: getDefaultRollupConfig(address),
@@ -138,9 +151,6 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
 
   const pickChainFormRef = useRef<HTMLFormElement>(null);
   const rollupConfigFormRef = useRef<HTMLFormElement>(null);
-  const validatorFormRef = useRef<HTMLFormElement>(null);
-  const batchPosterFormRef = useRef<HTMLFormElement>(null);
-  const reviewAndDeployFormRef = useRef<HTMLFormElement>(null);
   const keysetFormRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -152,15 +162,10 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
         rollupContracts: state.rollupContracts,
         validators: state.validators,
         batchPoster: state.batchPoster,
+        isDownloadCompleted: state.isDownloadCompleted,
       }),
     );
   }, [state]);
-
-  useEffect(() => {
-    if (!isValidStep) {
-      goToStep(RollupStepMap.ChooseChainType);
-    }
-  }, [isValidStep]);
 
   return (
     <DeploymentPageContext.Provider
@@ -170,9 +175,6 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
         {
           pickChainFormRef,
           rollupConfigFormRef,
-          validatorFormRef,
-          batchPosterFormRef,
-          reviewAndDeployFormRef,
           keysetFormRef,
         },
       ]}

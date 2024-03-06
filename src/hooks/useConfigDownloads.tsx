@@ -1,9 +1,11 @@
+import { NodeConfig } from '@arbitrum/orbit-sdk';
+
 import { L3Config } from '@/types/L3Config';
-import { RollupConfigData } from '@/types/rollupConfigDataType';
 import { useEffect, useState } from 'react';
+import JSZip from 'jszip';
 
 export const useConfigDownloads = () => {
-  const [rollupConfigData, setRollupConfigData] = useState<RollupConfigData | null>(null);
+  const [rollupConfigData, setRollupConfigData] = useState<NodeConfig | null>(null);
   const [l3Config, setL3Config] = useState<L3Config | null>(null);
 
   const unwantedFields = [
@@ -55,6 +57,20 @@ export const useConfigDownloads = () => {
 
   const downloadL3Config = () => downloadJSON(l3Config, 'orbitSetupScriptConfig.json');
 
+  const downloadZippedConfigs = () => {
+    const zip = new JSZip();
+    zip.file('nodeConfig.json', JSON.stringify(rollupConfigData, null, 2));
+    zip.file('orbitSetupScriptConfig.json', JSON.stringify(l3Config, null, 2));
+
+    zip.generateAsync({ type: 'blob' }).then((file) => {
+      const element = document.createElement('a');
+      element.href = URL.createObjectURL(file);
+      element.download = 'orbit-config.zip';
+      document.body.appendChild(element);
+      element.click();
+    });
+  };
+
   return {
     rollupConfigDownloadData: rollupConfigData,
     rollupConfigDisplayData: rollupConfigData ? dataWithParsedInfoJson() : '',
@@ -62,6 +78,7 @@ export const useConfigDownloads = () => {
     downloadJSON,
     downloadRollupConfig,
     downloadL3Config,
+    downloadZippedConfigs,
   };
 };
 
@@ -89,26 +106,6 @@ const removeNestedFields = (obj: any): any => {
 
     // Stringify the entire 'info-json' object
     newObj.chain['info-json'] = JSON.stringify(newObj.chain['info-json']);
-  }
-
-  // Check and update 'private-key' in 'staker'
-  if (newObj.node && newObj.node.staker && newObj.node.staker['parent-chain-wallet']) {
-    let privateKey = newObj.node.staker['parent-chain-wallet']['private-key'];
-    if (privateKey.startsWith('0x')) {
-      newObj.node.staker['parent-chain-wallet']['private-key'] = privateKey.slice(2);
-    }
-  }
-
-  // Check and update 'private-key' in 'batch-poster'
-  if (
-    newObj.node &&
-    newObj.node['batch-poster'] &&
-    newObj.node['batch-poster']['parent-chain-wallet']
-  ) {
-    let privateKey = newObj.node['batch-poster']['parent-chain-wallet']['private-key'];
-    if (privateKey.startsWith('0x')) {
-      newObj.node['batch-poster']['parent-chain-wallet']['private-key'] = privateKey.slice(2);
-    }
   }
 
   return newObj;

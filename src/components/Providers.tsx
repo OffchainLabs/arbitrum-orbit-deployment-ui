@@ -1,18 +1,15 @@
 'use client';
 
-import { spaceGrotesk } from '@/fonts';
-import { RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import posthog from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
 import { WagmiConfig } from 'wagmi';
-import { arbitrumGoerli } from 'wagmi/chains';
 import { appInfo, chains, wagmiConfig } from '@/setupWagmi';
 
 import '@rainbow-me/rainbowkit/styles.css';
 import 'primeicons/primeicons.css'; // icons
-import 'primereact/resources/primereact.min.css'; // core css
-import 'primereact/resources/themes/lara-light-indigo/theme.css'; // theme
 import '@/styles/globals.css';
+import { PropsWithChildren } from 'react';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -30,7 +27,7 @@ if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY 
   });
 }
 
-export const Providers = ({ children }: any) => {
+export const Providers = ({ children }: PropsWithChildren) => {
   return (
     <PostHogProvider client={posthog}>
       <WagmiConfig config={wagmiConfig}>
@@ -38,12 +35,10 @@ export const Providers = ({ children }: any) => {
           chains={chains}
           appInfo={appInfo}
           theme={{
-            ...lightTheme({
-              accentColor: '#243145',
+            ...darkTheme({
+              accentColor: '#31572A',
+              borderRadius: 'small',
             }),
-            fonts: {
-              body: spaceGrotesk.style.fontFamily,
-            },
           }}
         >
           {children}

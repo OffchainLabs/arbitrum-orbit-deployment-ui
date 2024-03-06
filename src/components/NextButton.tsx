@@ -1,21 +1,30 @@
 import { useStep } from '@/hooks/useStep';
-import { ConfigureKeyset, ReviewAndDeployAnyTrust, ReviewAndDeployRollup } from '@/types/Steps';
-import { MouseEvent, FC, ButtonHTMLAttributes } from 'react';
-import { twJoin } from 'tailwind-merge';
+import {
+  ConfigureAnyTrust,
+  ConfigureKeyset,
+  ConfigureRollup,
+  DownloadAnyTrustConfig,
+  DownloadConfig,
+} from '@/types/Steps';
+import { ButtonHTMLAttributes, FC, MouseEvent, useMemo } from 'react';
+import { twMerge } from 'tailwind-merge';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 
 interface NextButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading }) => {
   const { currentStep } = useStep();
+  const [{ isDownloadCompleted }] = useDeploymentPageContext();
   const isLastStep = currentStep?.next === null;
 
-  const isDeploymentStep =
-    currentStep === ReviewAndDeployRollup || currentStep === ReviewAndDeployAnyTrust;
-
+  const isDeploymentStep = currentStep === ConfigureAnyTrust || currentStep === ConfigureRollup;
+  const isDownloadRequired =
+    !isDownloadCompleted &&
+    (currentStep === DownloadConfig || currentStep === DownloadAnyTrustConfig);
   const isTransactionStep = currentStep === ConfigureKeyset;
 
   const getLabel = () => {
@@ -36,15 +45,14 @@ export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading 
   };
   return (
     <button
-      className={twJoin(
-        `w-full rounded-lg bg-[#243145] px-3 py-2 text-white`,
-        (isLoading || isLastStep) && 'cursor-not-allowed bg-gray-400',
-        isLastStep && 'invisible',
-        'hover:bg-[#283C55]',
+      className={twMerge(
+        `h-9 rounded-sm bg-white px-5 text-lg text-black`,
+        isLoading && 'cursor-not-allowed',
+        isDownloadRequired && 'cursor-not-allowed bg-gray-300 text-gray-600',
         className,
       )}
       onClick={onClick}
-      disabled={isLoading || isLastStep}
+      disabled={isLoading || isLastStep || isDownloadRequired}
     >
       {getLabel()}
       {getIcon()}

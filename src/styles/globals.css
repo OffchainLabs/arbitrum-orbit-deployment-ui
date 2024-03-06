@@ -8,3 +8,44 @@
   transform: translateY(-80%);
   content: '⌄';
 }
+
+html {
+  @apply text-white;
+  background: url('/grainient.png') no-repeat;
+  background-size: cover;
+  min-height: 100%;
+  background-color: black;
+}
+
+select,
+input {
+  @apply text-black;
+  @apply bg-white;
+}
+
+/* Hide scrollbar for Chrome, Safari and Edge */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+@keyframes highlightAnimation {
+  from {
+    background-color: #5e5e5e;
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+.highlight-effect {
+  animation: highlightAnimation 2s;
+}

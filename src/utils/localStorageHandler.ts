@@ -1,8 +1,8 @@
+import { NodeConfig } from '@arbitrum/orbit-sdk';
 import { L3Config } from '@/types/L3Config';
-import { RollupConfigData } from '@/types/rollupConfigDataType';
 
 // Function to update local storage with new rollup data and l3 data
-export function updateLocalStorage(data: RollupConfigData, l3config: L3Config) {
+export function updateLocalStorage(data: NodeConfig, l3config: L3Config) {
   const currentData = localStorage.getItem('rollupData');
   const currentL3Config = localStorage.getItem('l3Config');
   let updatedData: any = {};

@@ -1,124 +1,61 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-
-import { useStep } from '@/hooks/useStep';
 import { Wallet } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
-import { AddressSchema } from '@/utils/schemas';
-import { useDeploymentPageContext } from './DeploymentPageContext';
-import { StepTitle } from './StepTitle';
-import { TextInputWithInfoLink } from './TextInputWithInfoLink';
-import { twJoin } from 'tailwind-merge';
+import { useFormContext } from 'react-hook-form';
+import { twMerge } from 'tailwind-merge';
+import { ScrollWrapper } from './ScrollWrapper';
 
-const validatorsSchema = z.object({
-  numberOfValidators: z.number().min(1).max(16),
-  addresses: z.array(AddressSchema),
-});
-type ValidatorsFormValues = z.infer<typeof validatorsSchema>;
+type SetValidatorsProps = {
+  wallets: Wallet[];
+  setWallets: (wallets: Wallet[]) => void;
+  walletCount: number;
+  setWalletCount: (walletCount: number) => void;
+};
 
-export const SetValidators = () => {
-  const [{ validators: savedWallets }, dispatch] = useDeploymentPageContext();
-  const { nextStep, validatorFormRef } = useStep();
+export const SetValidators = ({
+  wallets,
+  setWallets,
+  walletCount,
+  setWalletCount,
+}: SetValidatorsProps) => {
+  const { register, setValue, formState } = useFormContext();
+  const { errors } = formState;
 
-  const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
-  const [wallets, setWallets] = useState<Wallet[]>(
-    savedWallets || Array.from({ length: walletCount }, getRandomWallet),
-  );
+  const isMaxWalletCount = walletCount >= 16;
 
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(validatorsSchema),
-    defaultValues: {
-      numberOfValidators: walletCount,
-      addresses: wallets.map((wallet) => wallet.address),
-    },
-  });
-
-  useEffect(() => {
-    const newWallets =
-      wallets.length < walletCount
-        ? [...wallets, ...Array.from({ length: walletCount - wallets.length }, getRandomWallet)] // Add new wallets
-        : wallets.slice(0, walletCount); // Remove wallets
-
-    setWallets(newWallets);
-    setValue(
-      'addresses',
-      newWallets.map((wallet) => wallet.address),
-    );
-  }, [walletCount]);
-
-  const onSubmit = (data: ValidatorsFormValues) => {
-    // Remove the private key if the user entered a custom address
-    const compareWallets = (wallets: Wallet[], addresses: string[]): Wallet[] => {
-      return addresses
-        .map((address) => {
-          const wallet = wallets.find((w) => w.address === address);
-          return {
-            privateKey: wallet ? wallet.privateKey : undefined,
-            address,
-          };
-        })
-        .filter(Boolean);
-    };
-    const payload = compareWallets(wallets, data.addresses);
-
-    dispatch({ type: 'set_validators', payload });
-    nextStep();
+  const handleAddValidator = () => {
+    if (!isMaxWalletCount) {
+      const newWallet = getRandomWallet();
+      setValue(`addresses.${walletCount}`, newWallet.address);
+      setWalletCount(walletCount + 1);
+      setWallets([...wallets, newWallet]);
+    }
   };
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" ref={validatorFormRef}>
-      <StepTitle>Configure Validators</StepTitle>
-      <div className="w-1/2">
-        <TextInputWithInfoLink
-          label="Number of Validators"
-          href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart#step-4-configure-your-chains-validators`}
-          name="numberOfValidators"
-          placeholder="Number of validators"
-          infoText="Read about Validators in the docs"
-          type="number"
-          {...(register('numberOfValidators'),
-          {
-            min: 1,
-            max: 16,
-            value: walletCount,
-            onChange: (e) => {
-              setWalletCount(Math.max(1, Math.min(16, Number(e.target.value))));
-            },
-          })}
-        />
-        {errors.numberOfValidators && (
-          <p className="text-sm text-red-500">
-            {JSON.stringify(errors.numberOfValidators?.message)}
-          </p>
-        )}
-      </div>
+  // @ts-expect-error - react-hook-form doesn't handle the array properly
+  const addressErrors = errors.addresses as { message: string }[];
 
-      <label className="font-bold">Validators</label>
-      <div className="mx-1 grid grid-cols-2 gap-2">
+  return (
+    <ScrollWrapper anchor="validators">
+      <label className={'cursor-pointer underline'}>
+        <span>{'Validators #'}</span>
+      </label>
+      <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           {wallets.slice(0, 8).map((wallet, index) => (
             <div key={wallet.address + index}>
               <input
                 type="text"
                 placeholder={`Validator Address ${index + 1}`}
-                className={twJoin(
+                className={twMerge(
                   'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
                   index === 0 && 'cursor-not-allowed bg-gray-200 opacity-50',
+                  addressErrors?.[index] && 'border-red-500',
                 )}
                 readOnly={index === 0}
-                {...register(`addresses.${index}`, {
-                  value: wallet.address,
-                })}
+                {...register(`addresses.${index}`)}
               />
-              {errors.addresses?.[index] && (
-                <p className="text-sm text-red-500">{String(errors.addresses[index]?.message)}</p>
+              {addressErrors?.[index] && (
+                <p className="text-sm text-red-500">{String(addressErrors[index]?.message)}</p>
               )}
             </div>
           ))}
@@ -129,20 +66,38 @@ export const SetValidators = () => {
               <input
                 type="text"
                 placeholder={`Validator ${index + 9}`}
-                className="w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input"
-                {...register(`addresses.${index + 8}`, {
-                  value: wallet.address,
-                })}
+                className={twMerge(
+                  'w-full rounded-md border border-[#6D6D6D] px-3 py-2 shadow-input',
+                  addressErrors?.[index + 8] && 'border-red-500',
+                )}
+                {...register(`addresses.${index + 8}`)}
               />
-              {errors.addresses?.[index + 8] && (
-                <p className="text-sm text-red-500">
-                  {String(errors.addresses[index + 8]?.message)}
-                </p>
+              {addressErrors?.[index + 8] && (
+                <p className="text-sm text-red-500">{String(addressErrors[index + 8]?.message)}</p>
               )}
             </div>
           ))}
         </div>
+        <button
+          className={twMerge(
+            'text-xs',
+            !isMaxWalletCount && 'hover:underline',
+            isMaxWalletCount && 'opacity-50',
+          )}
+          type="button"
+          onClick={handleAddValidator}
+          disabled={isMaxWalletCount}
+        >
+          {isMaxWalletCount ? (
+            <span>Maximum Number of Validators</span>
+          ) : (
+            <>
+              <i className="pi pi-plus-circle mr-1 text-xs" />
+              Add Validator
+            </>
+          )}
+        </button>
       </div>
-    </form>
+    </ScrollWrapper>
   );
 };

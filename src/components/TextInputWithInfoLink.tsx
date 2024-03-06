@@ -1,51 +1,30 @@
 import { UseFormRegisterReturn, InternalFieldName } from 'react-hook-form';
-import { InfoCircleWithTooltip } from './InfoCircleWithTooltip';
 import { InputHTMLAttributes } from 'react';
-import { twJoin } from 'tailwind-merge';
+import { EditableInput } from './EditableInput';
+import { ScrollWrapper } from './ScrollWrapper';
 
 interface TextInputWithInfoLinkProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   explainerText?: string;
-  href: string;
-  infoText: string | JSX.Element;
   error?: string;
+  anchor?: string;
   register?: () => UseFormRegisterReturn<InternalFieldName>;
 }
 
-export const TextInputWithInfoLink = ({
-  label,
-  explainerText,
-  href,
-  infoText,
-  error,
-  register,
-  ...props
-}: TextInputWithInfoLinkProps) => {
-  const getRegister = () => {
-    if (register) return register();
-    return [];
-  };
+export const TextInputWithInfoLink = (props: TextInputWithInfoLinkProps) => {
+  const { anchor, label, explainerText, error, name } = props;
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-baseline gap-2">
-        <label htmlFor={props.name} className="font-bold">
+    <ScrollWrapper anchor={anchor} className="mt-2 flex flex-col gap-1">
+      <label htmlFor={name} className={'cursor-pointer underline'}>
+        <span>
           {label}
-        </label>
-        <InfoCircleWithTooltip href={href} infoText={infoText} />
-      </div>
-      <input
-        id={props.name}
-        className={twJoin(
-          'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
-          error && 'border-red-500',
-          props.disabled && 'cursor-not-allowed bg-gray-200 opacity-50',
-        )}
-        {...props}
-        {...getRegister()}
-      />
+          {' #'}
+        </span>
+      </label>
+      <EditableInput {...props} />
       {explainerText && <span className="text-sm text-zinc-500">{explainerText}</span>}
       {error && <span className="text-red-500">{error}</span>}
-    </div>
+    </ScrollWrapper>
   );
 };
