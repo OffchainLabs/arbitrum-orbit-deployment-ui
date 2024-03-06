@@ -10,7 +10,6 @@ import {
   useEffect,
   useReducer,
   useRef,
-  useState,
 } from 'react';
 import { useAccount } from 'wagmi';
 import { generateChainId } from '@arbitrum/orbit-sdk/utils';

@@ -34,12 +34,6 @@ export default function StepLayout({ children }: PropsWithChildren) {
           {!isLastStep && <NextButton onClick={submitForm} isLoading={isLoading} />}
         </div>
       </div>
-      {(currentStep === DownloadConfig || currentStep === DownloadAnyTrustConfig) &&
-        !isDownloadCompleted && (
-          <div className="text-right">
-            <p>Please download zip file before continuing</p>
-          </div>
-        )}
     </>
   );
 }

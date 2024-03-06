@@ -40,7 +40,6 @@ export default function DeploymentPageWithContext({ children }: PropsWithChildre
   const isMounted = useIsMounted();
 
   if (!isMounted) return null;
-  if (!isMounted) return null;
   return (
     <DeploymentPageContextProvider>
       <DeploymentLayout children={children} />
