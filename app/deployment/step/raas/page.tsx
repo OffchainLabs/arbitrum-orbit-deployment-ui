@@ -16,6 +16,7 @@ export default function RaasProvidersPage() {
           Get in touch
         </button> */}
         <h3 className="text-2xl font-light">Lean about the Providers</h3>
+        {/* TODO: swap to 3 columns when adding 5th RaaS Provider */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <RaasProviderCard
             name="Caldera"
