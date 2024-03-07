@@ -16,7 +16,7 @@ export default function RaasProvidersPage() {
           Get in touch
         </button> */}
         <h3 className="text-2xl font-light">Lean about the Providers</h3>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <RaasProviderCard
             name="Caldera"
             description="Supports AnyTrust and Rollup chains"
@@ -43,7 +43,7 @@ export default function RaasProvidersPage() {
             description="Supports AnyTrust chains"
             caption="Powering re.al and Playnance"
             link="https://gelato.network/"
-            logo="/gelato.svg"
+            logo="/Gelato.svg"
           />
         </div>
       </div>

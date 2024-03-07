@@ -15,7 +15,7 @@ export const RaasProviderCard = ({
   logo: string;
 }) => {
   return (
-    <Link href={link}>
+    <Link href={link} target="_blank">
       <div className="group flex flex-col gap-4 rounded-md border border-solid border-grey bg-[#191919] p-4 hover:bg-[#6D6D6D] active:bg-[#C5C5C5]">
         <Image src={logo} alt={`${name} logo`} width={120} height={30} />
         <h4 className="text-2xl font-light">{name}</h4>
