@@ -80,7 +80,7 @@ export const useStep = () => {
 
     while (currentStep) {
       sortedSteps.push(currentStep);
-      currentStep = steps.find((step) => step.id === currentStep?.next);
+      currentStep = steps.find((step) => step.label && step.id === currentStep?.next);
     }
 
     return sortedSteps;
@@ -91,6 +91,8 @@ export const useStep = () => {
   const isValidStep = currentStep !== undefined;
 
   const nextStep = () => pushToStepId(currentStep?.next);
+
+  const isLastStep = currentStep?.next === null;
 
   return {
     nextStep,
@@ -105,5 +107,6 @@ export const useStep = () => {
     rollupConfigFormRef,
     reviewAndDeployFormRef,
     keysetFormRef,
+    isLastStep,
   };
 };

@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="mx-auto flex max-w-screen-xl justify-end py-6">
             <ConnectButton />
           </header>
-          <main >{children}</main>
+          <main>{children}</main>
         </Providers>
       </body>
     </html>

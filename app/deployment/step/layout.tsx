@@ -9,9 +9,8 @@ import { DownloadAnyTrustConfig, DownloadConfig } from '@/types/Steps';
 import { PropsWithChildren } from 'react';
 
 export default function StepLayout({ children }: PropsWithChildren) {
-  const { submitForm, currentStep } = useStep();
+  const { submitForm, currentStep, isLastStep } = useStep();
   const [{ isLoading, isDownloadCompleted }] = useDeploymentPageContext();
-  const isLastStep = currentStep?.next === null;
   const isDownloadRequired =
     !isDownloadCompleted &&
     (currentStep === DownloadConfig || currentStep === DownloadAnyTrustConfig);
