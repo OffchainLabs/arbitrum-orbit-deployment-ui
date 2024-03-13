@@ -27,6 +27,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.4",
     "react-syntax-highlighter": "^15.5.0",
+    "react-toastify": "^10.0.4",
     "react-transition-group": "^4.4.5",
     "use-clipboard-copy": "^0.2.0",
     "use-query-params": "^2.2.1",
