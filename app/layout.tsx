@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import posthog from 'posthog-js';
 import { Providers } from '@/components/Providers';
 import { unica77 } from '@/fonts';
+import { DeploymentPageContextProvider } from '@/components/DeploymentPageContext';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -43,7 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="mx-auto flex max-w-screen-xl justify-end py-6">
             <ConnectButton />
           </header>
-          <main>{children}</main>
+          <main>
+            <DeploymentPageContextProvider>{children}</DeploymentPageContextProvider>
+          </main>
         </Providers>
       </body>
     </html>
