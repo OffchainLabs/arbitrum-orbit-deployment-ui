@@ -53,12 +53,12 @@ export const useStep = () => {
 
   const pushToStepId = (id?: StepId | null) => {
     if (!id) {
-      router.push(`/deployment/step/${FIRST_STEP.id}`);
+      router.push(`/step/${FIRST_STEP.id}`);
     } else {
-      router.push(`/deployment/step/${id}`);
+      router.push(`/step/${id}`);
     }
     if (currentStep && currentStep.next) {
-      router.prefetch(`/deployment/step/${currentStep?.next}`);
+      router.prefetch(`/step/${currentStep?.next}`);
     }
   };
 

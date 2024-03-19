@@ -4,6 +4,8 @@ import posthog from 'posthog-js';
 import { Providers } from '@/components/Providers';
 import { unica77 } from '@/fonts';
 
+import DeploymentWrapper from '@/components/DeploymentWrapper';
+
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: 'https://app.posthog.com',
@@ -43,7 +45,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="mx-auto flex max-w-screen-xl justify-end py-6">
             <ConnectButton />
           </header>
-          <main>{children}</main>
+          <main>
+            <DeploymentWrapper>{children}</DeploymentWrapper>
+          </main>
         </Providers>
       </body>
     </html>

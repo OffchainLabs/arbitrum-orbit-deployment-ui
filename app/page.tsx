@@ -1,72 +1,68 @@
-import { FIRST_STEP } from '@/hooks/useStep';
-import Image from 'next/image';
-import Link from 'next/link';
-import { FC, ReactNode } from 'react';
-import { twJoin, twMerge } from 'tailwind-merge';
+'use client';
 
-interface ExternalLinkTileProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  href: string;
-  title: string;
-  children: ReactNode;
-}
+import { ExternalLink } from '@/components/ExternalLink';
+import { NextButton } from '@/components/NextButton';
+import { FIRST_STEP, useStep } from '@/hooks/useStep';
 
-const cardClassNames = [
-  'block [&>button]:text-left min-h-[120px] justify-start w-full h-full rounded-lg border border-gray-300 bg-black/5 px-4 py-5 text-left transition-colors',
-  'lg:border-transparent lg:bg-transparent lg:min-h-[auto] lg:px-3 lg:py-4',
-  'lg:hover:border-gray-300 lg:hover:bg-black/5 dark:lg:hover:border-neutral-700 dark:lg:hover:bg-neutral-800/30',
-];
-
-export default function Home() {
-  const ExternalLinkTile: FC<ExternalLinkTileProps> = ({ href, title, children, ...rest }) => (
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href={href}
-      {...rest}
-      className={twMerge(twJoin(cardClassNames))}
-    >
-      <button>
-        <p className={`font-regular mb-2 text-2xl`}>{title}</p>
-        <p className={`font-regular m-0 max-w-[28ch] text-sm`}>{children}</p>
-      </button>
-    </a>
-  );
-
+export default function InfoPage() {
+  const { goToStep } = useStep();
   return (
-    <main className="flex w-full justify-center">
-      <div className="flex w-[1024px] flex-col items-start gap-16 pb-16 pl-4 pt-4 lg:mt-16 lg:pl-0">
-        <Image src="/logo.svg" alt="Logo" width={192} height={192} />
-        <div className="-ml-2 grid grid-flow-row gap-8 lg:max-w-[580px] lg:grid-cols-2 lg:grid-rows-[auto_1px_auto] lg:gap-16">
-          <ExternalLinkTile
-            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-gentle-introduction`}
-            title="Learn about Orbit"
+    <>
+      <div className="border-px s flex flex-col gap-4 border border-[#5D5D5D] p-8 text-left font-light leading-tight">
+        <div className="flex items-center rounded-md bg-yellow px-4 py-2 text-xs">
+          <i className="pi pi-exclamation-triangle mr-1" />
+          <p>This is currently intended only for local devnet development</p>
+        </div>
+        <p className="text-xl leading-tight">
+          All parameters are prefilled with defaults. This includes some randomly generated
+          addresses.
+          <br />
+          We recommend using the defaults for testing purposes.
+        </p>
+        <p>
+          More information around parameter customization and guidance can be found in the{' '}
+          <ExternalLink
+            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-quickstart`}
+            className="underline"
           >
-            Dig into the details of how this works
-          </ExternalLinkTile>
-          <Link
-            href={`/deployment/step/${FIRST_STEP.id}`}
-            className={twMerge(twJoin(cardClassNames))}
-          >
-            <button>
-              <p className={`font-regular mb-2 text-2xl`}>Deploy Orbit Chain</p>
-              <p className={`font-regular m-0 max-w-[28ch] text-sm`}>
-                Configure your Orbit chain here
-              </p>
-            </button>
-          </Link>
-          <div className="col-span-2 hidden h-[1px] w-full border border-zinc-300 lg:block" />
-          <ExternalLinkTile
-            href="https://docs.google.com/forms/d/e/1FAIpQLSe5YWxFbJ8DgWcDNbIW2YYuTRmegtx2FHObym00_sOt0kq4wA/viewform"
-            title="Get in Touch"
-          >
-            Connect with us to learn if an Orbit chain makes sense for you
-          </ExternalLinkTile>
-          <ExternalLinkTile href="https://discord.gg/arbitrum" title="Get Support">
-            Join the <span className="font-bold">#orbit-support</span> channel in Discord if you run
-            into any issues
-          </ExternalLinkTile>
+            documentation
+          </ExternalLink>
+          . We recommend opening the documentation in a side window to follow along.
+          <br />
+        </p>
+        <p>
+          Please ensure you have at least <strong>1.0 Arbitrum Sepolia ETH</strong> before getting
+          started.
+        </p>
+        <div className="flex w-full flex-col items-baseline justify-between gap-2 bg-[#1A1A1A] p-4">
+          <p>If you don't have enough Sepolia ETH, you can use these faucets:</p>
+          <ul className="list-disc pl-4">
+            <li>
+              <ExternalLink href="https://sepoliafaucet.com/" className="underline">
+                https://sepoliafaucet.com/
+              </ExternalLink>
+            </li>
+            <li>
+              <ExternalLink href="https://www.infura.io/faucet/sepolia" className="underline">
+                https://www.infura.io/faucet/sepolia
+              </ExternalLink>
+            </li>
+          </ul>
+          <p>
+            After you use the faucet you&apos;ll have to{' '}
+            <ExternalLink
+              href="https://bridge.arbitrum.io/?destinationChain=arbitrum-sepolia&sourceChain=sepolia"
+              className="underline"
+            >
+              bridge
+            </ExternalLink>{' '}
+            it over from Sepolia to Arbitrum Sepolia
+          </p>
         </div>
       </div>
-    </main>
+      <div className="flex justify-end py-4">
+        <NextButton onClick={() => goToStep(FIRST_STEP)} />
+      </div>
+    </>
   );
 }

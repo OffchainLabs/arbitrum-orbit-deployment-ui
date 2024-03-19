@@ -10,7 +10,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { PropsWithChildren } from 'react';
 import { useAccount, useNetwork } from 'wagmi';
 
-function DeploymentLayout({ children }: PropsWithChildren) {
+function DeploymentWrapper({ children }: PropsWithChildren) {
   const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
   const { currentStep } = useStep();
@@ -42,7 +42,7 @@ export default function DeploymentPageWithContext({ children }: PropsWithChildre
   if (!isMounted) return null;
   return (
     <DeploymentPageContextProvider>
-      <DeploymentLayout children={children} />
+      <DeploymentWrapper>{children}</DeploymentWrapper>
     </DeploymentPageContextProvider>
   );
 }

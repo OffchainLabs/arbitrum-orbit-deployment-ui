@@ -14,7 +14,7 @@ import {
 import { useAccount } from 'wagmi';
 import { generateChainId } from '@arbitrum/orbit-sdk/utils';
 import { ChainType } from '@/types/ChainType';
-import { RollupConfigFormValues } from '../../app/deployment/step/configure/page';
+import { RollupConfigFormValues } from '../../app/step/configure/page';
 
 type DeploymentPageContextState = {
   rollupContracts?: CoreContracts;

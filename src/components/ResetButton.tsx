@@ -20,7 +20,7 @@ export const ResetButton: FC<ResetButtonProps> = ({ className }) => {
 
     dispatch({ type: 'set_is_loading', payload: false });
     dispatch({ type: 'reset', payload: address ? address : '' });
-    router.push(`/deployment/step/${FIRST_STEP.id}`);
+    router.push(`/step/${FIRST_STEP.id}`);
   }
 
   return (
