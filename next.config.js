@@ -4,12 +4,12 @@ const nextConfig = {
   redirects: () => [
     {
       source: '/deployment',
-      destination: '/deployment/step/chain-type',
+      destination: '/',
       permanent: true,
     },
     {
       source: '/deployment/step/(\\d)',
-      destination: '/deployment/step/chain-type',
+      destination: '/step/chain-type',
       permanent: true,
     },
   ],

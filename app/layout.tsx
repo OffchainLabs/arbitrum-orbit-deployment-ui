@@ -3,7 +3,8 @@ import { Metadata } from 'next';
 import posthog from 'posthog-js';
 import { Providers } from '@/components/Providers';
 import { unica77 } from '@/fonts';
-import { DeploymentPageContextProvider } from '@/components/DeploymentPageContext';
+
+import DeploymentWrapper from '@/components/DeploymentWrapper';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -45,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ConnectButton />
           </header>
           <main>
-            <DeploymentPageContextProvider>{children}</DeploymentPageContextProvider>
+            <DeploymentWrapper>{children}</DeploymentWrapper>
           </main>
         </Providers>
       </body>
