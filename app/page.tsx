@@ -1,72 +1,160 @@
-import { FIRST_STEP } from '@/hooks/useStep';
+import { Metadata } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
-import { FC, ReactNode } from 'react';
-import { twJoin, twMerge } from 'tailwind-merge';
+import { Card } from '@/components/Card';
+import { DISCORD_LINK, GET_HELP_LINK } from '@/common/constants';
+import { RaasProviderGrid } from '@/components/RaasProviderGrid';
 
-interface ExternalLinkTileProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  href: string;
-  title: string;
-  children: ReactNode;
+const metadataContent = {
+  title: 'Launch your own Orbit Chain!',
+  description: 'Launch your own Orbit Chain!',
+};
+
+// Generate server-side metadata for this page
+export function generateMetadata(): Metadata {
+  return {
+    title: metadataContent.title,
+    description: metadataContent.description,
+    openGraph: {
+      title: metadataContent.title,
+      description: metadataContent.description,
+      locale: 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: metadataContent.title,
+      description: metadataContent.description,
+    },
+  };
 }
 
-const cardClassNames = [
-  'block [&>button]:text-left min-h-[120px] justify-start w-full h-full rounded-lg border border-gray-300 bg-black/5 px-4 py-5 text-left transition-colors',
-  'lg:border-transparent lg:bg-transparent lg:min-h-[auto] lg:px-3 lg:py-4',
-  'lg:hover:border-gray-300 lg:hover:bg-black/5 dark:lg:hover:border-neutral-700 dark:lg:hover:bg-neutral-800/30',
-];
+type OptionalOrbitPageParams = {
+  searchParams: {
+    orbitChain?: string;
+  };
+};
 
-export default function Home() {
-  const ExternalLinkTile: FC<ExternalLinkTileProps> = ({ href, title, children, ...rest }) => (
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href={href}
-      {...rest}
-      className={twMerge(twJoin(cardClassNames))}
-    >
-      <button>
-        <p className={`font-regular mb-2 text-2xl`}>{title}</p>
-        <p className={`font-regular m-0 max-w-[28ch] text-sm`}>{children}</p>
-      </button>
-    </a>
-  );
-
+export default function LaunchPage(params: OptionalOrbitPageParams) {
   return (
-    <main className="flex w-full justify-center">
-      <div className="flex w-[1024px] flex-col items-start gap-16 pb-16 pl-4 pt-4 lg:mt-16 lg:pl-0">
-        <Image src="/logo.svg" alt="Logo" width={192} height={192} />
-        <div className="-ml-2 grid grid-flow-row gap-8 lg:max-w-[580px] lg:grid-cols-2 lg:grid-rows-[auto_1px_auto] lg:gap-16">
-          <ExternalLinkTile
-            href={`${process.env.NEXT_PUBLIC_ARBITRUM_DOCS_BASE_URL}/launch-orbit-chain/orbit-gentle-introduction`}
-            title="Learn about Orbit"
-          >
-            Dig into the details of how this works
-          </ExternalLinkTile>
-          <Link
-            href={`/deployment/step/${FIRST_STEP.id}`}
-            className={twMerge(twJoin(cardClassNames))}
-          >
-            <button>
-              <p className={`font-regular mb-2 text-2xl`}>Deploy Orbit Chain</p>
-              <p className={`font-regular m-0 max-w-[28ch] text-sm`}>
-                Configure your Orbit chain here
-              </p>
-            </button>
-          </Link>
-          <div className="col-span-2 hidden h-[1px] w-full border border-zinc-300 lg:block" />
-          <ExternalLinkTile
-            href="https://docs.google.com/forms/d/e/1FAIpQLSe5YWxFbJ8DgWcDNbIW2YYuTRmegtx2FHObym00_sOt0kq4wA/viewform"
-            title="Get in Touch"
-          >
-            Connect with us to learn if an Orbit chain makes sense for you
-          </ExternalLinkTile>
-          <ExternalLinkTile href="https://discord.gg/arbitrum" title="Get Support">
-            Join the <span className="font-bold">#orbit-support</span> channel in Discord if you run
-            into any issues
-          </ExternalLinkTile>
+    <div className="relative mx-auto flex w-full flex-col gap-[40px]">
+      {/* Banner Image */}
+      <Card className="flex:col relative flex flex-col items-start gap-6 bg-[#12AAFF] p-4  lg:flex-row-reverse lg:items-end">
+        <Image
+          alt="Bridge"
+          src="/illustration-orbit.webp"
+          width={100}
+          height={100}
+          className="h-[100px] w-[100px] mix-blend-screen lg:h-[100px] lg:w-[100px]"
+        />
+        <div className="z-10 flex w-full flex-col gap-3">
+          <div className="text-xl lg:text-3xl">Launch your own Orbit Chain!</div>
         </div>
+      </Card>
+
+      <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
+        {/* Orbit Docs card */}
+        <Card
+          className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#12AAFF]"
+          cardType="externalLink"
+          showExternalLinkArrow
+          href="https://docs.arbitrum.io/launch-orbit-chain/orbit-gentle-introduction"
+        >
+          <div className="z-10 flex w-full flex-col gap-3">
+            <div className="text-xl lg:text-3xl">Orbit Docs</div>
+            <div className="mb-8 w-full text-sm opacity-60">
+              Dig into the details of how it all works
+            </div>
+
+            <div className="w-full text-base">Read the docs</div>
+          </div>
+        </Card>
+
+        {/* Playground card */}
+        <Card
+          className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#12AAFF]"
+          cardType="link"
+          showExternalLinkArrow={true}
+          href="/deployment"
+        >
+          <div className="z-10 flex w-full flex-col gap-3">
+            <div className="text-xl lg:text-3xl">Orbit Playground</div>
+            <div className="mb-8 w-full text-sm opacity-60">
+              Launch your own Layer 3 Orbit Chain
+            </div>
+            <div className="w-full text-base">Launch on testnet</div>
+          </div>
+        </Card>
       </div>
-    </main>
+
+      {/* RaaS list */}
+      <div className="flex flex-col gap-4">
+        <Card className="flex flex-col gap-4 bg-default-black text-sm">
+          <div className="text-xl lg:text-3xl">Launch to Mainnet</div>
+          <hr className="opacity-20" />
+          <div className="mb-2 flex w-full flex-col gap-3 text-sm opacity-60">
+            Use a third-party Rollup as a Service providers can help take your testnet orbit chain
+            to mainnet
+          </div>
+          <RaasProviderGrid />
+        </Card>
+      </div>
+
+      {/* Orbit SDK link */}
+      <Card
+        className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#0C6DA3]"
+        cardType="externalLink"
+        href="https://github.com/OffchainLabs/arbitrum-orbit-sdk"
+        showExternalLinkArrow
+      >
+        <div className="z-10 flex w-full flex-col gap-3">
+          <div className="text-xl lg:text-3xl">Get started on your own</div>
+          <hr className="opacity-20" />
+          <div className="mb-8 flex w-full flex-col gap-3 text-sm opacity-60">
+            <p>Use the Orbit SDK to launch your chain to Mainnet without any support.</p>
+            <p>
+              Keep in mind that running a chain has a lot of infrastructure needs and we highly
+              recommend using a Rollup as a Service provider to increase chances of success.
+            </p>
+          </div>
+
+          <div className="w-full text-base">Dive into the SDK</div>
+        </div>
+      </Card>
+
+      {/* Other links */}
+      <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
+        {/* Discord */}
+        <Card
+          className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#12AAFF]"
+          cardType="externalLink"
+          showExternalLinkArrow
+          href={DISCORD_LINK}
+        >
+          <div className="z-10 flex w-full flex-col gap-3">
+            <div className="mb-8 w-full text-sm opacity-60">
+              Join the <span className="mx-1 rounded-lg bg-white/20 p-1">#orbit-support</span>{' '}
+              channel in Discord if you run into any issues
+            </div>
+
+            <div className="w-full text-base">Get support</div>
+          </div>
+        </Card>
+
+        {/* Contact us */}
+        <Card
+          className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#12AAFF]"
+          cardType="externalLink"
+          href={GET_HELP_LINK}
+          showExternalLinkArrow
+        >
+          <div className="z-10 flex w-full flex-col gap-3">
+            <div className="mb-8 w-full text-sm opacity-60">
+              Connect with us to learn if an appchain makes sense for you
+            </div>
+            <div className="w-full text-base">Get in touch</div>
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 }
