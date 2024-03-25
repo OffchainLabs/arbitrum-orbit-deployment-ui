@@ -44,7 +44,6 @@ export const Card = ({
   ...props
 }: PropsWithChildren<CardPropsWithAnalytics>) => {
   const posthog = usePostHog();
-  console.log({ showExternalLinkArrow, cardType });
 
   const commonClassName = twMerge(
     'group w-full overflow-hidden rounded-lg bg-default-black p-4 text-sm relative transition-colors duration-300',

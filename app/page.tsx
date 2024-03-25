@@ -38,7 +38,7 @@ export default function LaunchPage(params: OptionalOrbitPageParams) {
   return (
     <div className="relative mx-auto flex w-full flex-col gap-[40px]">
       {/* Banner Image */}
-      <Card className="flex:col relative flex flex-col items-start gap-6 bg-[#12AAFF] p-4  lg:flex-row-reverse lg:items-end">
+      <Card className="flex:col relative flex flex-col items-start gap-6 bg-blue p-4 lg:flex-row-reverse lg:items-end">
         <Image
           alt="Bridge"
           src="/illustration-orbit.webp"
@@ -54,7 +54,7 @@ export default function LaunchPage(params: OptionalOrbitPageParams) {
       <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
         {/* Orbit Docs card */}
         <Card
-          className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#12AAFF]"
+          className="relative flex flex-col gap-6 p-4 active:bg-blue md:hover:bg-blue"
           cardType="externalLink"
           showExternalLinkArrow
           href="https://docs.arbitrum.io/launch-orbit-chain/orbit-gentle-introduction"
@@ -71,7 +71,7 @@ export default function LaunchPage(params: OptionalOrbitPageParams) {
 
         {/* Playground card */}
         <Card
-          className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#12AAFF]"
+          className="relative flex flex-col gap-6 p-4 active:bg-blue md:hover:bg-blue"
           cardType="link"
           showExternalLinkArrow={true}
           href="/deployment"
@@ -101,7 +101,7 @@ export default function LaunchPage(params: OptionalOrbitPageParams) {
 
       {/* Orbit SDK link */}
       <Card
-        className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#0C6DA3]"
+        className="relative flex flex-col gap-6 p-4 active:bg-[#0C6DA3] md:hover:bg-blue"
         cardType="externalLink"
         href="https://github.com/OffchainLabs/arbitrum-orbit-sdk"
         showExternalLinkArrow
@@ -125,7 +125,7 @@ export default function LaunchPage(params: OptionalOrbitPageParams) {
       <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
         {/* Discord */}
         <Card
-          className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#12AAFF]"
+          className="relative flex flex-col gap-6 p-4 active:bg-blue md:hover:bg-blue"
           cardType="externalLink"
           showExternalLinkArrow
           href={DISCORD_LINK}
@@ -142,7 +142,7 @@ export default function LaunchPage(params: OptionalOrbitPageParams) {
 
         {/* Contact us */}
         <Card
-          className="relative flex flex-col gap-6 p-4 hover:bg-blue active:bg-[#12AAFF]"
+          className="relative flex flex-col gap-6 p-4 active:bg-blue md:hover:bg-blue"
           cardType="externalLink"
           href={GET_HELP_LINK}
           showExternalLinkArrow
