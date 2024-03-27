@@ -14,6 +14,7 @@
     "@ethersproject/providers": "^5.7.2",
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^3.2.0",
+    "@offchainlabs/cobalt": "^0.2.0",
     "@rainbow-me/rainbowkit": "^1.0.8",
     "encoding": "^0.1.13",
     "jszip": "^3.10.1",

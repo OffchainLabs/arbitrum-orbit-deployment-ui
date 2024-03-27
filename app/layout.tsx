@@ -1,8 +1,10 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Metadata } from 'next';
-import posthog from 'posthog-js';
+import { AppSidebar } from '@/components/AppSidebar';
+import { MobileAppSidebar } from '@/components/MobileAppSidebar';
 import { Providers } from '@/components/Providers';
 import { unica77 } from '@/fonts';
+import '@offchainlabs/cobalt/dist/style.css';
+import { Metadata } from 'next';
+import posthog from 'posthog-js';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -38,13 +40,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={unica77.style} className="px-4">
-        <Providers>
-          <header className="mx-auto flex max-w-screen-xl justify-end py-6">
-            <ConnectButton />
-          </header>
-          <main className="mx-auto mb-6 max-w-screen-xl">{children}</main>
-        </Providers>
+      <body style={unica77.style}>
+        <div className="relative flex">
+          <AppSidebar />
+          <div className="mx-auto px-4">
+            <Providers>
+              <MobileAppSidebar />
+              <main className="mx-auto mb-6 max-w-screen-xl">{children}</main>
+            </Providers>
+          </div>
+        </div>
       </body>
     </html>
   );
