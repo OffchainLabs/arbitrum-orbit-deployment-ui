@@ -2,9 +2,10 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { MobileAppSidebar } from '@/components/MobileAppSidebar';
 import { Providers } from '@/components/Providers';
 import { unica77 } from '@/fonts';
-import '@offchainlabs/cobalt/dist/style.css';
 import { Metadata } from 'next';
 import posthog from 'posthog-js';
+
+import '@offchainlabs/cobalt/dist/style.css';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
