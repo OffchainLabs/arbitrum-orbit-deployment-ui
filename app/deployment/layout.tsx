@@ -22,6 +22,10 @@ function DeploymentLayout({ children }: PropsWithChildren) {
   return (
     <div className="mx-auto mb-8 flex max-w-screen-xl flex-col gap-5 p-2">
       <div className="mt-4 w-full">{shouldShowStepper && <Stepper />}</div>
+      <div className="flex items-center rounded-md bg-yellow px-4 py-2 text-xs">
+        <i className="pi pi-exclamation-triangle mr-1" />
+        <p>This is currently intended only for local devnet development</p>
+      </div>
       {(!isConnected || !address) && (
         <div className="border-px flex w-full items-center justify-center border border-[#5D5D5D] ">
           <div className="my-10 flex flex-col items-center gap-4">
