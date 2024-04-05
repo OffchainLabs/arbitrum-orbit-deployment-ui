@@ -9,10 +9,6 @@ export default function InfoPage() {
   return (
     <>
       <div className="border-px s flex flex-col gap-4 border border-[#5D5D5D] p-8 text-left font-light leading-tight">
-        <div className="flex items-center rounded-md bg-yellow px-4 py-2 text-xs">
-          <i className="pi pi-exclamation-triangle mr-1" />
-          <p>This is currently intended only for local devnet development</p>
-        </div>
         <p className="text-xl leading-tight">
           All parameters are prefilled with defaults. This includes some randomly generated
           addresses.
