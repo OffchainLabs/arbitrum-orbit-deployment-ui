@@ -1,4 +1,5 @@
 import { AvatarComponent, ConnectButton } from '@rainbow-me/rainbowkit';
+import { CustomAvatar, CustomBoringAvatar } from './CustomAvatar';
 
 export const CustomConnectButton = () => {
   return (
@@ -51,14 +52,16 @@ export const CustomConnectButton = () => {
                   <button
                     onClick={openAccountModal}
                     type="button"
-                    className="flex w-full  text-left"
+                    className="flex gap-3 px-2 py-1 text-left"
                   >
-                    {account.ensAvatar && (
+                    {account.ensAvatar ? (
                       <img
                         alt={chain.name ?? 'Chain icon'}
                         src={account.ensAvatar}
                         style={{ width: 24, height: 24 }}
                       />
+                    ) : (
+                      <CustomAvatar size={24} address={account.address} />
                     )}
                     {account.ensName || account.displayName || account.address}
                   </button>

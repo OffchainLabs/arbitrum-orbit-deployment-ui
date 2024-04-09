@@ -42,15 +42,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body style={unica77.style}>
-        <div className="relative flex">
-          <AppSidebar />
-          <div className="mx-auto px-4">
-            <Providers>
+        <Providers>
+          <div className="relative flex">
+            <AppSidebar />
+            <div className="mx-auto w-full px-4">
               <MobileAppSidebar />
               <main className="mx-auto mb-6 max-w-screen-xl">{children}</main>
-            </Providers>
+            </div>
           </div>
-        </div>
+        </Providers>
       </body>
     </html>
   );

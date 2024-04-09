@@ -13,7 +13,7 @@ export const MobileAppSidebar = () => {
           <ConnectButton />
         </div>
         <div className="flex sm:hidden">
-          <MobileSidebar>
+          <MobileSidebar logger={posthog} activeMenu="Launch Chain">
             <CustomConnectButton />
           </MobileSidebar>
         </div>

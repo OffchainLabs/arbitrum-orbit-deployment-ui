@@ -6,7 +6,7 @@ export const AppSidebar = () => {
   const posthog = usePostHog();
   return (
     <>
-      <Sidebar logger={posthog} />
+      <Sidebar logger={posthog} activeMenu="Launch Chain" />
     </>
   );
 };
