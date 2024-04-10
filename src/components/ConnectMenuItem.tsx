@@ -1,5 +1,7 @@
-import { AvatarComponent, ConnectButton } from '@rainbow-me/rainbowkit';
-import { CustomAvatar, CustomBoringAvatar } from './CustomAvatar';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import { MenuItem } from '@offchainlabs/cobalt';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { CustomAvatar } from './CustomAvatar';
 
 export const CustomConnectButton = () => {
   return (
@@ -34,16 +36,12 @@ export const CustomConnectButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <button
+                  <MenuItem
+                    title="Connect Wallet"
                     onClick={openConnectModal}
-                    type="button"
-                    className="w-full bg-[#31572A] text-left font-medium text-white"
-                  >
-                    <div className="flex gap-3 p-2">
-                      <img src="/icon-circle-minus.svg" style={{ width: 24, height: 24 }} />
-                      Connect Wallet
-                    </div>
-                  </button>
+                    Icon={<PlusCircleIcon className="h-[24px] w-[24px] stroke-1" />}
+                    className="border-lime-dark bg-lime-dark py-3"
+                  />
                 );
               }
 
@@ -69,7 +67,7 @@ export const CustomConnectButton = () => {
                     <button
                       onClick={openChainModal}
                       type="button"
-                      className="w-full bg-[#762716] px-2 py-1 text-left text-white"
+                      className="w-full rounded-md bg-[#762716] px-2 py-1 text-left text-white"
                     >
                       <div className="flex items-center gap-2">
                         <img src="/CircleWarning.svg" style={{ width: 24, height: 24 }} />
