@@ -5,8 +5,6 @@ import { unica77 } from '@/fonts';
 import { Metadata } from 'next';
 import posthog from 'posthog-js';
 
-import '@offchainlabs/cobalt/dist/style.css';
-
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: 'https://app.posthog.com',
