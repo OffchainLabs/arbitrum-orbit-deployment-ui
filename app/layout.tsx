@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AppSidebar />
             <div className="mx-auto w-full px-4">
               <MobileAppSidebar />
-              <main className="mx-auto mb-6 max-w-screen-xl">{children}</main>
+              <main className="mx-auto mb-6 max-w-screen-lg">{children}</main>
             </div>
           </div>
         </Providers>

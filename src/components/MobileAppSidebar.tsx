@@ -8,7 +8,7 @@ export const MobileAppSidebar = () => {
   const posthog = usePostHog();
   return (
     <>
-      <header className="mx-auto flex max-w-screen-xl justify-end py-6">
+      <header className="mx-auto flex max-w-screen-lg justify-end py-6">
         <div className="hidden sm:flex">
           <ConnectButton />
         </div>
