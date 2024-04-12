@@ -960,10 +960,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@offchainlabs/cobalt@0.3.0-alpha.6":
-  version "0.3.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@offchainlabs/cobalt/-/cobalt-0.3.0-alpha.6.tgz#4237ad4196bbe6dd54ce1104988947a7d58339f7"
-  integrity sha512-ixFrTi0MM8/WpTaM/9CeHVtYo8LSNRgTHNGZSJfiweKcDrSMkrUyTOhr2ce/qXckJb6SsoQXRq5TnjTvXcNUWg==
+"@offchainlabs/cobalt@0.3.0-alpha.7":
+  version "0.3.0-alpha.7"
+  resolved "https://registry.yarnpkg.com/@offchainlabs/cobalt/-/cobalt-0.3.0-alpha.7.tgz#dbf4df3ca7fad304f24c9313b8ecfcb91184240e"
+  integrity sha512-9Z8tp93J3iUrX7gsr+rqKm7DOFGcLo/VTiUrpIRDPvpdxO8sxuPfamUWo63TeMNuKXcoAWL2VInia7IOZijFKw==
 
 "@offchainlabs/prettier-config@^0.2.1":
   version "0.2.1"
