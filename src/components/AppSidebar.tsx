@@ -12,7 +12,7 @@ export const AppSidebar = () => {
   const posthog = usePostHog();
   return (
     <div className="hidden sm:flex">
-      <DynamicSidebar logger={posthog} activeMenu="Bridge" />
+      <DynamicSidebar logger={posthog} activeMenu="Launch Chain" />
     </div>
   );
 };
