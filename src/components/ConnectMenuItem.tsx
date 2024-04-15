@@ -41,6 +41,7 @@ export const CustomConnectButton = () => {
                     onClick={openConnectModal}
                     Icon={<PlusCircleIcon className="h-[24px] w-[24px] stroke-1" />}
                     className="border-lime-dark bg-lime-dark py-3"
+                    isMobile
                   />
                 );
               }
