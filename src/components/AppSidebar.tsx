@@ -11,7 +11,7 @@ const DynamicSidebar = dynamic(
 export const AppSidebar = () => {
   const posthog = usePostHog();
   return (
-    <div className="hidden sm:flex">
+    <div className="sticky left-0 top-0 self-start">
       <DynamicSidebar logger={posthog} activeMenu="Launch Chain" />
     </div>
   );
