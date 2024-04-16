@@ -50,7 +50,7 @@ export const DocsPanel = () => {
   }, []);
 
   return (
-    <div className="border-px hide-scrollbar relative flex h-full flex-col gap-2 overflow-y-scroll rounded-md border border-[#5E5E5E] bg-[#191919] text-sm  leading-normal">
+    <div className="border-px hide-scrollbar relative flex h-full flex-col gap-2 overflow-y-scroll rounded-md border border-[#5E5E5E] bg-[#191919] text-sm leading-normal">
       <DocsPanelItem id="chain-id" title="CHAIN ID">
         <p>
           Don't worry about this; it's inconsequential for devnets. In production scenarios (which
