@@ -9,8 +9,8 @@ const DocsPanelItem = ({
   title: string;
 }>) => {
   return (
-    <div className="flex flex-col gap-3  p-2" id={id}>
-      <h2 className="text-lg font-light">{title}</h2>
+    <div className="flex flex-col gap-3 p-2 text-[#BABABA]" id={id}>
+      <h2 className="text-lg font-light text-white">{title}</h2>
       {children}
     </div>
   );
@@ -50,7 +50,7 @@ export const DocsPanel = () => {
   }, []);
 
   return (
-    <div className="border-px hide-scrollbar relative flex h-full flex-col gap-2 overflow-y-scroll rounded-md border border-[#5E5E5E] bg-[#191919] text-sm  leading-tight">
+    <div className="border-px hide-scrollbar relative flex h-full flex-col gap-2 overflow-y-scroll rounded-md border border-[#5E5E5E] bg-[#191919] text-sm leading-normal">
       <DocsPanelItem id="chain-id" title="CHAIN ID">
         <p>
           Don't worry about this; it's inconsequential for devnets. In production scenarios (which

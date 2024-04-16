@@ -9,10 +9,6 @@ export default function InfoPage() {
   return (
     <>
       <div className="border-px s flex flex-col gap-4 border border-[#5D5D5D] p-8 text-left font-light leading-tight">
-        <div className="flex items-center rounded-md bg-yellow px-4 py-2 text-xs">
-          <i className="pi pi-exclamation-triangle mr-1" />
-          <p>This is currently intended only for local devnet development</p>
-        </div>
         <p className="text-xl leading-tight">
           All parameters are prefilled with defaults. This includes some randomly generated
           addresses.
@@ -31,8 +27,8 @@ export default function InfoPage() {
           <br />
         </p>
         <p>
-          Please ensure you have at least <strong>1.0 Arbitrum Sepolia ETH</strong> before getting
-          started.
+          Please ensure you have at least <strong>1.0 Arbitrum Sepolia ETH</strong> (or 0.6 Arbitrum
+          Sepolia ETH plus 0.4 native token for custom fee token chain) before getting started.
         </p>
         <div className="flex w-full flex-col items-baseline justify-between gap-2 bg-[#1A1A1A] p-4">
           <p>If you don't have enough Sepolia ETH, you can use these faucets:</p>

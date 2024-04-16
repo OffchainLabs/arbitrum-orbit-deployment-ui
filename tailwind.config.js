@@ -6,6 +6,7 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './node_modules/@offchainlabs/cobalt/dist/*.js',
   ],
   theme: {
     extend: {
@@ -24,6 +25,7 @@ module.exports = {
         'lightgrey': '#D3D3D3',
         'default-black': '#1a1c1d',
         'blue': '#12aaff',
+        'lime-dark': '#31572A',
       },
       backgroundColor: {
         DEFAULT: '#000000',
