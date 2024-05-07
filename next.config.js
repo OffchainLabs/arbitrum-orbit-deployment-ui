@@ -13,8 +13,16 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: '/:path*',
+        destination: `/:path*`,
+      },
+      {
         source: '/admin',
         destination: `${ADMIN_UI_URL}/admin`,
+      },
+      {
+        source: '/admin/:path*',
+        destination: `${ADMIN_UI_URL}/admin/:path*`,
       },
     ];
   },
