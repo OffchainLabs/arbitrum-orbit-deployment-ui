@@ -113,6 +113,7 @@ export async function deployRollup({
       validatorPrivateKey: validators[0].privateKey || '',
       parentChainId,
       parentChainRpcUrl: getRpcUrl(parentChainId),
+      dasServerUrl: 'das-server',
     });
 
     // Defining L3 config
