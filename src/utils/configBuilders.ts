@@ -1,5 +1,5 @@
 import { parseEther, GetFunctionArgs } from 'viem';
-import { ChainConfig, CoreContracts } from '@arbitrum/orbit-sdk';
+import { CoreContracts } from '@arbitrum/orbit-sdk';
 import { rollupCreator } from '@arbitrum/orbit-sdk/contracts';
 
 import { Wallet } from '@/types/RollupContracts';
@@ -8,18 +8,12 @@ import { RollupConfig } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsAddress } from './validators';
 
-export type RollupConfigPayload = GetFunctionArgs<
-  typeof rollupCreator.abi,
-  'createRollup'
->['args'][0]['config'];
+export type RollupConfigPayload = Omit<
+  GetFunctionArgs<typeof rollupCreator.abi, 'createRollup'>['args'][0]['config'],
+  'wasmModuleRoot' | 'chainConfig'
+>;
 
-export const buildRollupConfigPayload = ({
-  rollupConfig,
-  chainConfig,
-}: {
-  rollupConfig: RollupConfig;
-  chainConfig: ChainConfig;
-}): RollupConfigPayload => {
+export const buildRollupConfigPayload = (rollupConfig: RollupConfig): RollupConfigPayload => {
   try {
     assertIsAddress(rollupConfig.owner);
     assertIsAddress(rollupConfig.stakeToken);
@@ -29,11 +23,9 @@ export const buildRollupConfigPayload = ({
       extraChallengeTimeBlocks: BigInt(rollupConfig.extraChallengeTimeBlocks),
       stakeToken: rollupConfig.stakeToken,
       baseStake: parseEther(String(rollupConfig.baseStake)),
-      wasmModuleRoot: rollupConfig.wasmModuleRoot,
       owner: rollupConfig.owner,
       loserStakeEscrow: rollupConfig.loserStakeEscrow,
       chainId: BigInt(rollupConfig.chainId),
-      chainConfig: JSON.stringify(chainConfig),
       genesisBlockNum: BigInt(rollupConfig.genesisBlockNum),
       sequencerInboxMaxTimeVariation: {
         delayBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delayBlocks),

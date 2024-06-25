@@ -5,6 +5,7 @@ import {
   CoreContracts,
   createRollupEnoughCustomFeeTokenAllowance,
   createRollupPrepareCustomFeeTokenApprovalTransactionRequest,
+  createRollupPrepareDeploymentParamsConfig,
   createRollupPrepareTransactionRequest,
   createRollupPrepareTransactionReceipt,
 } from '@arbitrum/orbit-sdk';
@@ -47,7 +48,11 @@ export async function deployRollup({
         DataAvailabilityCommittee: chainType === ChainType.AnyTrust,
       },
     });
-    const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
+
+    const rollupConfigPayload = createRollupPrepareDeploymentParamsConfig(publicClient, {
+      chainConfig,
+      ...buildRollupConfigPayload(rollupConfig),
+    });
 
     const validatorAddresses = validators.map((v) => v.address);
     const batchPosterAddress = batchPoster.address;
@@ -113,6 +118,7 @@ export async function deployRollup({
       validatorPrivateKey: validators[0].privateKey || '',
       parentChainId,
       parentChainRpcUrl: getRpcUrl(parentChainId),
+      dasServerUrl: 'http://das-server',
     });
 
     // Defining L3 config
