@@ -4,7 +4,6 @@ export type RollupConfig = {
   baseStake: number;
   owner: string;
   extraChallengeTimeBlocks: number;
-  wasmModuleRoot: `0x${string}`;
   loserStakeEscrow: `0x${string}`;
   chainId: number;
   chainName: string;

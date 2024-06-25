@@ -8,10 +8,10 @@ import { RollupConfig } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsAddress } from './validators';
 
-export type RollupConfigPayload = GetFunctionArgs<
-  typeof rollupCreator.abi,
-  'createRollup'
->['args'][0]['config'];
+export type RollupConfigPayload = Omit<
+  GetFunctionArgs<typeof rollupCreator.abi, 'createRollup'>['args'][0]['config'],
+  'wasmModuleRoot'
+>;
 
 export const buildRollupConfigPayload = ({
   rollupConfig,
@@ -29,7 +29,6 @@ export const buildRollupConfigPayload = ({
       extraChallengeTimeBlocks: BigInt(rollupConfig.extraChallengeTimeBlocks),
       stakeToken: rollupConfig.stakeToken,
       baseStake: parseEther(String(rollupConfig.baseStake)),
-      wasmModuleRoot: rollupConfig.wasmModuleRoot,
       owner: rollupConfig.owner,
       loserStakeEscrow: rollupConfig.loserStakeEscrow,
       chainId: BigInt(rollupConfig.chainId),
