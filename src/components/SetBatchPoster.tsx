@@ -24,7 +24,7 @@ export const SetBatchPoster = () => {
       <TextInputWithInfoLink
         label="Batch Poster Address"
         defaultValue={batchPoster.address}
-        register={() => register('batchPosterAddress')}
+        register={() => register('batchPoster.address')}
         anchor="batch-poster"
       />
       <input type="hidden" disabled {...register('batchPoster.privateKey')} />
