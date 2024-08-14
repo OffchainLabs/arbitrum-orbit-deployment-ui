@@ -1,6 +1,6 @@
 import { parseEther, GetFunctionArgs } from 'viem';
 import { CoreContracts } from '@arbitrum/orbit-sdk';
-import { rollupCreator } from '@arbitrum/orbit-sdk/contracts';
+import { rollupCreatorABI } from '@arbitrum/orbit-sdk/dist/contracts/RollupCreator';
 
 import { Wallet } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
@@ -9,7 +9,7 @@ import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsAddress } from './validators';
 
 export type RollupConfigPayload = Omit<
-  GetFunctionArgs<typeof rollupCreator.abi, 'createRollup'>['args'][0]['config'],
+  GetFunctionArgs<typeof rollupCreatorABI, 'createRollup'>['args'][0]['config'],
   'wasmModuleRoot' | 'chainConfig'
 >;
 
