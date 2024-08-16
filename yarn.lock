@@ -32,13 +32,13 @@
     "@openzeppelin/contracts-upgradeable" "4.5.2"
     patch-package "^6.4.7"
 
-"@arbitrum/orbit-sdk@^0.18.0-beta.0":
-  version "0.18.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@arbitrum/orbit-sdk/-/orbit-sdk-0.18.0-beta.0.tgz#294cbd453850060db0d009c691638660e65649db"
-  integrity sha512-9aLYYthYKGyA8/YlahOWD4So4tA+S3fL0FshZYKFphZS13Bug0h1DfZswVyWvo86XJSNxJe0FObVXCfJQo/o2A==
+"@arbitrum/orbit-sdk@^0.18.0-beta.6":
+  version "0.18.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@arbitrum/orbit-sdk/-/orbit-sdk-0.18.0-beta.6.tgz#82f20487839cd5cf8bf75339c4b2856da1af0c80"
+  integrity sha512-hh8sPq4ar0uDvPdAerywCamJ9bU+vfsA2IQnzFDWKv1YV4itCV0dAUC5ihfC4/Cf1pr+Bq/E9/Yvti+6//kdWA==
   dependencies:
     "@arbitrum/sdk" "^4.0.0"
-    "@arbitrum/token-bridge-contracts" "^1.2.1"
+    "@arbitrum/token-bridge-contracts" "^1.2.2"
     "@offchainlabs/fund-distribution-contracts" "^1.0.1"
     "@safe-global/protocol-kit" "^4.0.2"
     ethers "^5.7.2"
@@ -54,10 +54,10 @@
     async-mutex "^0.4.0"
     ethers "^5.1.0"
 
-"@arbitrum/token-bridge-contracts@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@arbitrum/token-bridge-contracts/-/token-bridge-contracts-1.2.1.tgz#4838d70182bc0d6b36adfd733d7b4650e596c979"
-  integrity sha512-ngKeay/0O91QyVLCbcd2pyJIWtzKi2KsPm+O9q3xCfPkjuCZ0+MK5OdhYKCbvGc0jf39R7izRsvmUHE0qA603A==
+"@arbitrum/token-bridge-contracts@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@arbitrum/token-bridge-contracts/-/token-bridge-contracts-1.2.2.tgz#abc1cea9e03694b9c5395c95a23bdd4b607c4b75"
+  integrity sha512-PAAJpnAtql7/xPc2o437m+f47tuGVcwEsbvEuoLinOE1nENVx26luXRON2ONMouwg1D/F05DYpmcuxODJ+rHJg==
   dependencies:
     "@arbitrum/nitro-contracts" "1.1.1"
     "@offchainlabs/upgrade-executor" "1.1.0-beta.0"
