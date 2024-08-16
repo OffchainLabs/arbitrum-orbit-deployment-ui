@@ -94,7 +94,7 @@ export async function deployRollup({
     const txRequest = await createRollupPrepareTransactionRequest({
       params: {
         config: rollupConfigPayload,
-        batchPoster: batchPosterAddress,
+        batchPosters: [batchPosterAddress],
         validators: validatorAddresses,
         nativeToken,
       },
