@@ -16,11 +16,13 @@ export const RaasProviderCard = ({
 }) => {
   return (
     <Link href={link} target="_blank">
-      <div className="group flex flex-col gap-4 rounded-md border border-solid border-grey bg-[#191919] p-4 active:bg-[rgba(109,109,109,0.4)] md:hover:bg-[rgba(109,109,109)]">
-        <Image src={logo} alt={`${name} logo`} width={120} height={30} />
+      <div className="group flex h-full flex-col gap-4 rounded-md border border-solid border-grey bg-[#191919] p-4 active:bg-[rgba(109,109,109,0.4)] md:hover:bg-[rgba(109,109,109)]">
+        <div className="h-[30px]">
+          <Image src={logo} alt={`${name} logo`} width={120} height={30} />
+        </div>
         <h4 className="text-2xl font-light">{name}</h4>
         <p className="text-sm font-light">{description}</p>
-        <div className="flex items-center gap-2">
+        <div className="flex h-full items-center gap-2">
           <p className="text-xs font-light">{caption}</p>
         </div>
         <div className="border-px border-b border-gray-200"></div>
