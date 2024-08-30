@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { useDeploymentPageContext } from '@/components/DeploymentPageContext';
 import { DocsPanel } from '@/components/DocsPanel';
 import { GasTokenInput } from '@/components/GasTokenInput';
-import { SetBatchPoster } from '@/components/SetBatchPoster';
+import { SetBatchPosters } from '@/components/SetBatchPosters';
 import { SetValidators } from '@/components/SetValidators';
 import { StepTitle } from '@/components/StepTitle';
 import { TextInputWithInfoLink } from '@/components/TextInputWithInfoLink';
@@ -47,19 +47,17 @@ const rollupConfigSchema = z.object({
       }
     });
   }),
-  batchPoster: WalletSchema,
+  batchPosters: z.array(WalletSchema),
 });
 
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export default function RollupConfigPage() {
-  const [{ rollupConfig, chainType, validators: savedWallets, batchPoster }, dispatch] =
-    useDeploymentPageContext();
+  const [
+    { rollupConfig, chainType, validators: savedWallets, batchPosters: savedBatchPosters },
+    dispatch,
+  ] = useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
-  const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
-  const [wallets, setWallets] = useState<Wallet[]>(
-    savedWallets || Array.from({ length: walletCount }, getRandomWallet),
-  );
   const [tokenDecimals, setTokenDecimals] = useState<number>(18);
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -80,12 +78,13 @@ export default function RollupConfigPage() {
   const methods = useForm<z.infer<typeof rollupConfigSchema>>({
     defaultValues: {
       ...rollupConfig,
-      addresses: wallets.map((wallet) => wallet.address),
-      batchPoster: batchPoster || getRandomWallet(),
+      addresses: savedWallets?.map((wallet) => wallet.address) || [],
+      batchPosters: savedBatchPosters || [getRandomWallet()],
     },
     mode: 'onBlur',
     resolver: zodResolver(refinedRollupConfigSchema),
   });
+
   const {
     handleSubmit,
     register,
@@ -93,21 +92,27 @@ export default function RollupConfigPage() {
   } = methods;
 
   const onSubmit = async (updatedRollupConfig: RollupConfigFormValues) => {
-    const updatedValidators = compareWallets(wallets, updatedRollupConfig.addresses);
-    const updatedBatchPoster = updatedRollupConfig.batchPoster;
-
     try {
       dispatch({
         type: 'set_rollup_config',
         payload: { ...rollupConfig, ...updatedRollupConfig, stakeToken: rollupConfig.stakeToken },
       });
+
+      // Compare and update validators
+      const updatedValidators = compareWallets(savedWallets || [], updatedRollupConfig.addresses);
       dispatch({
         type: 'set_validators',
-        payload: compareWallets(wallets, updatedRollupConfig.addresses),
+        payload: updatedValidators,
       });
+
+      // Compare and update batch posters
+      const updatedBatchPosters = compareWallets(
+        savedBatchPosters || [],
+        updatedRollupConfig.batchPosters.map((bp) => bp.address),
+      );
       dispatch({
-        type: 'set_batch_poster',
-        payload: updatedRollupConfig.batchPoster,
+        type: 'set_batch_posters',
+        payload: updatedBatchPosters,
       });
 
       dispatch({ type: 'set_is_loading', payload: true });
@@ -119,7 +124,7 @@ export default function RollupConfigPage() {
           stakeToken: rollupConfig.stakeToken,
         },
         validators: updatedValidators,
-        batchPoster: updatedBatchPoster,
+        batchPosters: updatedBatchPosters,
         chainType,
         account: address,
         publicClient,
@@ -133,6 +138,23 @@ export default function RollupConfigPage() {
     } finally {
       dispatch({ type: 'set_is_loading', payload: false });
     }
+  };
+
+  const handleWalletsChange = (newWallets: Wallet[]) => {
+    methods.setValue(
+      'addresses',
+      newWallets.map((wallet) => wallet.address),
+    );
+  };
+
+  const handleBatchPostersChange = (newBatchPosters: Wallet[]) => {
+    methods.setValue(
+      'batchPosters',
+      newBatchPosters.map((wallet) => ({
+        address: wallet.address,
+        privateKey: wallet.privateKey || '',
+      })),
+    );
   };
 
   return (
@@ -204,8 +226,11 @@ export default function RollupConfigPage() {
               anchor={'owner'}
             />
             <GasTokenInput setTokenDecimals={setTokenDecimals} />
-            <SetValidators {...{ wallets, setWalletCount, walletCount, setWallets }} />
-            <SetBatchPoster />
+            <SetValidators savedWallets={savedWallets} onWalletsChange={handleWalletsChange} />
+            <SetBatchPosters
+              savedBatchPosters={savedBatchPosters}
+              onBatchPostersChange={handleBatchPostersChange}
+            />
           </div>
           <div className="border-px h-[80vh] w-full  border-t border-grey p-8 md:w-1/2 md:border-l md:border-t-0">
             <DocsPanel />

@@ -43,7 +43,7 @@ export type BuildL3ConfigParams = {
   address: string;
   rollupConfig: RollupConfig;
   validators: Wallet[];
-  batchPoster: Wallet;
+  batchPosters: Wallet[];
   coreContracts: CoreContracts;
   parentChainId: number;
 };
@@ -52,7 +52,7 @@ export const buildL3Config = async ({
   address,
   rollupConfig,
   validators,
-  batchPoster,
+  batchPosters,
   coreContracts,
   parentChainId,
 }: BuildL3ConfigParams): Promise<L3Config> => {
@@ -63,7 +63,7 @@ export const buildL3Config = async ({
       'networkFeeReceiver': address,
       'infrastructureFeeCollector': address,
       'staker': validators[0].address,
-      'batchPoster': batchPoster.address,
+      'batchPoster': batchPosters[0].address,
       'chainOwner': rollupConfig.owner,
       'chainId': Number(rollupConfig.chainId),
       'chainName': rollupConfig.chainName,

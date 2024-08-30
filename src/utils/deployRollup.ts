@@ -22,7 +22,7 @@ import { getRpcUrl } from './getRpcUrl';
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
   validators: Wallet[];
-  batchPoster: Wallet;
+  batchPosters: Wallet[];
   publicClient: PublicClient;
   walletClient: WalletClient;
   chainType?: ChainType;
@@ -32,7 +32,7 @@ type DeployRollupProps = {
 export async function deployRollup({
   rollupConfig,
   validators,
-  batchPoster,
+  batchPosters,
   publicClient,
   walletClient,
   account,
@@ -55,7 +55,7 @@ export async function deployRollup({
     });
 
     const validatorAddresses = validators.map((v) => v.address);
-    const batchPosterAddress = batchPoster.address;
+    const batchPosterAddresses = batchPosters.map((bp) => bp.address);
     const nativeToken = rollupConfig.nativeToken;
 
     // custom gas token
@@ -87,14 +87,14 @@ export async function deployRollup({
 
     const parentChainId: ChainId = await publicClient.getChainId();
 
-    assertIsAddress(batchPosterAddress);
+    assertIsAddressArray(batchPosterAddresses);
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
     const txRequest = await createRollupPrepareTransactionRequest({
       params: {
         config: rollupConfigPayload,
-        batchPosters: [batchPosterAddress],
+        batchPosters: batchPosterAddresses,
         validators: validatorAddresses,
         nativeToken,
       },
@@ -114,7 +114,7 @@ export async function deployRollup({
       chainName: rollupConfig.chainName,
       chainConfig,
       coreContracts,
-      batchPosterPrivateKey: batchPoster.privateKey || '',
+      batchPosterPrivateKey: batchPosters[0].privateKey || '',
       validatorPrivateKey: validators[0].privateKey || '',
       parentChainId,
       parentChainRpcUrl: getRpcUrl(parentChainId),
@@ -127,7 +127,7 @@ export async function deployRollup({
       rollupConfig,
       coreContracts,
       validators,
-      batchPoster,
+      batchPosters,
       parentChainId,
     });
 
