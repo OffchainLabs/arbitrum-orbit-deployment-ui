@@ -45,15 +45,22 @@ export default function LaunchPage(params: OptionalOrbitPageParams) {
   return (
     <div className="relative mx-auto flex w-full flex-col gap-[40px]">
       {/* Banner Image */}
-      <Card className="relative flex items-center justify-between gap-6 bg-blue py-3 pl-8">
+      <Card className="relative flex items-center justify-between gap-6 bg-gradient-landing-banner py-3 pl-8 pt-[110px] lg:flex-col lg:items-start lg:justify-center lg:py-[104px]">
         <p className="text-xl md:hidden lg:text-[28px]">Orbit</p>
+        <Image
+          alt="Bridge"
+          src="/orbit_horizontal_logo_white.svg"
+          width={124}
+          height={31}
+          className="hidden h-[31px] w-[124px] lg:block"
+        />
         <p className="hidden text-xl md:block lg:text-[28px]">Launch your own Orbit Chain</p>
         <Image
           alt="Bridge"
           src="/illustration-orbit.webp"
           width={100}
           height={100}
-          className="h-[80px] w-[80px] mix-blend-screen lg:h-[100px] lg:w-[100px]"
+          className="h-[80px] w-[80px] mix-blend-screen lg:hidden"
         />
       </Card>
 
