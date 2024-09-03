@@ -13,6 +13,7 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-landing-banner': 'linear-gradient(90deg, #12AAFF 18.22%, #1B4ADD 99.99%)',
       },
       boxShadow: {
         input: '0px 2px 2px rgba(33, 37, 41, 0.06), 0px 0px 1px rgba(33, 37, 41, 0.08)',

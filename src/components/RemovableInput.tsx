@@ -1,9 +1,10 @@
 import React from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
 
 type RemovableInputProps = {
   placeholder: string;
-  register: any;
+  register: UseFormRegisterReturn;
   onRemove: () => void;
   error?: string;
 };
