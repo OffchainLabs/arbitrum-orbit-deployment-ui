@@ -1,8 +1,11 @@
 import { Wallet } from '@/types/RollupContracts';
 import { getRandomWallet } from '@/utils/getRandomWallet';
+import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
 import { ScrollWrapper } from './ScrollWrapper';
+import { EditableInput } from './EditableInput';
+import { RemovableInput } from './RemovableInput';
 
 type SetValidatorsProps = {
   wallets: Wallet[];
@@ -17,10 +20,16 @@ export const SetValidators = ({
   walletCount,
   setWalletCount,
 }: SetValidatorsProps) => {
-  const { register, setValue, formState } = useFormContext();
+  const { register, setValue, formState, getValues } = useFormContext();
   const { errors } = formState;
 
   const isMaxWalletCount = walletCount >= 16;
+
+  useEffect(() => {
+    wallets.forEach((wallet, index) => {
+      setValue(`addresses.${index}`, wallet.address);
+    });
+  }, []);
 
   const handleAddValidator = () => {
     if (!isMaxWalletCount) {
@@ -31,53 +40,50 @@ export const SetValidators = ({
     }
   };
 
+  const handleRemoveWallet = (index: number) => {
+    if (walletCount > 1 && index !== 0) {
+      const newWallets = [...wallets];
+      newWallets.splice(index, 1);
+      setWallets(newWallets);
+      setWalletCount(walletCount - 1);
+
+      // Update form values
+      const currentAddresses = getValues('addresses');
+      currentAddresses.splice(index, 1);
+      setValue('addresses', currentAddresses);
+    }
+  };
+
   // @ts-expect-error - react-hook-form doesn't handle the array properly
   const addressErrors = errors.addresses as { message: string }[];
 
   return (
-    <ScrollWrapper anchor="validators">
+    <>
       <label className={'cursor-pointer underline'}>
-        <span>{'Validators #'}</span>
+        <ScrollWrapper anchor="validators">
+          <span>{'Validators #'}</span>
+        </ScrollWrapper>
       </label>
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2">
-          {wallets.slice(0, 8).map((wallet, index) => (
-            <div key={wallet.address + index}>
-              <input
-                type="text"
+        {wallets.map((wallet, index) => (
+          <div key={wallet.address + index}>
+            {index === 0 ? (
+              <EditableInput
+                name={`addresses.${index}`}
                 placeholder={`Validator Address ${index + 1}`}
-                className={twMerge(
-                  'w-full rounded-lg border border-[#6D6D6D] px-3 py-2 shadow-input',
-                  index === 0 && 'cursor-not-allowed bg-gray-200 opacity-50',
-                  addressErrors?.[index] && 'border-red-500',
-                )}
-                readOnly={index === 0}
-                {...register(`addresses.${index}`)}
+                register={() => register(`addresses.${index}`)}
+                error={addressErrors?.[index]?.message}
               />
-              {addressErrors?.[index] && (
-                <p className="text-sm text-red-500">{String(addressErrors[index]?.message)}</p>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-col gap-2">
-          {wallets.slice(8, 16).map((wallet, index) => (
-            <div key={wallet.address + index}>
-              <input
-                type="text"
-                placeholder={`Validator ${index + 9}`}
-                className={twMerge(
-                  'w-full rounded-md border border-[#6D6D6D] px-3 py-2 shadow-input',
-                  addressErrors?.[index + 8] && 'border-red-500',
-                )}
-                {...register(`addresses.${index + 8}`)}
+            ) : (
+              <RemovableInput
+                placeholder={`Validator Address ${index + 1}`}
+                register={register(`addresses.${index}`)}
+                onRemove={() => handleRemoveWallet(index)}
+                error={addressErrors?.[index]?.message}
               />
-              {addressErrors?.[index + 8] && (
-                <p className="text-sm text-red-500">{String(addressErrors[index + 8]?.message)}</p>
-              )}
-            </div>
-          ))}
-        </div>
+            )}
+          </div>
+        ))}
         <button
           className={twMerge(
             'text-xs',
@@ -98,6 +104,6 @@ export const SetValidators = ({
           )}
         </button>
       </div>
-    </ScrollWrapper>
+    </>
   );
 };
