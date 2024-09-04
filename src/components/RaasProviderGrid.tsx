@@ -13,7 +13,7 @@ export const RaasProviderGrid = () => {
       <RaasProviderCard
         name="Conduit"
         description="Supports AnyTrust and Rollup chains"
-        caption="Powering Frame, Orb3, and Parallel"
+        caption="Powering Proof of Play and Gravity"
         link="https://conduit.xyz/"
         logo="/Conduit.svg"
       />
