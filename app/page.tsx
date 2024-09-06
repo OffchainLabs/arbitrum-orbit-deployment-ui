@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 import { Card } from '@/components/Card';
+import { ExternalLink } from '@/components/ExternalLink';
 import { DISCORD_LINK, GET_HELP_LINK } from '@/common/constants';
 import { RaasProviderGrid } from '@/components/RaasProviderGrid';
 
@@ -119,6 +120,33 @@ export default function LaunchPage(params: OptionalOrbitPageParams) {
           </div>
         </Card>
       </div>
+
+      {/* Stylus card */}
+      <Card
+        className="relative flex shrink-0 grow-0 flex-col gap-6 bg-stylus-pink p-4 py-6 hover:bg-stylus-pink/80 lg:p-6"
+        cardType="externalLink"
+        href="https://arbitrum.io/stylus"
+      >
+        <div className="z-10 flex h-full w-full flex-col justify-around gap-4">
+          <Image
+            alt="Stylus"
+            src="/stylus_white.svg"
+            height={40}
+            width={160}
+            className="drop-shadow-[0_0px_2px_rgba(0,0,0,0.5)]"
+          />
+
+          <div className="flex flex-col flex-nowrap gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="lg:w-3/4">
+              <div className="text-base lg:text-2xl">
+                Stylus is now on mainnet. <span className="opacity-60">Do More. With Stylus.</span>
+              </div>
+            </div>
+
+            <ExternalLink className="text-xs underline underline-offset-8">Learn More</ExternalLink>
+          </div>
+        </div>
+      </Card>
 
       {/* RaaS list */}
       <div className="flex flex-col gap-4">
