@@ -27,6 +27,7 @@ module.exports = {
         'default-black': '#1a1c1d',
         'blue': '#12aaff',
         'lime-dark': '#31572A',
+        'stylus-pink': '#F62674',
       },
       backgroundColor: {
         DEFAULT: '#000000',
