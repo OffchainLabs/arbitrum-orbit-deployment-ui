@@ -13,6 +13,17 @@ type WalletAddressManagerProps = {
   maxAddresses?: number;
 };
 
+/**
+ * Manages a user-editable list of wallets with addresses and generated private keys.
+ *
+ * @description
+ * This component allows users to:
+ * - Add new wallets
+ * - Edit existing addresses
+ * - Remove wallets (except the first one)
+ *
+ * @note Editing an address removes the associated private key data.
+ */
 export const WalletAddressManager = ({
   fieldName,
   label,
