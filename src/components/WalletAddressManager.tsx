@@ -16,7 +16,6 @@ type WalletAddressManagerProps = {
 /**
  * Manages a user-editable list of wallets with addresses and generated private keys.
  *
- * @description
  * This component allows users to:
  * - Add new wallets
  * - Edit existing addresses
