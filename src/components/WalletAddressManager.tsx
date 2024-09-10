@@ -1,54 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
-import { Wallet } from '@/types/RollupContracts';
-import { getRandomWallet } from '@/utils/getRandomWallet';
 import { EditableInput } from './EditableInput';
 import { RemovableInput } from './RemovableInput';
 
-type WalletAddressManagerProps = {
-  wallets: Wallet[];
-  setWallets: (wallets: Wallet[]) => void;
+type AddressManagerProps = {
+  addresses: string[];
+  addWallet: () => void;
+  removeWallet: (index: number) => void;
   fieldName: string;
   label: string;
-  maxWallets?: number;
+  maxAddresses?: number;
 };
 
 export const WalletAddressManager = ({
-  wallets,
-  setWallets,
+  addresses,
+  addWallet,
+  removeWallet,
   fieldName,
   label,
-  maxWallets = 16,
-}: WalletAddressManagerProps) => {
+  maxAddresses = 16,
+}: AddressManagerProps) => {
   const { register, setValue, formState, getValues } = useFormContext();
   const { errors } = formState;
-  const [walletCount, setWalletCount] = useState(wallets.length);
 
-  const isMaxWalletCount = walletCount >= maxWallets;
+  const walletCount = addresses.length;
+
+  const isMaxAddressCount = walletCount >= maxAddresses;
 
   useEffect(() => {
-    wallets.forEach((wallet, index) => {
-      setValue(`${fieldName}.${index}`, wallet.address);
+    addresses.forEach((address, index) => {
+      setValue(`${fieldName}.${index}`, address);
     });
   }, []);
 
   const handleAddWallet = () => {
-    if (!isMaxWalletCount) {
-      const newWallet = getRandomWallet();
-      setValue(`${fieldName}.${walletCount}`, newWallet.address);
-      setWalletCount(walletCount + 1);
-      setWallets([...wallets, newWallet]);
+    if (!isMaxAddressCount) {
+      addWallet();
     }
   };
 
   const handleRemoveWallet = (index: number) => {
     if (walletCount > 1 && index !== 0) {
-      const newWallets = [...wallets];
-      newWallets.splice(index, 1);
-      setWallets(newWallets);
-      setWalletCount(walletCount - 1);
-
+      removeWallet(index);
       // Update form values
       const currentAddresses = getValues(fieldName);
       currentAddresses.splice(index, 1);
@@ -61,8 +55,8 @@ export const WalletAddressManager = ({
 
   return (
     <div className="flex flex-col gap-2">
-      {wallets.map((wallet, index) => (
-        <div key={wallet.address + index}>
+      {addresses.map((address, index) => (
+        <div key={address + index}>
           {index === 0 ? (
             <EditableInput
               name={`${fieldName}.${index}`}
@@ -83,14 +77,14 @@ export const WalletAddressManager = ({
       <button
         className={twMerge(
           'text-xs',
-          !isMaxWalletCount && 'hover:underline',
-          isMaxWalletCount && 'opacity-50',
+          !isMaxAddressCount && 'hover:underline',
+          isMaxAddressCount && 'opacity-50',
         )}
         type="button"
         onClick={handleAddWallet}
-        disabled={isMaxWalletCount}
+        disabled={isMaxAddressCount}
       >
-        {isMaxWalletCount ? (
+        {isMaxAddressCount ? (
           <span>Maximum Number of {label}s</span>
         ) : (
           <>
