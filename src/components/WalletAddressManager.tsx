@@ -7,7 +7,7 @@ import { EditableInput } from './EditableInput';
 import { RemovableInput } from './RemovableInput';
 import { useDeploymentPageContext } from './DeploymentPageContext';
 
-type AddressManagerProps = {
+type WalletAddressManagerProps = {
   fieldName: 'validators' | 'batch_posters';
   label: string;
   maxAddresses?: number;
@@ -17,7 +17,7 @@ export const WalletAddressManager = ({
   fieldName,
   label,
   maxAddresses = 16,
-}: AddressManagerProps) => {
+}: WalletAddressManagerProps) => {
   const [{ [fieldName]: savedWallets }, dispatch] = useDeploymentPageContext();
   const { register, setValue, formState, getValues } = useFormContext();
   const { errors } = formState;
