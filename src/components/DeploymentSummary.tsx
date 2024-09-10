@@ -23,7 +23,8 @@ function BlockExplorerLink({ href, children }: { href: string; children: React.R
 export function DeploymentSummary() {
   const { chain } = useNetwork();
 
-  const [{ rollupContracts, validators = [], batchPosters = [] }] = useDeploymentPageContext();
+  const [{ rollupContracts, validators = [], batch_posters: batchPosters = [] }] =
+    useDeploymentPageContext();
 
   const blockExplorerUrl = useMemo(
     () => chain?.blockExplorers?.default?.url ?? getBlockExplorerUrl(ChainId.ArbitrumSepolia),

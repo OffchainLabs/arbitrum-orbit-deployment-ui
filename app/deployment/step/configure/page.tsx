@@ -43,14 +43,14 @@ const rollupConfigSchema = z.object({
   owner: AddressSchema,
   nativeToken: AddressSchema,
   validators: WalletAddressListSchema,
-  batchPosters: WalletAddressListSchema,
+  batch_posters: WalletAddressListSchema,
 });
 
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export default function RollupConfigPage() {
   const [
-    { rollupConfig, chainType, validators: savedWallets, batchPosters: savedBatchPosters },
+    { rollupConfig, chainType, validators: savedWallets, batch_posters: savedBatchPosters },
     dispatch,
   ] = useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
@@ -75,7 +75,7 @@ export default function RollupConfigPage() {
     defaultValues: {
       ...rollupConfig,
       validators: savedWallets?.map((wallet) => wallet.address) || [],
-      batchPosters: savedBatchPosters?.map((wallet) => wallet.address) || [],
+      batch_posters: savedBatchPosters?.map((wallet) => wallet.address) || [],
     },
     mode: 'onBlur',
     resolver: zodResolver(refinedRollupConfigSchema),
@@ -104,7 +104,7 @@ export default function RollupConfigPage() {
       // Compare and update batch posters
       const updatedBatchPosters = compareWallets(
         savedBatchPosters || [],
-        updatedRollupConfig.batchPosters,
+        updatedRollupConfig.batch_posters,
       );
       dispatch({
         type: 'set_batch_posters',

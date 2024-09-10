@@ -1,48 +1,56 @@
-import { useEffect } from 'react';
+import { Wallet } from '@/types/RollupContracts';
+import { getRandomWallet } from '@/utils/getRandomWallet';
+import { useEffect, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
 import { EditableInput } from './EditableInput';
 import { RemovableInput } from './RemovableInput';
+import { useDeploymentPageContext } from './DeploymentPageContext';
 
 type AddressManagerProps = {
-  addresses: string[];
-  addWallet: () => void;
-  removeWallet: (index: number) => void;
-  fieldName: string;
+  fieldName: 'validators' | 'batch_posters';
   label: string;
   maxAddresses?: number;
 };
 
 export const WalletAddressManager = ({
-  addresses,
-  addWallet,
-  removeWallet,
   fieldName,
   label,
   maxAddresses = 16,
 }: AddressManagerProps) => {
+  const [{ [fieldName]: savedWallets }, dispatch] = useDeploymentPageContext();
   const { register, setValue, formState, getValues } = useFormContext();
   const { errors } = formState;
 
-  const walletCount = addresses.length;
+  const wallets = useMemo(() => {
+    return savedWallets || [getRandomWallet()];
+  }, [savedWallets]);
 
+  const addresses = useMemo(() => {
+    return wallets?.map((wallet: Wallet) => wallet.address);
+  }, [wallets]);
+
+  const walletCount = addresses.length;
   const isMaxAddressCount = walletCount >= maxAddresses;
 
-  useEffect(() => {
-    addresses.forEach((address, index) => {
-      setValue(`${fieldName}.${index}`, address);
+  const saveWallets = (newWallets: Wallet[]) => {
+    dispatch({
+      type: `set_${fieldName}` as const,
+      payload: newWallets,
     });
-  }, []);
+  };
 
-  const handleAddWallet = () => {
+  const addWallet = () => {
     if (!isMaxAddressCount) {
-      addWallet();
+      const newWallet = getRandomWallet();
+      saveWallets([...wallets, newWallet]);
     }
   };
 
-  const handleRemoveWallet = (index: number) => {
+  const removeWallet = (index: number) => {
     if (walletCount > 1 && index !== 0) {
-      removeWallet(index);
+      const newWallets = wallets.filter((w: Wallet, i: number) => i !== index);
+      saveWallets(newWallets);
       // Update form values
       const currentAddresses = getValues(fieldName);
       currentAddresses.splice(index, 1);
@@ -50,12 +58,22 @@ export const WalletAddressManager = ({
     }
   };
 
+  useEffect(() => {
+    setValue(fieldName, addresses);
+  }, [addresses, fieldName, setValue]);
+
+  useEffect(() => {
+    addresses.forEach((address: string, index: number) => {
+      setValue(`${fieldName}.${index}`, address);
+    });
+  }, []);
+
   // @ts-expect-error - react-hook-form doesn't handle the array properly
   const addressErrors = errors[fieldName] as { message: string }[];
 
   return (
     <div className="flex flex-col gap-2">
-      {addresses.map((address, index) => (
+      {addresses.map((address: string, index: number) => (
         <div key={address + index}>
           {index === 0 ? (
             <EditableInput
@@ -68,7 +86,7 @@ export const WalletAddressManager = ({
             <RemovableInput
               placeholder={`${label} Address ${index + 1}`}
               register={register(`${fieldName}.${index}`)}
-              onRemove={() => handleRemoveWallet(index)}
+              onRemove={() => removeWallet(index)}
               error={addressErrors?.[index]?.message}
             />
           )}
@@ -81,7 +99,7 @@ export const WalletAddressManager = ({
           isMaxAddressCount && 'opacity-50',
         )}
         type="button"
-        onClick={handleAddWallet}
+        onClick={addWallet}
         disabled={isMaxAddressCount}
       >
         {isMaxAddressCount ? (

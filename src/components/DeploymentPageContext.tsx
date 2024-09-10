@@ -20,7 +20,7 @@ type DeploymentPageContextState = {
   rollupContracts?: CoreContracts;
   rollupConfig: RollupConfig;
   validators?: Wallet[];
-  batchPosters?: Wallet[];
+  batch_posters?: Wallet[];
   chainType?: ChainType;
   isLoading: boolean;
   isDownloadCompleted: boolean;
@@ -54,7 +54,7 @@ const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
   rollupConfig: generateDefaultRollupConfig(),
   rollupContracts: undefined,
   validators: undefined,
-  batchPosters: undefined,
+  batch_posters: undefined,
   chainType: undefined,
   isLoading: false,
   isDownloadCompleted: false,
@@ -114,7 +114,7 @@ function reducer(
       return { ...state, validators: action.payload };
 
     case 'set_batch_posters':
-      return { ...state, batchPosters: action.payload };
+      return { ...state, batch_posters: action.payload };
 
     case 'set_is_loading':
       return { ...state, isLoading: action.payload };
@@ -160,7 +160,7 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
         chainType: state.chainType,
         rollupContracts: state.rollupContracts,
         validators: state.validators,
-        batchPosters: state.batchPosters,
+        batch_posters: state.batch_posters,
         isDownloadCompleted: state.isDownloadCompleted,
       }),
     );
