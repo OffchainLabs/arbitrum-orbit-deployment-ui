@@ -8,10 +8,10 @@ import { z } from 'zod';
 import { useDeploymentPageContext } from '@/components/DeploymentPageContext';
 import { DocsPanel } from '@/components/DocsPanel';
 import { GasTokenInput } from '@/components/GasTokenInput';
-import { SetBatchPosters } from '@/components/SetBatchPosters';
-import { SetValidators } from '@/components/SetValidators';
+import { ScrollWrapper } from '@/components/ScrollWrapper';
 import { StepTitle } from '@/components/StepTitle';
 import { TextInputWithInfoLink } from '@/components/TextInputWithInfoLink';
+import { WalletAddressManager } from '@/components/WalletAddressManager';
 import { useStep } from '@/hooks/useStep';
 import { deployRollup } from '@/utils/deployRollup';
 import { AddressSchema } from '@/utils/schemas';
@@ -205,8 +205,18 @@ export default function RollupConfigPage() {
               anchor={'owner'}
             />
             <GasTokenInput setTokenDecimals={setTokenDecimals} />
-            <SetValidators />
-            <SetBatchPosters />
+            <label className={'cursor-pointer underline'}>
+              <ScrollWrapper anchor="validators">
+                <span>Validators #</span>
+              </ScrollWrapper>
+            </label>
+            <WalletAddressManager fieldName="validators" label="Validator" />
+            <label className={'cursor-pointer underline'}>
+              <ScrollWrapper anchor="batch-posters">
+                <span>Batch Posters #</span>
+              </ScrollWrapper>
+            </label>
+            <WalletAddressManager fieldName="batch_posters" label="Batch Poster" />
           </div>
           <div className="border-px h-[80vh] w-full  border-t border-grey p-8 md:w-1/2 md:border-l md:border-t-0">
             <DocsPanel />
