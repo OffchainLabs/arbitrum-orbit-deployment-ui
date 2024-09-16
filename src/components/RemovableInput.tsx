@@ -2,12 +2,12 @@ import React from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
 
-type RemovableInputProps = {
+interface RemovableInputProps extends React.HTMLProps<HTMLInputElement> {
   placeholder: string;
   register: UseFormRegisterReturn;
   onRemove: () => void;
   error?: string;
-};
+}
 
 export const RemovableInput: React.FC<RemovableInputProps> = ({
   placeholder,

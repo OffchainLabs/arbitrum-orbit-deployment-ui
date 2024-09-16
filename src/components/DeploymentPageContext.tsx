@@ -20,7 +20,7 @@ type DeploymentPageContextState = {
   rollupContracts?: CoreContracts;
   rollupConfig: RollupConfig;
   validators?: Wallet[];
-  batchPoster?: Wallet;
+  batch_posters?: Wallet[];
   chainType?: ChainType;
   isLoading: boolean;
   isDownloadCompleted: boolean;
@@ -54,7 +54,7 @@ const deploymentPageContextStateDefaultValue: DeploymentPageContextState = {
   rollupConfig: generateDefaultRollupConfig(),
   rollupContracts: undefined,
   validators: undefined,
-  batchPoster: undefined,
+  batch_posters: undefined,
   chainType: undefined,
   isLoading: false,
   isDownloadCompleted: false,
@@ -79,7 +79,7 @@ type DeploymentPageContextAction =
   | { type: 'set_rollup_config'; payload: Partial<RollupConfigFormValues> }
   | { type: 'set_chain_type'; payload: ChainType }
   | { type: 'set_validators'; payload: Wallet[] }
-  | { type: 'set_batch_poster'; payload: Wallet }
+  | { type: 'set_batch_posters'; payload: Wallet[] }
   | { type: 'set_is_loading'; payload: boolean }
   | { type: 'set_is_download_completed'; payload: boolean }
   | { type: 'reset'; payload: string };
@@ -113,8 +113,8 @@ function reducer(
     case 'set_validators':
       return { ...state, validators: action.payload };
 
-    case 'set_batch_poster':
-      return { ...state, batchPoster: action.payload };
+    case 'set_batch_posters':
+      return { ...state, batch_posters: action.payload };
 
     case 'set_is_loading':
       return { ...state, isLoading: action.payload };
@@ -160,7 +160,7 @@ export function DeploymentPageContextProvider({ children }: { children: React.Re
         chainType: state.chainType,
         rollupContracts: state.rollupContracts,
         validators: state.validators,
-        batchPoster: state.batchPoster,
+        batch_posters: state.batch_posters,
         isDownloadCompleted: state.isDownloadCompleted,
       }),
     );

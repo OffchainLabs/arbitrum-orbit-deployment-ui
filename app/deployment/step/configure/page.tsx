@@ -8,22 +8,32 @@ import { z } from 'zod';
 import { useDeploymentPageContext } from '@/components/DeploymentPageContext';
 import { DocsPanel } from '@/components/DocsPanel';
 import { GasTokenInput } from '@/components/GasTokenInput';
-import { SetBatchPoster } from '@/components/SetBatchPoster';
-import { SetValidators } from '@/components/SetValidators';
+import { ScrollWrapper } from '@/components/ScrollWrapper';
 import { StepTitle } from '@/components/StepTitle';
 import { TextInputWithInfoLink } from '@/components/TextInputWithInfoLink';
+import { WalletAddressManager } from '@/components/WalletAddressManager';
 import { useStep } from '@/hooks/useStep';
-import { Wallet } from '@/types/RollupContracts';
 import { deployRollup } from '@/utils/deployRollup';
-import { getRandomWallet } from '@/utils/getRandomWallet';
-import { AddressSchema, PrivateKeySchema } from '@/utils/schemas';
+import { AddressSchema } from '@/utils/schemas';
 import { compareWallets } from '@/utils/wallets';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const WalletSchema = z.object({
-  address: AddressSchema,
-  privateKey: PrivateKeySchema,
+const WalletAddressListSchema = z.array(AddressSchema).superRefine((data, ctx) => {
+  const seen = new Set();
+
+  data.forEach((address, index) => {
+    if (seen.has(address)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Duplicate addresses are not allowed',
+        path: [index],
+      });
+    } else {
+      seen.add(address);
+    }
+  });
 });
+
 const rollupConfigSchema = z.object({
   chainId: z.number().gt(0),
   chainName: z.string().nonempty(),
@@ -32,34 +42,18 @@ const rollupConfigSchema = z.object({
   baseStake: z.number().gt(0),
   owner: AddressSchema,
   nativeToken: AddressSchema,
-  addresses: z.array(AddressSchema).superRefine((data, ctx) => {
-    const seen = new Set();
-
-    data.forEach((address, index) => {
-      if (seen.has(address)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Duplicate addresses are not allowed',
-          path: [index],
-        });
-      } else {
-        seen.add(address);
-      }
-    });
-  }),
-  batchPoster: WalletSchema,
+  validators: WalletAddressListSchema,
+  batch_posters: WalletAddressListSchema,
 });
 
 export type RollupConfigFormValues = z.infer<typeof rollupConfigSchema>;
 
 export default function RollupConfigPage() {
-  const [{ rollupConfig, chainType, validators: savedWallets, batchPoster }, dispatch] =
-    useDeploymentPageContext();
+  const [
+    { rollupConfig, chainType, validators: savedWallets, batch_posters: savedBatchPosters },
+    dispatch,
+  ] = useDeploymentPageContext();
   const { nextStep, rollupConfigFormRef } = useStep();
-  const [walletCount, setWalletCount] = useState<number>(savedWallets?.length || 1);
-  const [wallets, setWallets] = useState<Wallet[]>(
-    savedWallets || Array.from({ length: walletCount }, getRandomWallet),
-  );
   const [tokenDecimals, setTokenDecimals] = useState<number>(18);
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -80,12 +74,13 @@ export default function RollupConfigPage() {
   const methods = useForm<z.infer<typeof rollupConfigSchema>>({
     defaultValues: {
       ...rollupConfig,
-      addresses: wallets.map((wallet) => wallet.address),
-      batchPoster: batchPoster || getRandomWallet(),
+      validators: savedWallets?.map((wallet) => wallet.address) || [],
+      batch_posters: savedBatchPosters?.map((wallet) => wallet.address) || [],
     },
     mode: 'onBlur',
     resolver: zodResolver(refinedRollupConfigSchema),
   });
+
   const {
     handleSubmit,
     register,
@@ -93,21 +88,27 @@ export default function RollupConfigPage() {
   } = methods;
 
   const onSubmit = async (updatedRollupConfig: RollupConfigFormValues) => {
-    const updatedValidators = compareWallets(wallets, updatedRollupConfig.addresses);
-    const updatedBatchPoster = updatedRollupConfig.batchPoster;
-
     try {
       dispatch({
         type: 'set_rollup_config',
         payload: { ...rollupConfig, ...updatedRollupConfig, stakeToken: rollupConfig.stakeToken },
       });
+
+      // Compare and update validators
+      const updatedValidators = compareWallets(savedWallets || [], updatedRollupConfig.validators);
       dispatch({
         type: 'set_validators',
-        payload: compareWallets(wallets, updatedRollupConfig.addresses),
+        payload: updatedValidators,
       });
+
+      // Compare and update batch posters
+      const updatedBatchPosters = compareWallets(
+        savedBatchPosters || [],
+        updatedRollupConfig.batch_posters,
+      );
       dispatch({
-        type: 'set_batch_poster',
-        payload: updatedRollupConfig.batchPoster,
+        type: 'set_batch_posters',
+        payload: updatedBatchPosters,
       });
 
       dispatch({ type: 'set_is_loading', payload: true });
@@ -119,7 +120,7 @@ export default function RollupConfigPage() {
           stakeToken: rollupConfig.stakeToken,
         },
         validators: updatedValidators,
-        batchPoster: updatedBatchPoster,
+        batchPosters: updatedBatchPosters,
         chainType,
         account: address,
         publicClient,
@@ -204,8 +205,18 @@ export default function RollupConfigPage() {
               anchor={'owner'}
             />
             <GasTokenInput setTokenDecimals={setTokenDecimals} />
-            <SetValidators {...{ wallets, setWalletCount, walletCount, setWallets }} />
-            <SetBatchPoster />
+            <label className={'cursor-pointer underline'}>
+              <ScrollWrapper anchor="validators">
+                <span>Validators #</span>
+              </ScrollWrapper>
+            </label>
+            <WalletAddressManager fieldName="validators" label="Validator" />
+            <label className={'cursor-pointer underline'}>
+              <ScrollWrapper anchor="batch-posters">
+                <span>Batch Posters #</span>
+              </ScrollWrapper>
+            </label>
+            <WalletAddressManager fieldName="batch_posters" label="Batch Poster" />
           </div>
           <div className="border-px h-[80vh] w-full  border-t border-grey p-8 md:w-1/2 md:border-l md:border-t-0">
             <DocsPanel />
