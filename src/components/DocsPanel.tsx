@@ -215,12 +215,12 @@ export const DocsPanel = () => {
         </p>
       </DocsPanelItem>
 
-      <DocsPanelItem id="batch-poster" title="BATCH POSTER">
+      <DocsPanelItem id="batch-posters" title="BATCH POSTERS">
         <p>
-          Your batch poster address is responsible for posting batches of transactions from your
-          Orbit chain to its base contracts on its base chain. An address will automatically be
-          generated for you; its private key will be automatically generated and stored within one
-          of the JSON configuration files that will be generated in a moment.
+          Your batch poster addresses are responsible for posting batches of transactions from your
+          Orbit chain to its base contracts on its base chain. A primary address will automatically
+          be generated for you; its private key will be automatically generated and stored within
+          one of the JSON configuration files that will be generated in a moment.
         </p>
       </DocsPanelItem>
 

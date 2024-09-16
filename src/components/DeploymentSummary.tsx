@@ -137,7 +137,7 @@ export function DeploymentSummary() {
         )}
         {batchPosters.length > 0 && (
           <div>
-            <p className="mb-2 text-xl font-light">Batch Poster</p>
+            <p className="mb-2 text-xl font-light">Batch Posters</p>
             <ul className="flex flex-col gap-3 rounded-sm border border-[#5E5E5E] bg-[#191919] p-4">
               {batchPosters.map((batchPoster, index) => (
                 <li className="flex flex-col" key={batchPoster.address}>
