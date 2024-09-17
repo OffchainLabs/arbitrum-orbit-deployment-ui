@@ -23,7 +23,8 @@ function BlockExplorerLink({ href, children }: { href: string; children: React.R
 export function DeploymentSummary() {
   const { chain } = useNetwork();
 
-  const [{ rollupContracts, validators = [], batchPoster }] = useDeploymentPageContext();
+  const [{ rollupContracts, validators = [], batch_posters: batchPosters = [] }] =
+    useDeploymentPageContext();
 
   const blockExplorerUrl = useMemo(
     () => chain?.blockExplorers?.default?.url ?? getBlockExplorerUrl(ChainId.ArbitrumSepolia),
@@ -134,15 +135,17 @@ export function DeploymentSummary() {
             </ul>
           </div>
         )}
-        {batchPoster && (
+        {batchPosters.length > 0 && (
           <div>
-            <p className="mb-2 text-xl font-light">Batch Poster</p>
+            <p className="mb-2 text-xl font-light">Batch Posters</p>
             <ul className="flex flex-col gap-3 rounded-sm border border-[#5E5E5E] bg-[#191919] p-4">
-              <li className="flex flex-col" key={batchPoster.address}>
-                <BlockExplorerLink href={`${blockExplorerUrl}/address/${batchPoster.address}`}>
-                  {batchPoster.address}
-                </BlockExplorerLink>
-              </li>
+              {batchPosters.map((batchPoster, index) => (
+                <li className="flex flex-col" key={batchPoster.address}>
+                  <BlockExplorerLink href={`${blockExplorerUrl}/address/${batchPoster.address}`}>
+                    {batchPoster.address}
+                  </BlockExplorerLink>
+                </li>
+              ))}
             </ul>
           </div>
         )}

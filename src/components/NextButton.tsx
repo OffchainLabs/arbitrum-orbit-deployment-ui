@@ -19,7 +19,6 @@ interface NextButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading }) => {
   const { currentStep } = useStep();
   const [{ isDownloadCompleted }] = useDeploymentPageContext();
-  const isLastStep = currentStep?.next === null;
 
   const isDeploymentStep = currentStep === ConfigureAnyTrust || currentStep === ConfigureRollup;
   const isDownloadRequired =
@@ -52,7 +51,7 @@ export const NextButton: FC<NextButtonProps> = ({ className, onClick, isLoading 
         className,
       )}
       onClick={onClick}
-      disabled={isLoading || isLastStep || isDownloadRequired}
+      disabled={isLoading || isDownloadRequired}
     >
       {getLabel()}
       {getIcon()}

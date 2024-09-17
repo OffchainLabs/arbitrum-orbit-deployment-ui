@@ -1,6 +1,6 @@
 import { parseEther, GetFunctionArgs } from 'viem';
-import { ChainConfig, CoreContracts } from '@arbitrum/orbit-sdk';
-import { rollupCreator } from '@arbitrum/orbit-sdk/contracts';
+import { CoreContracts } from '@arbitrum/orbit-sdk';
+import { rollupCreatorABI } from '@arbitrum/orbit-sdk/contracts/RollupCreator';
 
 import { Wallet } from '@/types/RollupContracts';
 import { L3Config } from '@/types/L3Config';
@@ -8,18 +8,12 @@ import { RollupConfig } from '@/types/rollupConfigDataType';
 import { getRpcUrl } from '@/utils/getRpcUrl';
 import { assertIsAddress } from './validators';
 
-export type RollupConfigPayload = GetFunctionArgs<
-  typeof rollupCreator.abi,
-  'createRollup'
->['args'][0]['config'];
+export type RollupConfigPayload = Omit<
+  GetFunctionArgs<typeof rollupCreatorABI, 'createRollup'>['args'][0]['config'],
+  'wasmModuleRoot' | 'chainConfig'
+>;
 
-export const buildRollupConfigPayload = ({
-  rollupConfig,
-  chainConfig,
-}: {
-  rollupConfig: RollupConfig;
-  chainConfig: ChainConfig;
-}): RollupConfigPayload => {
+export const buildRollupConfigPayload = (rollupConfig: RollupConfig): RollupConfigPayload => {
   try {
     assertIsAddress(rollupConfig.owner);
     assertIsAddress(rollupConfig.stakeToken);
@@ -29,11 +23,9 @@ export const buildRollupConfigPayload = ({
       extraChallengeTimeBlocks: BigInt(rollupConfig.extraChallengeTimeBlocks),
       stakeToken: rollupConfig.stakeToken,
       baseStake: parseEther(String(rollupConfig.baseStake)),
-      wasmModuleRoot: rollupConfig.wasmModuleRoot,
       owner: rollupConfig.owner,
       loserStakeEscrow: rollupConfig.loserStakeEscrow,
       chainId: BigInt(rollupConfig.chainId),
-      chainConfig: JSON.stringify(chainConfig),
       genesisBlockNum: BigInt(rollupConfig.genesisBlockNum),
       sequencerInboxMaxTimeVariation: {
         delayBlocks: BigInt(rollupConfig.sequencerInboxMaxTimeVariation.delayBlocks),
@@ -51,7 +43,7 @@ export type BuildL3ConfigParams = {
   address: string;
   rollupConfig: RollupConfig;
   validators: Wallet[];
-  batchPoster: Wallet;
+  batchPosters: Wallet[];
   coreContracts: CoreContracts;
   parentChainId: number;
 };
@@ -60,7 +52,7 @@ export const buildL3Config = async ({
   address,
   rollupConfig,
   validators,
-  batchPoster,
+  batchPosters,
   coreContracts,
   parentChainId,
 }: BuildL3ConfigParams): Promise<L3Config> => {
@@ -71,7 +63,7 @@ export const buildL3Config = async ({
       'networkFeeReceiver': address,
       'infrastructureFeeCollector': address,
       'staker': validators[0].address,
-      'batchPoster': batchPoster.address,
+      'batchPoster': batchPosters[0].address,
       'chainOwner': rollupConfig.owner,
       'chainId': Number(rollupConfig.chainId),
       'chainName': rollupConfig.chainName,

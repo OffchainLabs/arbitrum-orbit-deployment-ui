@@ -11,7 +11,7 @@ export const Stepper = () => {
   return (
     <div className="flex items-center">
       {steps.map((step, index) => (
-        <StepperStep {...{ step, index }} />
+        <StepperStep key={step.id} {...{ step, index }} />
       ))}
     </div>
   );

@@ -1,11 +1,13 @@
-import { PublicClient, WalletClient, Address, zeroAddress, parseEther } from 'viem';
+import { PublicClient, WalletClient, Address, zeroAddress } from 'viem';
 import {
-  createRollup,
   prepareChainConfig,
   prepareNodeConfig,
   CoreContracts,
   createRollupEnoughCustomFeeTokenAllowance,
   createRollupPrepareCustomFeeTokenApprovalTransactionRequest,
+  createRollupPrepareDeploymentParamsConfig,
+  createRollupPrepareTransactionRequest,
+  createRollupPrepareTransactionReceipt,
 } from '@arbitrum/orbit-sdk';
 
 import { ChainType } from '@/types/ChainType';
@@ -20,7 +22,7 @@ import { getRpcUrl } from './getRpcUrl';
 type DeployRollupProps = {
   rollupConfig: RollupConfig;
   validators: Wallet[];
-  batchPoster: Wallet;
+  batchPosters: Wallet[];
   publicClient: PublicClient;
   walletClient: WalletClient;
   chainType?: ChainType;
@@ -30,7 +32,7 @@ type DeployRollupProps = {
 export async function deployRollup({
   rollupConfig,
   validators,
-  batchPoster,
+  batchPosters,
   publicClient,
   walletClient,
   account,
@@ -46,10 +48,14 @@ export async function deployRollup({
         DataAvailabilityCommittee: chainType === ChainType.AnyTrust,
       },
     });
-    const rollupConfigPayload = buildRollupConfigPayload({ rollupConfig, chainConfig });
+
+    const rollupConfigPayload = createRollupPrepareDeploymentParamsConfig(publicClient, {
+      chainConfig,
+      ...buildRollupConfigPayload(rollupConfig),
+    });
 
     const validatorAddresses = validators.map((v) => v.address);
-    const batchPosterAddress = batchPoster.address;
+    const batchPosterAddresses = batchPosters.map((bp) => bp.address);
     const nativeToken = rollupConfig.nativeToken;
 
     // custom gas token
@@ -81,20 +87,26 @@ export async function deployRollup({
 
     const parentChainId: ChainId = await publicClient.getChainId();
 
-    assertIsAddress(batchPosterAddress);
+    assertIsAddressArray(batchPosterAddresses);
     assertIsAddress(nativeToken);
     assertIsAddressArray(validatorAddresses);
 
-    const txReceipt = await createRollup({
+    const txRequest = await createRollupPrepareTransactionRequest({
       params: {
         config: rollupConfigPayload,
-        batchPoster: batchPosterAddress,
+        batchPosters: batchPosterAddresses,
         validators: validatorAddresses,
         nativeToken,
       },
-      walletClient,
+      account: walletClient.account?.address!,
       publicClient,
     });
+
+    const txReceipt = createRollupPrepareTransactionReceipt(
+      await publicClient.waitForTransactionReceipt({
+        hash: await walletClient.sendTransaction(txRequest),
+      }),
+    );
 
     const coreContracts = txReceipt.getCoreContracts();
 
@@ -102,10 +114,11 @@ export async function deployRollup({
       chainName: rollupConfig.chainName,
       chainConfig,
       coreContracts,
-      batchPosterPrivateKey: batchPoster.privateKey || '',
+      batchPosterPrivateKey: batchPosters[0].privateKey || '',
       validatorPrivateKey: validators[0].privateKey || '',
       parentChainId,
       parentChainRpcUrl: getRpcUrl(parentChainId),
+      dasServerUrl: 'http://das-server',
     });
 
     // Defining L3 config
@@ -114,7 +127,7 @@ export async function deployRollup({
       rollupConfig,
       coreContracts,
       validators,
-      batchPoster,
+      batchPosters,
       parentChainId,
     });
 

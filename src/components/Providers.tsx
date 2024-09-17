@@ -12,6 +12,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import 'primeicons/primeicons.css'; // icons
 import '@/styles/globals.css';
 import { PropsWithChildren } from 'react';
+import { CustomAvatar } from './CustomAvatar';
 
 if (typeof window !== 'undefined' && typeof process.env.NEXT_PUBLIC_POSTHOG_KEY === 'string') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -35,7 +36,9 @@ export const Providers = ({ children }: PropsWithChildren) => {
       <WagmiConfig config={wagmiConfig}>
         <RainbowKitProvider
           chains={chains}
+          initialChain={chains[1]}
           appInfo={appInfo}
+          avatar={CustomAvatar}
           theme={{
             ...darkTheme({
               accentColor: '#31572A',

@@ -4,6 +4,7 @@ enum StepIds {
   DownloadConfig = 'download',
   ConfigureKeyset = 'keyset',
   DeployLocally = 'deploy-local',
+  RaasProviders = 'raas',
 }
 
 export const ChooseChainType = {
@@ -50,9 +51,16 @@ export const DownloadAnyTrustConfig = {
 
 export const DeployLocally = {
   id: StepIds.DeployLocally,
-  next: null,
+  next: StepIds.RaasProviders,
   previous: StepIds.DownloadConfig,
   label: 'Deploy Locally',
+} as const;
+
+export const RaasProviders = {
+  id: StepIds.RaasProviders,
+  next: null,
+  previous: StepIds.DeployLocally,
+  label: null,
 } as const;
 
 export const RollupStepMap = {
@@ -60,6 +68,7 @@ export const RollupStepMap = {
   ConfigureRollup,
   DownloadConfig,
   DeployLocally,
+  RaasProviders,
 } as const;
 
 export const AnyTrustStepMap = {
@@ -68,6 +77,7 @@ export const AnyTrustStepMap = {
   ConfigureKeyset,
   DownloadConfig: DownloadAnyTrustConfig,
   DeployLocally,
+  RaasProviders,
 } as const;
 
 export type RollupStep = (typeof RollupStepMap)[keyof typeof RollupStepMap];
