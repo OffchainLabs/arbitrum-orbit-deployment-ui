@@ -5,7 +5,9 @@ import posthog from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
 import { WagmiConfig } from 'wagmi';
 import { appInfo, chains, wagmiConfig } from '@/setupWagmi';
+import { ToastContainer } from 'react-toastify';
 
+import 'react-toastify/dist/ReactToastify.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import 'primeicons/primeicons.css'; // icons
 import '@/styles/globals.css';
@@ -47,6 +49,7 @@ export const Providers = ({ children }: PropsWithChildren) => {
           {children}
         </RainbowKitProvider>
       </WagmiConfig>
+      <ToastContainer theme="dark" />
     </PostHogProvider>
   );
 };

@@ -135,6 +135,6 @@ export async function deployRollup({
 
     return coreContracts;
   } catch (e) {
-    throw new Error(`Failed to deploy rollup: ${e}`);
+    throw new Error(`Failed to deploy rollup:\n${e}`);
   }
 }

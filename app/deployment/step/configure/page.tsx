@@ -17,6 +17,7 @@ import { deployRollup } from '@/utils/deployRollup';
 import { AddressSchema } from '@/utils/schemas';
 import { compareWallets } from '@/utils/wallets';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { showSigningErrorToast } from '@/utils/errors';
 
 const WalletAddressListSchema = z.array(AddressSchema).superRefine((data, ctx) => {
   const seen = new Set();
@@ -131,6 +132,7 @@ export default function RollupConfigPage() {
       nextStep();
     } catch (e) {
       console.error(e);
+      showSigningErrorToast(e);
     } finally {
       dispatch({ type: 'set_is_loading', payload: false });
     }
