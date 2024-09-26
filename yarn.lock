@@ -768,10 +768,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@offchainlabs/cobalt@0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@offchainlabs/cobalt/-/cobalt-0.3.7.tgz#5c525a46d534dd48ee4b603fd1c72d121a95aa91"
-  integrity sha512-rJ2Trpa0P92WezI2icdPynHR5apDPnkQroJYFrxdxBVbJs0vjkU4gRz+hIKFAay4IN7xmovhsCLC4EdSwDGHhA==
+"@offchainlabs/cobalt@0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@offchainlabs/cobalt/-/cobalt-0.3.8.tgz#15efb29922074f8fae923598bc29c42446e54aee"
+  integrity sha512-HOO0UNAfgArWTX5gqoqpf01/biMKC7hKiIKIN3RraBvl//ZVSse1AMvxkiZXZUmUg2li4GCG5VA+CoxU0CN6Pg==
 
 "@offchainlabs/fund-distribution-contracts@^1.0.1":
   version "1.0.1"
@@ -4542,7 +4542,7 @@ ms@2.1.2, ms@^2.1.1:
 
 ms@^2.0.0:
   version "2.1.3"
-  resolved "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz"
+  resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
 multiformats@^9.4.2:
