@@ -73,6 +73,7 @@ export const WalletAddressManager = ({
   }, [addresses, fieldName, setValue]);
 
   useEffect(() => {
+    saveWallets(wallets);
     addresses.forEach((address: string, index: number) => {
       setValue(`${fieldName}.${index}`, address);
     });
