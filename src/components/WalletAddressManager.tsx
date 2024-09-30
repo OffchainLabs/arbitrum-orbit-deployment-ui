@@ -36,6 +36,10 @@ export const WalletAddressManager = ({
     return savedWallets || [getRandomWallet()];
   }, [savedWallets]);
 
+  if(!savedWallets) {
+    dispatch({ type: `set_${fieldName}` as const, payload: [getRandomWallet()] });
+  }
+
   const addresses = useMemo(() => {
     return wallets?.map((wallet: Wallet) => wallet.address);
   }, [wallets]);
