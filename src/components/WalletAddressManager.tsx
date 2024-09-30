@@ -36,8 +36,6 @@ export const WalletAddressManager = ({
     return savedWallets || [getRandomWallet()];
   }, [savedWallets]);
 
-  console.log(savedWallets);
-
   if(!savedWallets) {
     dispatch({ type: `set_${fieldName}` as const, payload: [getRandomWallet()] });
   }
