@@ -48,7 +48,7 @@ export const RaasProviderGrid = () => {
       <RaasProviderCard
         name="Alchemy"
         description="Supports AnyTrust and Rollup chains"
-        caption="Powering World Chain and Shape"
+        caption="Powering Aavegotchi"
         link="https://alchemy.com/rollups"
         logo="/AlchemyLogo.png"
       />
