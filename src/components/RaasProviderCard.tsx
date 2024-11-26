@@ -17,8 +17,10 @@ export const RaasProviderCard = ({
   return (
     <Link href={link} target="_blank">
       <div className="group flex h-full flex-col gap-4 rounded-md border border-solid border-grey bg-[#191919] p-4 active:bg-[rgba(109,109,109,0.4)] md:hover:bg-[rgba(109,109,109)]">
-        <div className="h-[30px]">
-          <Image src={logo} alt={`${name} logo`} width={120} height={30} />
+        <div>
+          <div className="relative h-[40px] w-[160px]">
+            <Image src={logo} alt={`${name} logo`} fill className="object-contain object-left" />
+          </div>
         </div>
         <h4 className="text-2xl font-light">{name}</h4>
         <p className="text-sm font-light">{description}</p>
