@@ -53,11 +53,11 @@ export const RaasProviderGrid = () => {
         logo="/AlchemyLogo.png"
       />
       <RaasProviderCard
-        name="Quicknode"
+        name="QuickNode"
         description="Supports AnyTrust and Rollup chains"
         caption="Powering Proof of Play"
         link="https://www.quicknode.com/rollup"
-        logo="/QuicknodeLogo.svg"
+        logo="/QuickNodeLogo.svg"
       />
     </div>
   );
