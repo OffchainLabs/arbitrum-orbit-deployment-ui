@@ -52,6 +52,13 @@ export const RaasProviderGrid = () => {
         link="https://alchemy.com/rollups"
         logo="/AlchemyLogo.png"
       />
+      <RaasProviderCard
+        name="QuickNode"
+        description="Supports AnyTrust and Rollup chains"
+        caption="Powering Proof of Play"
+        link="https://www.quicknode.com/rollup"
+        logo="/QuickNodeLogo.svg"
+      />
     </div>
   );
 };
